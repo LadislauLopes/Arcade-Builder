@@ -1,0 +1,2200 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Ateliê do Controle</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a workbench — the 3D controller on a studio sweep at the left, the cutting mat (crop editor) at the right; stacks on phones */
+:root {
+  --bg: #eeece7;
+  --panel: #faf9f6;
+  --ink: #1c1e22;
+  --muted: #64625d;
+  --line: #dbd7ce;
+  --accent: #2b59c3;
+  --accent-ink: #ffffff;
+  --accent-soft: #e2e8f7;
+  --stage-a: #f5f4f1;
+  --stage-b: #d6d3cb;
+  --mat: #e4e1da;
+  --grid: rgba(28, 30, 34, 0.07);
+  --grid-strong: rgba(28, 30, 34, 0.14);
+  --veil: rgba(238, 236, 231, 0.84);
+  --frame: #1c1e22;
+  --good: #1f7344;
+  --good-soft: #dbeee2;
+  --warn: #8f5500;
+  --warn-soft: #f5e8d1;
+  --bad: #ad2419;
+  --bad-soft: #f6dcd8;
+  --display: "Archivo", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --body: "Archivo", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14161a; --panel: #1b1e24; --ink: #ebeae5; --muted: #a09e98; --line: #2e323a;
+    --accent: #87a6ff; --accent-ink: #0d1221; --accent-soft: #212d4b;
+    --stage-a: #2c2f35; --stage-b: #16181c; --mat: #22252c;
+    --grid: rgba(235, 234, 229, 0.06); --grid-strong: rgba(235, 234, 229, 0.12);
+    --veil: rgba(20, 22, 26, 0.82); --frame: #ebeae5;
+    --good: #74d39b; --good-soft: #1c3627; --warn: #f0b45a; --warn-soft: #3a2d16; --bad: #ff8f84; --bad-soft: #42201d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14161a; --panel: #1b1e24; --ink: #ebeae5; --muted: #a09e98; --line: #2e323a;
+  --accent: #87a6ff; --accent-ink: #0d1221; --accent-soft: #212d4b;
+  --stage-a: #2c2f35; --stage-b: #16181c; --mat: #22252c;
+  --grid: rgba(235, 234, 229, 0.06); --grid-strong: rgba(235, 234, 229, 0.12);
+  --veil: rgba(20, 22, 26, 0.82); --frame: #ebeae5;
+  --good: #74d39b; --good-soft: #1c3627; --warn: #f0b45a; --warn-soft: #3a2d16; --bad: #ff8f84; --bad-soft: #42201d;
+  color-scheme: dark;
+}
+
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 14px;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+}
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  padding-block: 12px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand svg { flex: none; color: var(--accent); }
+.brand h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-stretch: 122%;
+  font-weight: 760;
+  font-size: 19px;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.brand p { margin: 2px 0 0; color: var(--muted); font-size: 12.5px; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.2;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+.btn.primary:hover { filter: brightness(1.06); }
+.btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn svg { width: 15px; height: 15px; flex: none; }
+
+.work {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(360px, 1fr);
+}
+
+.stage {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  background: radial-gradient(120% 95% at 55% 28%, var(--stage-a), var(--stage-b));
+}
+#gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+#gl:active { cursor: grabbing; }
+.stage .hint {
+  position: absolute;
+  top: 12px;
+  left: max(14px, env(safe-area-inset-left, 0px));
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+.views {
+  position: absolute;
+  left: max(12px, env(safe-area-inset-left, 0px));
+  bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+.views button {
+  border: 0;
+  background: transparent;
+  padding: 6px 10px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--muted);
+}
+.views button[aria-pressed="true"] { background: var(--accent-soft); color: var(--ink); }
+.stage .veil {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 24px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.panel {
+  min-height: 0;
+  overflow: auto;
+  background: var(--panel);
+  border-left: 1px solid var(--line);
+  padding-block: 16px 22px;
+  padding-left: 20px;
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.tab {
+  min-width: 0;
+  text-align: left;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  cursor: pointer;
+}
+.tab b { display: block; font-weight: 700; font-size: 13.5px; }
+.tab small { display: block; font-family: var(--mono); font-size: 10.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tab[aria-selected="true"] { border-color: var(--accent); background: var(--accent-soft); }
+
+.editor {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  max-width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--mat);
+  border: 1px solid var(--line);
+}
+#ed { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: move; }
+.editor.dropping { outline: 2px dashed var(--accent); outline-offset: -6px; }
+.editor .drop {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--veil);
+  color: var(--ink);
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.zoom { display: flex; align-items: center; gap: 8px; flex: 1 1 200px; min-width: 0; }
+.zoom label { font-size: 12.5px; color: var(--muted); }
+.zoom input { flex: 1; min-width: 0; accent-color: var(--accent); }
+.zoom output { font-family: var(--mono); font-size: 12px; min-width: 4.5ch; text-align: right; font-variant-numeric: tabular-nums; }
+
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; font-size: 12.5px; }
+.meta .file { min-width: 0; flex: 1 1 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--bg);
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+.chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.chip.good { background: var(--good-soft); color: var(--good); border-color: transparent; }
+.chip.warn { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
+.chip.bad { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
+.print-size { font-family: var(--mono); font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.note { margin: 0; font-size: 13px; color: var(--muted); max-width: 62ch; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+details.settings { border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+details.settings summary { cursor: pointer; padding: 10px 12px; font-weight: 600; font-size: 13px; }
+.settings-body { display: grid; gap: 12px; padding: 4px 12px 14px; }
+.field { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; font-size: 13px; }
+.field small { display: block; color: var(--muted); font-size: 12px; }
+.field input[type="number"], .field select {
+  width: 7.5em;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--panel);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+.check { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.check input { accent-color: var(--accent); width: 16px; height: 16px; }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  max-width: min(520px, calc(100% - 32px));
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 13px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+  z-index: 20;
+}
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.colors { display: grid; gap: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
+.colors h2 {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--display);
+  font-stretch: 112%;
+  font-weight: 720;
+  font-size: 15px;
+}
+.colors h2 small { font-family: var(--mono); font-weight: 400; font-size: 11px; color: var(--muted); }
+.groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 6px; }
+.group {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 9px;
+  align-items: center;
+  text-align: left;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  cursor: pointer;
+}
+.group .dot { grid-row: span 2; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line); }
+.group b { font-size: 13px; font-weight: 700; line-height: 1.2; }
+.group .sub { font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.group[aria-checked="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.swatches { display: grid; gap: 6px; }
+.sw-title { margin: 4px 0 0; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.sw-row { display: flex; flex-wrap: wrap; gap: 7px; }
+.sw { width: 30px; height: 30px; padding: 0; border-radius: 50%; border: 1px solid var(--line); cursor: pointer; }
+.sw:hover { transform: scale(1.08); }
+.sw[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 2px; }
+.picked { margin: 0; font-size: 12.5px; color: var(--muted); min-height: 1.4em; }
+.shop { font-size: 12.5px; }
+.shop ul { margin: 4px 0 0; padding-left: 18px; font-family: var(--mono); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.pick { display: grid; gap: 10px; }
+.pick h2 {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--display);
+  font-stretch: 112%;
+  font-weight: 720;
+  font-size: 15px;
+}
+.pick h2 small { font-family: var(--mono); font-weight: 400; font-size: 11px; color: var(--muted); }
+.models { display: grid; gap: 6px; }
+.model-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.model {
+  min-width: 0;
+  text-align: left;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--bg);
+  cursor: pointer;
+}
+.model b { display: block; font-size: 12.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.model small { display: block; font-family: var(--mono); font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.model[aria-checked="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.pick .field select { width: auto; min-width: 12em; max-width: 100%; }
+.map-cut { fill: rgba(20, 110, 112, 0.6); }
+.map-extra { fill: var(--muted); }
+.map { display: block; width: 100%; max-width: 100%; height: auto; }
+.map-panel { fill: var(--mat); stroke: var(--line); stroke-width: 1; }
+.map-btn { cursor: pointer; outline: none; }
+.map-btn circle { stroke: var(--muted); stroke-width: 0.8; }
+.map-btn:hover circle { stroke: var(--ink); stroke-width: 1.6; }
+.map-btn.sel circle { stroke: var(--accent); stroke-width: 3; }
+.map-btn:focus-visible circle { stroke: var(--accent); stroke-width: 3; stroke-dasharray: 3 2; }
+.map-label { font-family: var(--body); font-weight: 700; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+
+@media (max-width: 900px) {
+  html, body { height: auto; }
+  .work { grid-template-columns: minmax(0, 1fr); }
+  .stage { height: 54vh; min-height: 300px; }
+  .panel {
+    overflow: visible;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+  }
+}
+@media (max-width: 460px) {
+  .tab small { font-size: 9.5px; }
+  .model-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .actions { width: 100%; }
+  .actions .btn { flex: 1 1 auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+</style>
+
+<header class="bar">
+  <div class="brand">
+    <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+      <rect x="2" y="17" width="30" height="13" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
+      <rect x="15.5" y="9" width="3" height="9" rx="1.5" fill="currentColor"/>
+      <ellipse cx="17" cy="7" rx="4.2" ry="5" fill="currentColor"/>
+      <circle cx="9" cy="23.5" r="2.2" fill="currentColor"/>
+      <circle cx="25" cy="23.5" r="2.2" fill="currentColor"/>
+    </svg>
+    <div>
+      <h1>Ateliê do Controle</h1>
+      <p>Escolha as artes do topo e das bordas, ajuste e baixe os arquivos para impressão.</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="btn" id="btn-3d" type="button">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4.5 8 1.5l6 3v7l-6 3-6-3z M2 4.5l6 3 6-3 M8 7.5v7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+      Baixar prévia 3D
+    </button>
+    <button class="btn primary" id="btn-zip" type="button">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5v9m0 0L4.5 7M8 10.5 11.5 7M2 12v2.5h12V12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Baixar arquivos para impressão
+    </button>
+  </div>
+</header>
+
+<main class="work">
+  <section class="stage" id="stage" aria-label="Prévia 3D do controle">
+    <canvas id="gl"></canvas>
+    <p class="hint">Arraste para girar · role para aproximar · clique num botão para pintar só ele</p>
+    <div class="views" role="group" aria-label="Ângulo da prévia">
+      <button type="button" data-view="left" aria-pressed="true">Esquerda</button>
+      <button type="button" data-view="front" aria-pressed="false">Frente</button>
+      <button type="button" data-view="right" aria-pressed="false">Direita</button>
+      <button type="button" data-view="top" aria-pressed="false">Cima</button>
+    </div>
+    <div class="veil" id="veil">Montando o controle…</div>
+  </section>
+
+  <aside class="panel" aria-label="Editor de arte">
+    <section class="pick" aria-labelledby="pick-title">
+      <h2 id="pick-title">Modelo <small id="model-size"></small></h2>
+      <div class="models" id="models" role="radiogroup" aria-label="Modelo da caixa"></div>
+      <label class="field" for="layout">
+        <span>Layout<small>As opções que o montador da loja oferece para este modelo.</small></span>
+        <select id="layout"></select>
+      </label>
+    </section>
+
+    <div class="tabs" role="tablist" aria-label="Parte do controle">
+      <button class="tab" role="tab" id="tab-top" data-key="top" aria-selected="true" aria-controls="editor-area" type="button">
+        <b>Topo</b><small data-dims="top">430 × 230 mm</small>
+      </button>
+      <button class="tab" role="tab" id="tab-ends" data-key="ends" aria-selected="false" aria-controls="editor-area" type="button">
+        <b>Pontas</b><small data-dims="ends">218 × 40 mm · 2×</small>
+      </button>
+      <button class="tab" role="tab" id="tab-sides" data-key="sides" aria-selected="false" aria-controls="editor-area" type="button">
+        <b>Frente e fundo</b><small data-dims="sides">418 × 40 mm · 2×</small>
+      </button>
+    </div>
+
+    <div id="editor-area" role="tabpanel" aria-labelledby="tab-top" style="display:grid;gap:12px">
+      <div class="editor" id="editor">
+        <canvas id="ed" tabindex="0" aria-label="Área de recorte. Arraste para mover a imagem, use as setas para ajustar e + ou − para zoom."></canvas>
+        <div class="drop" id="drop-hint" hidden>Solte a imagem aqui</div>
+      </div>
+
+      <div class="tools">
+        <button class="btn primary" id="btn-pick" type="button">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3.5h12v9H2z M2 10.5l3.5-3 3 2.5 2-1.5 3.5 3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><circle cx="10.5" cy="6" r="1.2" fill="currentColor"/></svg>
+          Escolher imagem
+        </button>
+        <input type="file" id="file" accept="image/*" class="sr-only" tabindex="-1">
+        <button class="btn" id="btn-rot" type="button" title="Girar 90°">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12.5 6A5 5 0 1 0 13 9.5 M12.5 2.5V6H9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Girar
+        </button>
+        <button class="btn" id="btn-flip" type="button" aria-pressed="false" title="Espelhar na horizontal">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5v13 M6 4 2 12h4z M10 4l4 8h-4z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          Espelhar
+        </button>
+        <button class="btn" id="btn-fit" type="button" title="Voltar a preencher a área inteira">Preencher</button>
+        <button class="btn" id="btn-holes" type="button" aria-pressed="true" title="Mostrar onde ficam os botões e furos">Furos</button>
+        <div class="zoom">
+          <label for="zoom">Zoom</label>
+          <input type="range" id="zoom" min="100" max="600" step="1" value="100">
+          <output id="zoom-out" for="zoom">100%</output>
+        </div>
+      </div>
+
+      <div class="meta">
+        <span class="file" id="file-name">—</span>
+        <span class="chip" id="chip">—</span>
+        <span class="print-size" id="print-size"></span>
+      </div>
+
+      <p class="note" id="note"></p>
+
+      <div class="row">
+        <button class="btn" id="btn-one" type="button">Baixar só este arquivo</button>
+        <button class="btn" id="btn-copy" type="button" hidden></button>
+      </div>
+    </div>
+
+    <section class="colors" aria-labelledby="colors-title">
+      <h2 id="colors-title">Cores dos botões e do stick <small id="colors-kind">Sanwa</small></h2>
+      <p class="note">Clique num botão do mapa ou do 3D para pintar só ele, ou escolha um grupo.</p>
+      <svg class="map" id="btn-map" viewBox="-26 -4 490.1 242.3" role="group" aria-label="Mapa dos botões"></svg>
+      <div class="groups" id="groups" role="radiogroup" aria-label="Grupos"></div>
+      <div class="swatches" id="swatches">
+        <div class="swatches" id="pal-sanwa">
+          <p class="sw-title">Sólidos · Sanwa OBSF</p>
+          <div class="sw-row" id="sw-solid"></div>
+          <p class="sw-title">Translúcidos · Sanwa OBSC</p>
+          <div class="sw-row" id="sw-clear"></div>
+        </div>
+        <div class="swatches" id="pal-caps" hidden>
+          <p class="sw-title">Capas low-profile da linha FLAT</p>
+          <div class="sw-row" id="sw-caps"></div>
+        </div>
+        <div class="swatches" id="pal-stick" hidden>
+          <p class="sw-title">Bastão do stick</p>
+          <div class="sw-row" id="sw-stick"></div>
+        </div>
+      </div>
+      <p class="picked" id="picked"></p>
+      <div class="shop"><b>Lista de compras</b><ul id="shop"></ul></div>
+    </section>
+
+    <details class="settings" id="settings">
+      <summary>Medidas e exportação</summary>
+      <div class="settings-body">
+        <label class="field" for="wall-h" id="wall-field">
+          <span>Altura da lateral<small>Confirme com a loja. Muda o tamanho das bordas.</small></span>
+          <input type="number" id="wall-h" min="20" max="90" step="1" value="40" inputmode="numeric">
+        </label>
+        <label class="field" for="dpi">
+          <span>Resolução dos arquivos<small>300 DPI é o padrão de gráfica.</small></span>
+          <select id="dpi">
+            <option value="150">150 DPI</option>
+            <option value="200">200 DPI</option>
+            <option value="300" selected>300 DPI</option>
+          </select>
+        </label>
+        <label class="check" for="guides"><input type="checkbox" id="guides" checked> Incluir guias com a posição dos furos</label>
+        <div class="row">
+          <button class="btn" id="btn-reset" type="button">Tirar todas as artes</button>
+        </div>
+        <p class="note" id="reset-confirm" hidden>
+          Isso tira as três imagens e deixa as superfícies sem arte.
+          <button class="btn" id="btn-reset-yes" type="button">Tirar</button>
+          <button class="btn" id="btn-reset-no" type="button">Cancelar</button>
+        </p>
+      </div>
+    </details>
+  </aside>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+(() => {
+'use strict';
+
+// neutral stand-in until the user picks an image; no artwork ships with the editor
+const BLANK = (() => {
+  const c = document.createElement('canvas');
+  c.width = c.height = 16;
+  const x = c.getContext('2d');
+  x.fillStyle = '#d9d7d1';
+  x.fillRect(0, 0, 16, 16);
+  return c.toDataURL('image/png');
+})();
+const SPECS = {"models":[{"id":"mini","name":"MINI","family":"ua","height":50,"store":"28 × 18 × 5 cm","layouts":[{"id":"mini-vewlix","name":"Japonês (Vewlix)","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"lk","x":126.82,"y":106.04,"r":12.0},{"id":"lp","x":132.82,"y":76.58,"r":12.0},{"id":"mk","x":157.09,"y":95.22,"r":12.0},{"id":"mp","x":163.09,"y":65.76,"r":12.0},{"id":"hp","x":193.12,"y":65.75,"r":12.0},{"id":"hk","x":187.12,"y":95.22,"r":12.0},{"id":"3k","x":216.76,"y":95.22,"r":12.0},{"id":"3p","x":222.76,"y":65.76,"r":12.0}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":{"x":66.13,"y":89.55},"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-sega","name":"Japonês (Sega)","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"lk","x":126.82,"y":106.04,"r":12.0},{"id":"lp","x":132.82,"y":76.58,"r":12.0},{"id":"mk","x":157.09,"y":95.22,"r":12.0},{"id":"mp","x":163.09,"y":65.76,"r":12.0},{"id":"hp","x":193.12,"y":65.75,"r":12.0},{"id":"hk","x":187.12,"y":95.22,"r":12.0},{"id":"3k","x":216.76,"y":106.04,"r":12.0},{"id":"3p","x":222.76,"y":76.58,"r":12.0}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":{"x":66.13,"y":89.55},"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-leverless","name":"Leverless","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"left","x":48.1,"y":56.36,"r":12.0},{"id":"down","x":79.55,"y":56.34,"r":12.0},{"id":"right","x":107.08,"y":70.38,"r":12.0},{"id":"lk","x":140.0,"y":85.3,"r":12.0},{"id":"lp","x":139.98,"y":52.35,"r":12.0},{"id":"mp","x":167.43,"y":38.3,"r":12.0},{"id":"mk","x":167.43,"y":71.31,"r":12.0},{"id":"hp","x":198.98,"y":38.31,"r":12.0},{"id":"hk","x":198.99,"y":71.34,"r":12.0},{"id":"3k","x":228.99,"y":74.34,"r":12.0},{"id":"3p","x":228.98,"y":43.31,"r":12.0},{"id":"up","x":130.58,"y":125.88,"r":15.0}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-wasd-leverless","name":"Leverless WASD","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"up","x":70.25,"y":46.87,"r":12.0},{"id":"left","x":40.25,"y":76.87,"r":12.0},{"id":"down","x":70.25,"y":76.87,"r":12.0},{"id":"right","x":100.25,"y":76.87,"r":12.0},{"id":"lk","x":132.91,"y":93.04,"r":12.0},{"id":"lp","x":138.91,"y":63.58,"r":12.0},{"id":"mk","x":163.18,"y":82.22,"r":12.0},{"id":"mp","x":169.18,"y":52.76,"r":12.0},{"id":"hp","x":199.22,"y":52.75,"r":12.0},{"id":"hk","x":193.22,"y":82.22,"r":12.0},{"id":"3k","x":222.85,"y":82.22,"r":12.0},{"id":"3p","x":228.85,"y":52.76,"r":12.0}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-keyboard","name":"Leverless com teclas","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"lk","x":132.91,"y":93.04,"r":12.0},{"id":"lp","x":138.91,"y":63.58,"r":12.0},{"id":"mk","x":163.18,"y":82.22,"r":12.0},{"id":"mp","x":169.18,"y":52.76,"r":12.0},{"id":"hp","x":199.22,"y":52.75,"r":12.0},{"id":"hk","x":193.22,"y":82.22,"r":12.0},{"id":"3k","x":222.85,"y":82.22,"r":12.0},{"id":"3p","x":228.85,"y":52.76,"r":12.0},{"id":"left","x":52.47,"y":78.23,"w":13.7,"h":13.7,"key":1},{"id":"down","x":71.57,"y":78.23,"w":13.7,"h":13.7,"key":1},{"id":"right","x":90.67,"y":78.23,"w":13.7,"h":13.7,"key":1},{"id":"up","x":71.57,"y":59.12,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-fullkeyboard","name":"Leverless só teclas","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"lk","x":170.64,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"mk","x":189.74,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"hk","x":208.84,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"mp","x":189.74,"y":52.26,"w":13.7,"h":13.7,"key":1},{"id":"lp","x":170.64,"y":52.26,"w":13.7,"h":13.7,"key":1},{"id":"hp","x":208.84,"y":52.26,"w":13.7,"h":13.7,"key":1},{"id":"3k","x":227.94,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"3p","x":227.94,"y":52.26,"w":13.7,"h":13.7,"key":1},{"id":"left","x":48.92,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"down","x":68.02,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"right","x":87.12,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"up","x":68.02,"y":52.26,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]}]},{"id":"basic","name":"BASIC","family":"ua","height":50,"store":"38 × 22 × 5 cm","layouts":[{"id":"basic-japanese-vewlix","name":"Japonês (Vewlix)","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"lp","x":181.16,"y":82.49,"r":15.0},{"id":"lk","x":175.16,"y":121.98,"r":15.0},{"id":"mp","x":216.16,"y":67.64,"r":15.0},{"id":"mk","x":210.16,"y":107.13,"r":15.0},{"id":"hp","x":251.16,"y":67.63,"r":15.0},{"id":"hk","x":245.16,"y":107.13,"r":15.0},{"id":"3p","x":286.16,"y":67.64,"r":15.0},{"id":"3k","x":280.16,"y":107.13,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":{"x":104.01,"y":102.04},"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-japanese-sega","name":"Japonês (Sega)","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"lp","x":181.16,"y":82.49,"r":15.0},{"id":"lk","x":175.16,"y":121.98,"r":15.0},{"id":"mp","x":216.16,"y":67.64,"r":15.0},{"id":"mk","x":210.16,"y":107.13,"r":15.0},{"id":"hp","x":251.16,"y":71.39,"r":15.0},{"id":"hk","x":245.16,"y":110.81,"r":15.0},{"id":"3p","x":286.16,"y":86.53,"r":15.0},{"id":"3k","x":280.16,"y":125.15,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":{"x":104.01,"y":102.04},"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-dual","name":"Dual (botões + stick)","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"lp","x":177.96,"y":95.25,"r":15.0},{"id":"lk","x":175.41,"y":129.04,"r":15.0},{"id":"mp","x":210.91,"y":85.93,"r":15.0},{"id":"mk","x":207.6,"y":119.38,"r":15.0},{"id":"hp","x":244.85,"y":85.25,"r":15.0},{"id":"hk","x":241.34,"y":118.99,"r":15.0},{"id":"3p","x":278.21,"y":90.32,"r":15.0},{"id":"3k","x":275.18,"y":123.48,"r":15.0},{"id":"left","x":186.05,"y":62.58,"r":15.0},{"id":"down","x":218.34,"y":52.83,"r":15.0},{"id":"right","x":251.98,"y":52.34,"r":15.0},{"id":"up","x":177.85,"y":162.39,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":{"x":108.28,"y":101.4},"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-leverless","name":"Leverless","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"left","x":98.1,"y":68.07,"r":12.0},{"id":"down","x":129.55,"y":68.04,"r":12.0},{"id":"right","x":157.08,"y":82.08,"r":12.0},{"id":"lk","x":190.0,"y":97.0,"r":12.0},{"id":"lp","x":189.98,"y":64.05,"r":12.0},{"id":"mp","x":217.43,"y":50.0,"r":12.0},{"id":"mk","x":217.43,"y":83.02,"r":12.0},{"id":"hp","x":248.98,"y":50.02,"r":12.0},{"id":"hk","x":248.99,"y":83.04,"r":12.0},{"id":"3k","x":278.99,"y":86.04,"r":12.0},{"id":"3p","x":278.98,"y":55.02,"r":12.0},{"id":"up","x":180.58,"y":137.58,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-shiokenstar","name":"Leverless Shiokenstar","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"left","x":98.1,"y":68.07,"r":12.0},{"id":"down","x":129.55,"y":68.04,"r":12.0},{"id":"right","x":157.08,"y":82.08,"r":12.0},{"id":"up","x":180.58,"y":137.58,"r":15.0},{"id":"lp","x":190.89,"y":62.56,"r":15.0},{"id":"mp","x":224.58,"y":42.6,"r":15.0},{"id":"hp","x":259.58,"y":42.6,"r":15.0},{"id":"3p","x":294.58,"y":51.31,"r":15.0},{"id":"lk","x":190.89,"y":96.95,"r":15.0},{"id":"mk","x":224.58,"y":82.1,"r":15.0},{"id":"hk","x":259.58,"y":82.1,"r":15.0},{"id":"3k","x":294.58,"y":88.22,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-wasd-leverless","name":"Leverless WASD","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"lp","x":207.26,"y":79.88,"r":15.0},{"id":"lk","x":201.26,"y":119.37,"r":15.0},{"id":"mp","x":242.26,"y":65.03,"r":15.0},{"id":"mk","x":236.26,"y":104.52,"r":15.0},{"id":"hp","x":277.26,"y":65.02,"r":15.0},{"id":"hk","x":271.26,"y":104.52,"r":15.0},{"id":"3p","x":312.26,"y":65.03,"r":15.0},{"id":"3k","x":306.26,"y":104.52,"r":15.0},{"id":"up","x":99.26,"y":69.51,"r":12.0},{"id":"left","x":69.26,"y":99.51,"r":12.0},{"id":"down","x":99.26,"y":99.51,"r":12.0},{"id":"right","x":129.26,"y":99.51,"r":12.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-keyboard","name":"Leverless com teclas","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"left","x":72.8,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"down","x":91.9,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"right","x":111.0,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"up","x":91.9,"y":63.37,"w":13.7,"h":13.7,"key":1},{"id":"lk","x":200.0,"y":117.49,"r":15.0},{"id":"lp","x":206.0,"y":78.0,"r":15.0},{"id":"mk","x":235.0,"y":102.64,"r":15.0},{"id":"mp","x":241.0,"y":63.15,"r":15.0},{"id":"hp","x":276.0,"y":63.14,"r":15.0},{"id":"hk","x":270.0,"y":102.64,"r":15.0},{"id":"3k","x":305.0,"y":102.64,"r":15.0},{"id":"3p","x":311.0,"y":63.15,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-fullkeyboard","name":"Leverless só teclas","w":380.01,"h":220.01,"radius":20.0,"buttons":[],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]}]},{"id":"slim","name":"SLIM","family":"ua","height":50,"store":"40 × 18 × 5 cm","layouts":[{"id":"slim-vewlix","name":"Japonês (Vewlix)","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"lp","x":188.39,"y":57.91,"r":15.0},{"id":"lk","x":182.39,"y":97.4,"r":15.0},{"id":"mp","x":223.39,"y":43.06,"r":15.0},{"id":"mk","x":217.39,"y":82.55,"r":15.0},{"id":"hp","x":258.39,"y":43.05,"r":15.0},{"id":"hk","x":252.39,"y":82.55,"r":15.0},{"id":"3p","x":293.39,"y":43.06,"r":15.0},{"id":"3k","x":287.39,"y":82.55,"r":15.0}],"side":[{"id":"A1","end":"R","y":-2.5,"r":2.5},{"id":"A2","end":"R","y":-2.5,"r":2.5},{"id":"A3","end":"R","y":-2.5,"r":2.5},{"id":"A4","end":"R","y":-2.5,"r":2.5},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":{"x":111.24,"y":77.46},"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-sega","name":"Japonês (Sega)","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"lp","x":188.39,"y":57.91,"r":15.0},{"id":"lk","x":182.39,"y":97.4,"r":15.0},{"id":"mp","x":223.39,"y":43.06,"r":15.0},{"id":"mk","x":217.39,"y":82.55,"r":15.0},{"id":"hp","x":258.39,"y":43.05,"r":15.0},{"id":"hk","x":252.39,"y":82.55,"r":15.0},{"id":"3p","x":293.39,"y":57.91,"r":15.0},{"id":"3k","x":287.39,"y":97.4,"r":15.0}],"side":[{"id":"A1","end":"R","y":-2.5,"r":2.5},{"id":"A2","end":"R","y":-2.5,"r":2.5},{"id":"A3","end":"R","y":-2.5,"r":2.5},{"id":"A4","end":"R","y":-2.5,"r":2.5},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":{"x":111.24,"y":77.46},"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-leverless","name":"Leverless","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"left","x":108.1,"y":57.7,"r":12.0},{"id":"down","x":139.55,"y":57.68,"r":12.0},{"id":"right","x":167.08,"y":71.71,"r":12.0},{"id":"lk","x":200.0,"y":86.64,"r":13.0},{"id":"lp","x":199.98,"y":53.69,"r":13.0},{"id":"mp","x":227.43,"y":39.64,"r":13.0},{"id":"mk","x":227.43,"y":72.65,"r":13.0},{"id":"hp","x":258.98,"y":39.65,"r":13.0},{"id":"hk","x":258.99,"y":72.68,"r":13.0},{"id":"3k","x":288.99,"y":75.68,"r":13.0},{"id":"3p","x":288.98,"y":44.65,"r":13.0},{"id":"up","x":190.58,"y":127.21,"r":15.0}],"side":[{"id":"A1","end":"R","y":-2.5,"r":2.5},{"id":"A2","end":"R","y":-2.5,"r":2.5},{"id":"A3","end":"R","y":-2.5,"r":2.5},{"id":"A4","end":"R","y":-2.5,"r":2.5},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-shiokenstar","name":"Leverless Shiokenstar","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"left","x":100.34,"y":64.61,"r":12.0},{"id":"down","x":131.79,"y":64.58,"r":12.0},{"id":"right","x":159.32,"y":78.62,"r":12.0},{"id":"lp","x":193.13,"y":59.1,"r":15.0},{"id":"mp","x":226.82,"y":39.15,"r":15.0},{"id":"hp","x":261.82,"y":39.15,"r":15.0},{"id":"3p","x":296.82,"y":47.85,"r":15.0},{"id":"lk","x":193.13,"y":93.5,"r":15.0},{"id":"mk","x":226.82,"y":78.65,"r":15.0},{"id":"hk","x":261.82,"y":78.65,"r":15.0},{"id":"3k","x":296.82,"y":84.76,"r":15.0},{"id":"up","x":182.69,"y":133.84,"r":15.0}],"side":[{"id":"A1","end":"R","y":-2.5,"r":2.5},{"id":"A2","end":"R","y":-2.5,"r":2.5},{"id":"A3","end":"R","y":-2.5,"r":2.5},{"id":"A4","end":"R","y":-2.5,"r":2.5},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-wasd-leverless","name":"Leverless WASD","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"up","x":107.73,"y":52.43,"r":12.0},{"id":"left","x":77.73,"y":82.43,"r":12.0},{"id":"down","x":107.73,"y":82.43,"r":12.0},{"id":"right","x":137.73,"y":82.43,"r":12.0},{"id":"lp","x":215.74,"y":62.8,"r":15.0},{"id":"lk","x":209.74,"y":102.28,"r":15.0},{"id":"mp","x":250.74,"y":47.95,"r":15.0},{"id":"mk","x":244.74,"y":87.43,"r":15.0},{"id":"hp","x":285.74,"y":47.93,"r":15.0},{"id":"hk","x":279.74,"y":87.43,"r":15.0},{"id":"3k","x":314.74,"y":87.43,"r":15.0},{"id":"3p","x":320.74,"y":47.95,"r":15.0}],"side":[{"id":"A1","end":"R","y":-2.5,"r":2.5},{"id":"A2","end":"R","y":-2.5,"r":2.5},{"id":"A3","end":"R","y":-2.5,"r":2.5},{"id":"A4","end":"R","y":-2.5,"r":2.5},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-keyboard","name":"Leverless com teclas","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"left","x":76.94,"y":68.1,"w":13.7,"h":13.7,"key":1},{"id":"down","x":96.04,"y":68.1,"w":13.7,"h":13.7,"key":1},{"id":"right","x":115.14,"y":68.1,"w":13.7,"h":13.7,"key":1},{"id":"up","x":96.04,"y":49.0,"w":13.7,"h":13.7,"key":1},{"id":"lk","x":204.15,"y":103.12,"r":15.0},{"id":"lp","x":210.15,"y":63.63,"r":15.0},{"id":"mk","x":239.15,"y":88.27,"r":15.0},{"id":"mp","x":245.15,"y":48.78,"r":15.0},{"id":"hp","x":280.15,"y":48.77,"r":15.0},{"id":"hk","x":274.15,"y":88.27,"r":15.0},{"id":"3k","x":309.15,"y":88.27,"r":15.0},{"id":"3p","x":315.15,"y":48.78,"r":15.0}],"side":[{"id":"A1","end":"R","y":-2.5,"r":2.5},{"id":"A2","end":"R","y":-2.5,"r":2.5},{"id":"A3","end":"R","y":-2.5,"r":2.5},{"id":"A4","end":"R","y":-2.5,"r":2.5},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-fullkeyboard","name":"Leverless só teclas","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"lk","x":249.29,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"mk","x":268.39,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"hk","x":287.49,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"mp","x":268.39,"y":44.34,"w":13.7,"h":13.7,"key":1},{"id":"lp","x":249.29,"y":44.34,"w":13.7,"h":13.7,"key":1},{"id":"hp","x":287.49,"y":44.34,"w":13.7,"h":13.7,"key":1},{"id":"3k","x":306.59,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"3p","x":306.59,"y":44.34,"w":13.7,"h":13.7,"key":1},{"id":"left","x":89.37,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"down","x":108.47,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"right","x":127.57,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"up","x":108.47,"y":44.34,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"R","y":-2.5,"r":2.5},{"id":"A2","end":"R","y":-2.5,"r":2.5},{"id":"A3","end":"R","y":-2.5,"r":2.5},{"id":"A4","end":"R","y":-2.5,"r":2.5},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]}]},{"id":"proxl","name":"PRO XL","family":"ua","height":50,"store":"43 × 23 × 5 cm","layouts":[{"id":"proxl-vewlix","name":"Japonês (Vewlix)","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"lp","x":205.82,"y":82.63,"r":15.0},{"id":"lk","x":199.82,"y":122.11,"r":15.0},{"id":"mp","x":240.82,"y":67.78,"r":15.0},{"id":"mk","x":234.82,"y":107.26,"r":15.0},{"id":"hp","x":275.82,"y":67.76,"r":15.0},{"id":"hk","x":269.82,"y":107.26,"r":15.0},{"id":"3p","x":310.82,"y":67.78,"r":15.0},{"id":"3k","x":304.82,"y":107.26,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":{"x":128.67,"y":102.18},"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-sega","name":"Japonês (Sega)","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"lp","x":205.82,"y":82.63,"r":15.0},{"id":"lk","x":199.82,"y":122.11,"r":15.0},{"id":"mp","x":240.82,"y":67.78,"r":15.0},{"id":"mk","x":234.82,"y":107.26,"r":15.0},{"id":"hp","x":275.82,"y":67.76,"r":15.0},{"id":"hk","x":269.82,"y":107.26,"r":15.0},{"id":"3k","x":304.82,"y":121.53,"r":15.0},{"id":"3p","x":310.82,"y":82.9,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":{"x":128.67,"y":102.18},"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-dual","name":"Dual (botões + stick)","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"lp","x":201.16,"y":101.9,"r":15.0},{"id":"left","x":209.26,"y":69.23,"r":15.0},{"id":"down","x":241.54,"y":59.48,"r":15.0},{"id":"right","x":275.18,"y":58.99,"r":15.0},{"id":"mp","x":234.12,"y":92.58,"r":15.0},{"id":"hp","x":268.06,"y":91.89,"r":15.0},{"id":"3p","x":301.41,"y":96.97,"r":15.0},{"id":"lk","x":198.62,"y":135.68,"r":15.0},{"id":"mk","x":230.8,"y":126.03,"r":15.0},{"id":"hk","x":264.55,"y":125.64,"r":15.0},{"id":"3k","x":298.39,"y":130.12,"r":15.0},{"id":"up","x":201.05,"y":169.04,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":{"x":131.48,"y":108.04},"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-leverless","name":"Leverless","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"left","x":123.1,"y":77.92,"r":12.0},{"id":"down","x":154.55,"y":77.89,"r":12.0},{"id":"right","x":182.07,"y":91.93,"r":12.0},{"id":"lk","x":215.0,"y":106.86,"r":12.0},{"id":"lp","x":214.98,"y":73.91,"r":12.0},{"id":"mp","x":242.42,"y":59.86,"r":12.0},{"id":"mk","x":242.42,"y":92.87,"r":12.0},{"id":"hp","x":273.97,"y":59.87,"r":12.0},{"id":"hk","x":273.99,"y":92.89,"r":12.0},{"id":"3k","x":303.99,"y":95.89,"r":12.0},{"id":"3p","x":303.97,"y":64.87,"r":12.0},{"id":"up","x":205.58,"y":147.43,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-wasd-leverless","name":"Leverless WASD","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"up","x":120.8,"y":62.53,"r":12.0},{"id":"left","x":90.8,"y":92.53,"r":12.0},{"id":"down","x":120.8,"y":92.53,"r":12.0},{"id":"right","x":150.8,"y":92.53,"r":12.0},{"id":"lp","x":228.81,"y":72.9,"r":15.0},{"id":"lk","x":222.81,"y":112.39,"r":15.0},{"id":"mp","x":263.81,"y":58.05,"r":15.0},{"id":"mk","x":257.81,"y":97.54,"r":15.0},{"id":"hp","x":298.81,"y":58.04,"r":15.0},{"id":"hk","x":292.81,"y":97.54,"r":15.0},{"id":"3k","x":327.81,"y":97.54,"r":15.0},{"id":"3p","x":333.81,"y":58.05,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-shiokenstar","name":"Leverless Shiokenstar","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"left","x":123.1,"y":77.92,"r":12.0},{"id":"down","x":154.55,"y":77.89,"r":12.0},{"id":"right","x":182.07,"y":91.93,"r":12.0},{"id":"lp","x":215.89,"y":72.41,"r":15.0},{"id":"mp","x":249.58,"y":52.46,"r":15.0},{"id":"hp","x":284.58,"y":52.46,"r":15.0},{"id":"3p","x":319.58,"y":61.17,"r":15.0},{"id":"lk","x":215.89,"y":106.81,"r":15.0},{"id":"mk","x":249.57,"y":91.96,"r":15.0},{"id":"hk","x":284.57,"y":91.96,"r":15.0},{"id":"3k","x":319.57,"y":98.08,"r":15.0},{"id":"up","x":205.45,"y":147.16,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-keyboard","name":"Leverless com teclas","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"3p","x":310.82,"y":67.78,"r":15.0},{"id":"left","x":88.61,"y":91.2,"w":14.0,"h":14.0,"key":1},{"id":"down","x":107.71,"y":91.2,"w":14.0,"h":14.0,"key":1},{"id":"right","x":126.81,"y":91.2,"w":14.0,"h":14.0,"key":1},{"id":"up","x":107.71,"y":72.1,"w":14.0,"h":14.0,"key":1},{"id":"lk","x":199.82,"y":122.11,"r":15.0},{"id":"lp","x":205.82,"y":82.63,"r":15.0},{"id":"mk","x":234.82,"y":107.26,"r":15.0},{"id":"mp","x":240.82,"y":67.78,"r":15.0},{"id":"hp","x":275.82,"y":67.76,"r":15.0},{"id":"hk","x":269.82,"y":107.26,"r":15.0},{"id":"3k","x":304.82,"y":107.26,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-fullkeyboard","name":"Leverless só teclas","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"left","x":105.52,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"lk","x":265.44,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"mk","x":284.54,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"hk","x":303.64,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"mp","x":284.54,"y":73.55,"w":13.7,"h":13.7,"key":1},{"id":"lp","x":265.44,"y":73.55,"w":13.7,"h":13.7,"key":1},{"id":"hp","x":303.64,"y":73.55,"w":13.7,"h":13.7,"key":1},{"id":"3k","x":322.74,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"3p","x":322.74,"y":73.55,"w":13.7,"h":13.7,"key":1},{"id":"down","x":124.62,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"right","x":143.72,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"up","x":124.62,"y":73.55,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]}]},{"id":"flat-wmx","name":"FLAT WMX","family":"flat","height":17,"store":"20 × 12 × 1,7 cm","layouts":[{"id":"flat-wmx","name":"Padrão","w":200.0,"h":120.0,"radius":4.45,"buttons":[{"id":"left","x":26.72,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"down","x":45.82,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"right","x":64.92,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"up","x":45.82,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"lp","x":116.82,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"mp","x":135.92,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"hp","x":155.02,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"3p","x":174.12,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"3k","x":174.12,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"hk","x":155.02,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"mk","x":135.92,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"lk","x":116.82,"y":77.56,"w":18.0,"h":18.0,"key":1}],"side":[],"extras":[{"x":55.47,"y":41.57,"r":3.1},{"x":45.47,"y":41.57,"r":3.1},{"x":35.47,"y":41.57,"r":3.1},{"x":154.67,"y":41.57,"r":3.1},{"x":144.67,"y":41.57,"r":3.1},{"x":164.67,"y":41.57,"r":3.1}],"joystick":null,"screws":[{"x":194.0,"y":6.0},{"x":6.0,"y":6.0},{"x":100.0,"y":107.77},{"x":189.0,"y":39.77},{"x":11.0,"y":107.77},{"x":189.0,"y":107.77},{"x":124.0,"y":7.77},{"x":76.0,"y":7.77},{"x":11.0,"y":39.77}],"cutouts":[{"x":8.25,"y":10.27,"w":50.0,"h":20.0},{"x":141.75,"y":10.27,"w":50.0,"h":20.0}]}]},{"id":"flat-default","name":"FLAT","family":"flat","height":14,"store":"22 × 13 × 1,4 cm","layouts":[{"id":"flat-default","name":"Padrão","w":218.0,"h":127.0,"radius":7.0,"buttons":[{"id":"mp","x":139.42,"y":26.58,"r":10.95},{"id":"down","x":51.32,"y":38.17,"r":10.95},{"id":"lk","x":107.25,"y":69.15,"r":10.95},{"id":"3k","x":191.92,"y":58.04,"r":10.95},{"id":"lp","x":112.86,"y":38.11,"r":10.95},{"id":"3p","x":197.36,"y":26.7,"r":10.95},{"id":"mk","x":133.86,"y":58.04,"r":10.95},{"id":"left","x":22.23,"y":38.05,"r":10.95},{"id":"hk","x":162.71,"y":58.04,"r":10.95},{"id":"right","x":77.92,"y":49.52,"r":10.95},{"id":"up","x":95.42,"y":102.62,"r":13.57},{"id":"hp","x":168.39,"y":26.46,"r":10.95}],"side":[],"extras":[{"x":31.75,"y":12.85,"r":1.85},{"x":41.75,"y":12.85,"r":1.85},{"x":54.75,"y":12.85,"r":1.85},{"x":64.75,"y":12.85,"r":1.85},{"x":74.75,"y":12.85,"r":1.85},{"x":21.75,"y":12.85,"r":1.85}],"joystick":null,"screws":[{"x":207.0,"y":116.0},{"x":207.0,"y":10.0},{"x":114.0,"y":10.0},{"x":114.0,"y":116.0},{"x":11.0,"y":116.0},{"x":11.0,"y":10.0}],"cutouts":[]},{"id":"flat-wasd","name":"WASD","w":218.0,"h":127.0,"radius":7.0,"buttons":[{"id":"hp","x":168.39,"y":35.96,"r":10.95},{"id":"mp","x":139.42,"y":36.08,"r":10.95},{"id":"lk","x":107.25,"y":78.65,"r":10.95},{"id":"3k","x":191.92,"y":67.54,"r":10.95},{"id":"lp","x":112.86,"y":47.61,"r":10.95},{"id":"3p","x":197.36,"y":36.2,"r":10.95},{"id":"mk","x":133.86,"y":67.54,"r":10.95},{"id":"hk","x":162.71,"y":67.54,"r":10.95},{"id":"left","x":22.2,"y":64.35,"r":10.95},{"id":"down","x":48.31,"y":64.49,"r":10.95},{"id":"right","x":74.5,"y":64.6,"r":10.95},{"id":"up","x":48.3,"y":37.9,"r":10.95}],"side":[],"extras":[{"x":21.75,"y":12.85,"r":1.85},{"x":31.75,"y":12.85,"r":1.85},{"x":41.75,"y":12.85,"r":1.85},{"x":54.75,"y":12.85,"r":1.85},{"x":64.75,"y":12.85,"r":1.85},{"x":74.75,"y":12.85,"r":1.85}],"joystick":null,"screws":[{"x":207.0,"y":116.0},{"x":207.0,"y":10.0},{"x":114.0,"y":10.0},{"x":114.0,"y":116.0},{"x":11.0,"y":116.0},{"x":11.0,"y":10.0}],"cutouts":[]}]},{"id":"flatxl-default","name":"FLAT XL","family":"flat","height":14,"store":"32 × 16 × 1,4 cm","layouts":[{"id":"flatxl-default","name":"Padrão","w":320.0,"h":156.88,"radius":10.28,"buttons":[{"id":"mp","x":190.42,"y":26.56,"r":10.95},{"id":"down","x":102.32,"y":38.15,"r":10.95},{"id":"lk","x":158.25,"y":69.13,"r":10.95},{"id":"3k","x":242.92,"y":58.02,"r":10.95},{"id":"lp","x":163.86,"y":38.09,"r":10.95},{"id":"3p","x":248.36,"y":26.68,"r":10.95},{"id":"mk","x":184.86,"y":58.02,"r":10.95},{"id":"left","x":73.23,"y":38.03,"r":10.95},{"id":"hk","x":213.71,"y":58.02,"r":10.95},{"id":"right","x":128.92,"y":49.5,"r":10.95},{"id":"up","x":146.42,"y":102.6,"r":13.57},{"id":"hp","x":219.39,"y":26.44,"r":10.95}],"side":[],"extras":[{"x":82.75,"y":12.83,"r":1.85},{"x":92.75,"y":12.83,"r":1.85},{"x":105.75,"y":12.83,"r":1.85},{"x":115.75,"y":12.83,"r":1.85},{"x":125.75,"y":12.83,"r":1.85},{"x":72.75,"y":12.83,"r":1.85}],"joystick":null,"screws":[{"x":165.0,"y":146.91},{"x":310.03,"y":146.91},{"x":10.03,"y":146.91},{"x":310.03,"y":9.98},{"x":10.03,"y":9.98},{"x":258.0,"y":115.98},{"x":258.0,"y":9.98},{"x":62.0,"y":115.98},{"x":62.0,"y":9.98},{"x":165.0,"y":9.98},{"x":165.0,"y":115.98}],"cutouts":[]},{"id":"flatxl-wasd","name":"WASD","w":320.0,"h":156.88,"radius":10.28,"buttons":[{"id":"hp","x":219.39,"y":35.94,"r":10.95},{"id":"mp","x":190.42,"y":36.06,"r":10.95},{"id":"lk","x":158.25,"y":78.63,"r":10.95},{"id":"3k","x":242.92,"y":67.52,"r":10.95},{"id":"lp","x":163.86,"y":47.59,"r":10.95},{"id":"3p","x":248.36,"y":36.18,"r":10.95},{"id":"mk","x":184.86,"y":67.52,"r":10.95},{"id":"hk","x":213.71,"y":67.52,"r":10.95},{"id":"left","x":73.2,"y":64.33,"r":10.95},{"id":"down","x":99.31,"y":64.47,"r":10.95},{"id":"right","x":125.5,"y":64.58,"r":10.95},{"id":"up","x":99.3,"y":37.88,"r":10.95}],"side":[],"extras":[{"x":72.75,"y":12.83,"r":1.85},{"x":82.75,"y":12.83,"r":1.85},{"x":92.75,"y":12.83,"r":1.85},{"x":105.75,"y":12.83,"r":1.85},{"x":115.75,"y":12.83,"r":1.85},{"x":125.75,"y":12.83,"r":1.85}],"joystick":null,"screws":[{"x":165.0,"y":146.91},{"x":310.03,"y":146.91},{"x":10.03,"y":146.91},{"x":310.03,"y":9.98},{"x":10.03,"y":9.98},{"x":258.0,"y":115.98},{"x":258.0,"y":9.98},{"x":62.0,"y":115.98},{"x":62.0,"y":9.98},{"x":165.0,"y":9.98},{"x":165.0,"y":115.98}],"cutouts":[]}]},{"id":"flatxxl","name":"FLAT XXL","family":"flat","height":14,"store":"30 × 21 × 1,4 cm","layouts":[{"id":"flatxxl-14","name":"14 botões","w":300.0,"h":210.0,"radius":10.0,"buttons":[{"id":"hp","x":221.89,"y":26.46,"r":10.95},{"id":"up","x":148.92,"y":102.62,"r":13.58},{"id":"right","x":131.42,"y":49.52,"r":10.95},{"id":"hk","x":216.21,"y":58.04,"r":10.95},{"id":"left","x":75.73,"y":38.05,"r":10.95},{"id":"mk","x":187.36,"y":58.04,"r":10.95},{"id":"3p","x":250.86,"y":26.7,"r":10.95},{"id":"lp","x":166.36,"y":38.11,"r":10.95},{"id":"3k","x":245.42,"y":58.04,"r":10.95},{"id":"lk","x":160.75,"y":69.15,"r":10.95},{"id":"down","x":104.82,"y":38.17,"r":10.95},{"id":"mp","x":192.92,"y":26.58,"r":10.95},{"id":"A2","x":185.22,"y":89.4,"r":13.57},{"id":"A1","x":49.1,"y":49.7,"r":10.95}],"side":[],"extras":[{"x":75.25,"y":12.85,"r":1.85},{"x":85.25,"y":12.85,"r":1.85},{"x":95.25,"y":12.85,"r":1.85},{"x":108.25,"y":12.85,"r":1.85}],"joystick":null,"screws":[{"x":40.5,"y":10.0},{"x":167.5,"y":10.0},{"x":260.5,"y":10.0},{"x":40.5,"y":116.0},{"x":167.5,"y":116.0},{"x":260.5,"y":116.0},{"x":150.0,"y":200.0},{"x":10.0,"y":200.0},{"x":290.0,"y":200.0},{"x":10.0,"y":10.0},{"x":290.0,"y":10.0}],"cutouts":[]},{"id":"flatxxl-17","name":"17 botões","w":300.0,"h":210.0,"radius":10.0,"buttons":[{"id":"mp","x":192.85,"y":52.56,"r":10.95},{"id":"down","x":105.99,"y":64.74,"r":10.95},{"id":"lk","x":162.49,"y":94.75,"r":10.95},{"id":"3k","x":249.64,"y":85.81,"r":10.95},{"id":"lp","x":165.55,"y":64.9,"r":10.95},{"id":"3p","x":252.71,"y":55.66,"r":10.95},{"id":"mk","x":189.91,"y":82.4,"r":10.95},{"id":"left","x":75.99,"y":64.02,"r":10.95},{"id":"hk","x":219.88,"y":82.9,"r":10.95},{"id":"right","x":132.79,"y":78.19,"r":10.95},{"id":"up","x":150.69,"y":131.39,"r":13.58},{"id":"hp","x":222.89,"y":52.38,"r":10.95},{"id":"A1","x":46.91,"y":71.31,"r":10.95},{"id":"A2","x":112.53,"y":35.42,"r":10.95},{"id":"A5","x":168.54,"y":35.02,"r":10.95},{"id":"A4","x":186.79,"y":112.28,"r":10.95},{"id":"A3","x":128.12,"y":107.84,"r":10.95}],"side":[],"extras":[{"x":217.87,"y":13.33,"r":1.85},{"x":227.87,"y":13.33,"r":1.85},{"x":237.87,"y":13.33,"r":1.85},{"x":247.87,"y":13.33,"r":1.85}],"joystick":null,"screws":[{"x":40.5,"y":10.0},{"x":167.5,"y":10.0},{"x":260.5,"y":10.0},{"x":40.5,"y":116.0},{"x":167.5,"y":116.0},{"x":260.5,"y":116.0},{"x":150.0,"y":200.0},{"x":10.0,"y":200.0},{"x":290.0,"y":200.0},{"x":10.0,"y":10.0},{"x":290.0,"y":10.0}],"cutouts":[]}]}]};          // every model and layout of the store builder (mm, origin = outline top-left)
+
+// ---------- case construction (mm) ----------
+const INSET = 6, T_BOT = 4, T_MID = 3, T_TOP = 3;   // Ultra Arcade acrylic sandwich; walls sit 6 mm inside the plates
+const F_PLATE = 3;                                  // FLAT line: 3 mm plates in a flush stack
+const BEZEL = 1.25;                                 // Sanwa housing lip beyond the hole radius
+const LABELS = { left: '←', down: '↓', right: '→', up: '↑' };
+const labelOf = (id) => LABELS[id] || id.toUpperCase();
+
+const settings = {
+  model: 'proxl', layout: 'proxl-dual', wallH: 40, dpi: 300, guides: true, holes: true,
+  colors: { sanwa: {}, caps: {} }, stick: 'creme',
+};
+let model = null, spec = null;
+function pickSpec() {
+  model = SPECS.models.find((m) => m.id === settings.model) || SPECS.models.find((m) => m.id === 'proxl');
+  spec = model.layouts.find((l) => l.id === settings.layout) || model.layouts[0];
+  settings.model = model.id;
+  settings.layout = spec.id;
+}
+pickSpec();
+const isUA = () => model.family === 'ua';
+
+const SURF = {
+  top:   { name: 'Topo', file: 'topo', copies: 1, dims: () => ({ w: spec.w, h: spec.h }) },
+  ends:  { name: 'Pontas', file: 'pontas', copies: 2, dims: () => ({ w: spec.h - 2 * INSET, h: settings.wallH }) },
+  sides: { name: 'Frente e fundo', file: 'frente-e-fundo', copies: 2, dims: () => ({ w: spec.w - 2 * INSET, h: settings.wallH }) },
+};
+const KEYS = ['top', 'ends', 'sides'];
+const activeKeys = () => (isUA() ? KEYS : ['top']);
+function noteFor(key) {
+  if (key === 'top') {
+    return isUA()
+      ? `Os círculos mostram onde ficam os botões${spec.joystick ? ', o stick' : ''} e os parafusos. A arte embaixo deles fica coberta.`
+      : 'Os círculos mostram onde ficam as teclas e os parafusos. Na linha FLAT só o topo leva arte.';
+  }
+  return key === 'ends'
+    ? 'A mesma arte vai nas duas pontas. Os círculos mostram os botões laterais das duas pontas, que caem no mesmo lugar da impressão.'
+    : 'A mesma arte vai na frente e no fundo do controle.';
+}
+// empty surfaces show the neutral stand-in (cx, cy: image centre in mm on the surface)
+const SAMPLES = {
+  top:   { src: BLANK, name: 'sem arte', t: () => ({ zoom: 1, cx: spec.w / 2, cy: spec.h / 2, rot: 0, flip: false }) },
+  ends:  { src: BLANK, name: 'sem arte', t: () => ({ zoom: 1, cx: SURF.ends.dims().w / 2, cy: settings.wallH / 2, rot: 0, flip: false }) },
+  sides: { src: BLANK, name: 'sem arte', t: () => ({ zoom: 1, cx: SURF.sides.dims().w / 2, cy: settings.wallH / 2, rot: 0, flip: false }) },
+};
+
+// ---------- colours ----------
+// Sanwa 30/24 mm snap-in buttons (store names in `en`); hex values approximated from product photos
+const SANWA = [
+  { id: 'W', line: 'OBSF', en: 'White', pt: 'Branco', hex: '#f2f1ec' },
+  { id: 'K', line: 'OBSF', en: 'Black', pt: 'Preto', hex: '#1d1d20' },
+  { id: 'R', line: 'OBSF', en: 'Red', pt: 'Vermelho', hex: '#b8172c' },
+  { id: 'VER', line: 'OBSF', en: 'Vermilion', pt: 'Vermelhão', hex: '#e4481f' },
+  { id: 'O', line: 'OBSF', en: 'Orange', pt: 'Laranja', hex: '#f08419' },
+  { id: 'Y', line: 'OBSF', en: 'Yellow', pt: 'Amarelo', hex: '#f4c70f' },
+  { id: 'G', line: 'OBSF', en: 'Green', pt: 'Verde', hex: '#1f9643' },
+  { id: 'LB', line: 'OBSF', en: 'Light Blue', pt: 'Azul-claro', hex: '#2b9be0' },
+  { id: 'RB', line: 'OBSF', en: 'Royal Blue', pt: 'Azul royal', hex: '#2050c0' },
+  { id: 'NB', line: 'OBSF', en: 'Navy Blue', pt: 'Azul-marinho', hex: '#1d2b5c' },
+  { id: 'PK', line: 'OBSF', en: 'Pink', pt: 'Rosa', hex: '#f07aa8' },
+  { id: 'V', line: 'OBSF', en: 'Violet', pt: 'Violeta', hex: '#8558c4' },
+  { id: 'CC', line: 'OBSC', en: 'Crystal Clear', pt: 'Cristal', hex: '#ffffff', clear: 0.2 },
+  { id: 'CW', line: 'OBSC', en: 'Clear White', pt: 'Branco translúcido', hex: '#f4f4f2', clear: 0.6, frost: true },
+  { id: 'CR', line: 'OBSC', en: 'Clear Red', pt: 'Vermelho translúcido', hex: '#e2303f', clear: 0.5 },
+  { id: 'CB', line: 'OBSC', en: 'Clear Blue', pt: 'Azul translúcido', hex: '#3d7fe6', clear: 0.5 },
+  { id: 'CG', line: 'OBSC', en: 'Clear Green', pt: 'Verde translúcido', hex: '#38c46a', clear: 0.5 },
+  { id: 'CY', line: 'OBSC', en: 'Clear Yellow', pt: 'Amarelo translúcido', hex: '#f6d332', clear: 0.5 },
+  { id: 'CV', line: 'OBSC', en: 'Clear Violet', pt: 'Violeta translúcido', hex: '#9b6de3', clear: 0.5 },
+  { id: 'CS', line: 'OBSC', en: 'Clear Smoke', pt: 'Fumê', hex: '#3b3c40', clear: 0.62 },
+];
+// low-profile caps the store shows for the FLAT line
+const CAPS = [
+  { id: 'w', pt: 'Branco', hex: '#ecebe6' },
+  { id: 'k', pt: 'Preto', hex: '#1b1b1e' },
+  { id: 's', pt: 'Prata', hex: '#c9ccd1', metal: true },
+  { id: 'b', pt: 'Azul', hex: '#2346b8' },
+  { id: 't', pt: 'Verde-água', hex: '#1f9e8f' },
+  { id: 'p', pt: 'Rosa', hex: '#e8a3b8' },
+  { id: 'v', pt: 'Roxo', hex: '#6b3fb0' },
+  { id: 'r', pt: 'Vermelho', hex: '#a8232d' },
+  { id: 'y', pt: 'Amarelo', hex: '#d9b62a' },
+];
+// bat-top colours from the lever reference photos
+const STICK_COLORS = [
+  { id: 'creme', pt: 'Creme', hex: '#f1e6ca', glow: 0.1, rough: 0.3 },
+  { id: 'perola', pt: 'Branco perolado', hex: '#f4f2ef', glow: 0.12, opacity: 0.9, rough: 0.14 },
+  { id: 'ciano', pt: 'Ciano translúcido', hex: '#27cfc0', glow: 0.2, opacity: 0.62, rough: 0.06 },
+  { id: 'azul', pt: 'Azul', hex: '#1d2fa8', glow: 0.06, rough: 0.1 },
+  { id: 'vermelho', pt: 'Vermelho translúcido', hex: '#ff3346', glow: 0.2, opacity: 0.66, rough: 0.06 },
+  { id: 'preto', pt: 'Preto', hex: '#121214', glow: 0, rough: 0.1 },
+];
+const palKey = () => (isUA() ? 'sanwa' : 'caps');
+const palette = () => (isUA() ? SANWA : CAPS);
+const DEFAULT_COLOR = { sanwa: 'W', caps: 'w' };
+const stickById = (id) => STICK_COLORS.find((c) => c.id === id) || STICK_COLORS[0];
+function colorOf(id) {
+  const p = palette(), v = settings.colors[palKey()][id];
+  return p.find((c) => c.id === v) || p.find((c) => c.id === DEFAULT_COLOR[palKey()]);
+}
+function hexA(hex, a) {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${n >> 16}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
+}
+function labelInk(c) {
+  const n = parseInt(c.hex.slice(1), 16);
+  const l = (0.2126 * (n >> 16) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) / 255;
+  const dark = c.clear ? c.id !== 'CS' : l > 0.55;
+  return dark ? 'rgba(20, 20, 22, 0.85)' : 'rgba(255, 255, 255, 0.95)';
+}
+const fillFor = (c) => hexA(c.hex, c.clear ? Math.min(0.75, c.clear + 0.1) : 0.92);
+
+// buttons of the current layout: the top ones, then the wall buttons of the Ultra Arcade cases
+const allButtons = () => [...spec.buttons, ...(isUA() ? spec.side.map((s) => ({ ...s, wall: true })) : [])];
+const GROUP_DEFS = [
+  { id: 'dir', name: 'Direcionais', test: (b) => ['left', 'down', 'right', 'up'].includes(b.id) },
+  { id: 'soco', name: 'Socos', test: (b) => ['lp', 'mp', 'hp', '3p'].includes(b.id) },
+  { id: 'chute', name: 'Chutes', test: (b) => ['lk', 'mk', 'hk', '3k'].includes(b.id) },
+  { id: 'lateral', name: 'Laterais', test: (b) => !!b.wall },
+  { id: 'extra', name: 'Extras', test: (b) => /^A\d/.test(b.id) && !b.wall },
+];
+function groups() {
+  const all = allButtons();
+  return GROUP_DEFS.map((g) => ({ ...g, members: all.filter(g.test).map((b) => b.id) })).filter((g) => g.members.length);
+}
+function partName(b, c) {
+  if (b.key) return `tecla MX ${c.pt.toLowerCase()}`;
+  if (!isUA()) return `capa low-profile ${Math.round(b.r * 2)} mm ${c.pt.toLowerCase()}`;
+  const size = b.r * 2 >= 28 ? 30 : 24;
+  return `Sanwa ${c.line}-${size} ${c.en} (${c.pt.toLowerCase()})`;
+}
+
+const S = {};           // per surface: img, blob, name, sample, zoom, cx, cy, rot, flip
+let active = 'top';
+const $ = (s) => document.querySelector(s);
+
+// ---------- small helpers ----------
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const cssVar = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const toBlob = (c, type = 'image/png', q) => new Promise((res, rej) => c.toBlob((b) => (b ? res(b) : rej(new Error('blob'))), type, q));
+const mmLabel = (v) => Math.round(v).toString();
+function loadImage(src) {
+  return new Promise((res, rej) => {
+    const im = new Image();
+    im.decoding = 'async';
+    im.onload = () => res(im);
+    im.onerror = () => rej(new Error('decode'));
+    im.src = src;
+  });
+}
+let toastTimer;
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; }, 4200);
+}
+
+// ---------- surface geometry ----------
+function rotDims(sf) {
+  const iw = sf.img.naturalWidth, ih = sf.img.naturalHeight;
+  return sf.rot % 2 ? [ih, iw] : [iw, ih];
+}
+function scaleOf(key) {           // mm per image pixel
+  const sf = S[key], { w, h } = SURF[key].dims(), [rw, rh] = rotDims(sf);
+  return Math.max(w / rw, h / rh) * sf.zoom;
+}
+function clampSurface(key) {      // the image always covers the whole surface
+  const sf = S[key], { w, h } = SURF[key].dims(), [rw, rh] = rotDims(sf), s = scaleOf(key);
+  const ex = rw * s / 2, ey = rh * s / 2;
+  sf.cx = clamp(sf.cx, w - ex, ex);
+  sf.cy = clamp(sf.cy, h - ey, ey);
+}
+function drawArt(ctx, key, k, ox, oy) {
+  const sf = S[key], s = scaleOf(key), iw = sf.img.naturalWidth, ih = sf.img.naturalHeight;
+  ctx.save();
+  ctx.translate(ox + sf.cx * k, oy + sf.cy * k);
+  if (sf.flip) ctx.scale(-1, 1);
+  ctx.rotate(sf.rot * Math.PI / 2);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(sf.img, -iw * s * k / 2, -ih * s * k / 2, iw * s * k, ih * s * k);
+  ctx.restore();
+}
+function endHoles() {   // side buttons as they fall on the end print: right end from the front, left end from the back
+  const holes = [];
+  for (const s of spec.side) {
+    const x = s.end === 'R' ? spec.h - INSET - s.y : s.y - INSET;
+    const near = holes.find((h) => Math.abs(h.x - x) < 1);
+    if (near) near.ids.push(s.id); else holes.push({ x, r: s.r, ids: [s.id] });
+  }
+  for (const h of holes) h.ids.sort((a, b) => (spec.side.find((s) => s.id === a).end === 'R' ? -1 : 1));
+  return holes;
+}
+function drawOverlay(ctx, key, k, ox, oy) {
+  const stroke = () => { ctx.lineWidth = Math.max(1, 0.35 * k); ctx.strokeStyle = 'rgba(20, 20, 22, 0.55)'; ctx.stroke(); };
+  const ring = (x, y, r, c) => { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fillStyle = fillFor(c); ctx.fill(); stroke(); };
+  const label = (x, y, txt, mm, ink, halo) => {
+    ctx.font = `700 ${Math.max(8, mm * k)}px ${cssVar('--body') || 'sans-serif'}`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    if (halo) { ctx.lineWidth = Math.max(2, 0.9 * k); ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)'; ctx.strokeText(txt, x, y + 0.4); }
+    ctx.fillStyle = ink;
+    ctx.fillText(txt, x, y + 0.4);
+  };
+  const half = (x, y, r, c, a0, a1) => {
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.arc(x, y, r, a0, a1); ctx.closePath();
+    ctx.fillStyle = fillFor(c); ctx.fill();
+  };
+  const rrect = (x, y, w, h, r) => {
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h);
+  };
+  ctx.save();
+  if (key === 'top') {
+    for (const c of spec.cutouts) {
+      rrect(ox + c.x * k, oy + c.y * k, c.w * k, c.h * k, 3 * k);
+      ctx.fillStyle = 'rgba(20, 110, 112, 0.75)'; ctx.fill(); stroke();
+    }
+    for (const b of spec.buttons) {
+      const x = ox + b.x * k, y = oy + b.y * k, c = colorOf(b.id);
+      if (b.key) {
+        rrect(x - b.w / 2 * k, y - b.h / 2 * k, b.w * k, b.h * k, 1.5 * k);
+        ctx.fillStyle = fillFor(c); ctx.fill(); stroke();
+        label(x, y, labelOf(b.id), Math.min(b.w, b.h) * 0.42, labelInk(c));
+      } else {
+        ring(x, y, (isUA() ? b.r + BEZEL : b.r) * k, c);
+        label(x, y, labelOf(b.id), Math.min(8, b.r * 0.55), labelInk(c));
+      }
+    }
+    if (spec.joystick) {
+      const sx = ox + spec.joystick.x * k, sy = oy + spec.joystick.y * k, st = stickById(settings.stick);
+      ctx.beginPath(); ctx.arc(sx, sy, 20 * k, 0, Math.PI * 2);
+      ctx.setLineDash([4, 3]); ctx.lineWidth = Math.max(1, 0.4 * k); ctx.strokeStyle = 'rgba(250, 250, 247, 0.95)'; ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(sx, sy, 13.5 * k, 0, Math.PI * 2); ctx.fillStyle = hexA(st.hex, st.opacity || 0.95); ctx.fill(); stroke();
+      ctx.font = `700 ${Math.max(8, 5.5 * k)}px ${cssVar('--body') || 'sans-serif'}`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillStyle = 'rgba(250, 250, 247, 0.95)';
+      ctx.fillText('STICK', sx, sy + 21.5 * k);
+    }
+    for (const e of spec.extras) {
+      ctx.beginPath(); ctx.arc(ox + e.x * k, oy + e.y * k, Math.max(1.5, e.r * k), 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(25, 25, 28, 0.85)'; ctx.fill();
+    }
+    const sr = isUA() ? 3.4 : 2.8;
+    for (const s of spec.screws) {
+      ctx.beginPath(); ctx.arc(ox + s.x * k, oy + s.y * k, sr * k, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(30, 30, 33, 0.75)'; ctx.fill();
+    }
+  } else if (key === 'ends') {
+    const { h } = SURF.ends.dims();
+    for (const hole of endHoles()) {
+      const x = ox + hole.x * k, y = oy + h / 2 * k, r = (hole.r + BEZEL) * k;
+      const cs = hole.ids.map(colorOf);
+      if (cs.length > 1) {
+        half(x, y, r, cs[0], Math.PI / 2, Math.PI * 1.5);
+        half(x, y, r, cs[1], -Math.PI / 2, Math.PI / 2);
+        ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); stroke();
+      } else {
+        ring(x, y, r, cs[0]);
+      }
+      const inks = [...new Set(cs.map(labelInk))];
+      label(x, y, hole.ids.join(' · '), 5.4, inks.length === 1 ? inks[0] : 'rgba(20, 20, 22, 0.9)', inks.length > 1);
+    }
+  }
+  ctx.restore();
+}
+
+// ---------- editor (cutting mat) ----------
+const ed = $('#ed'), edCtx = ed.getContext('2d');
+let edW = 0, edH = 0, edDpr = 1;
+function edGeom() {
+  const { w, h } = SURF[active].dims(), m = 22;
+  const k = Math.min((edW - 2 * m) / w, (edH - 2 * m) / h);
+  return { k, ox: (edW - w * k) / 2, oy: (edH - h * k) / 2, w, h };
+}
+function drawEditor() {
+  const ctx = edCtx;
+  ctx.setTransform(edDpr, 0, 0, edDpr, 0, 0);
+  ctx.clearRect(0, 0, edW, edH);
+  const sf = S[active];
+  if (!sf || !sf.img || !edW) return;
+  const g = edGeom();
+  drawArt(ctx, active, g.k, g.ox, g.oy);
+  // everything outside the printed area is dimmed, like a crop tool
+  ctx.beginPath();
+  ctx.rect(0, 0, edW, edH);
+  ctx.rect(g.ox, g.oy, g.w * g.k, g.h * g.k);
+  ctx.fillStyle = cssVar('--veil');
+  ctx.fill('evenodd');
+  // cutting-mat grid in real millimetres (10 mm, stronger every 50 mm), outside the print only
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, 0, edW, edH);
+  ctx.rect(g.ox, g.oy, g.w * g.k, g.h * g.k);
+  ctx.clip('evenodd');
+  const step = 10 * g.k;
+  if (step > 5) {
+    const n0x = Math.floor(-g.ox / step), n1x = Math.ceil((edW - g.ox) / step);
+    const n0y = Math.floor(-g.oy / step), n1y = Math.ceil((edH - g.oy) / step);
+    for (let n = n0x; n <= n1x; n++) {
+      const x = Math.round(g.ox + n * step) + 0.5;
+      ctx.strokeStyle = n % 5 === 0 ? cssVar('--grid-strong') : cssVar('--grid');
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, edH); ctx.stroke();
+    }
+    for (let n = n0y; n <= n1y; n++) {
+      const y = Math.round(g.oy + n * step) + 0.5;
+      ctx.strokeStyle = n % 5 === 0 ? cssVar('--grid-strong') : cssVar('--grid');
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(edW, y); ctx.stroke();
+    }
+  }
+  ctx.restore();
+  if (settings.holes) drawOverlay(ctx, active, g.k, g.ox, g.oy);
+  ctx.lineWidth = 1.5;
+  ctx.strokeStyle = cssVar('--frame');
+  ctx.strokeRect(g.ox, g.oy, g.w * g.k, g.h * g.k);
+  ctx.font = `600 11px ${cssVar('--mono') || 'monospace'}`;
+  ctx.fillStyle = cssVar('--muted');
+  ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+  ctx.fillText(`${mmLabel(g.w)} mm`, g.ox + g.w * g.k / 2, g.oy - 5);
+  ctx.save();
+  ctx.translate(g.ox - 6, g.oy + g.h * g.k / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText(`${mmLabel(g.h)} mm`, 0, 0);
+  ctx.restore();
+}
+function resizeEditor() {
+  const r = ed.getBoundingClientRect();
+  edDpr = Math.min(window.devicePixelRatio || 1, 2);
+  edW = r.width; edH = r.height;
+  ed.width = Math.max(1, Math.round(edW * edDpr));
+  ed.height = Math.max(1, Math.round(edH * edDpr));
+  drawEditor();
+}
+
+function pan(dx, dy) {
+  const sf = S[active]; if (!sf) return;
+  const g = edGeom();
+  sf.cx += dx / g.k; sf.cy += dy / g.k;
+  clampSurface(active);
+  changed(active);
+}
+function zoomAt(px, py, factor) {
+  const sf = S[active]; if (!sf) return;
+  const g = edGeom();
+  const nz = clamp(sf.zoom * factor, 1, 6), f = nz / sf.zoom;
+  const mx = (px - g.ox) / g.k, my = (py - g.oy) / g.k;
+  sf.cx = mx + (sf.cx - mx) * f;
+  sf.cy = my + (sf.cy - my) * f;
+  sf.zoom = nz;
+  clampSurface(active);
+  changed(active);
+}
+
+const ptrs = new Map();
+let pinch = null;
+ed.addEventListener('pointerdown', (e) => {
+  ed.setPointerCapture(e.pointerId);
+  ptrs.set(e.pointerId, { x: e.offsetX, y: e.offsetY });
+  if (ptrs.size === 2) {
+    const [a, b] = [...ptrs.values()];
+    pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 };
+  }
+});
+ed.addEventListener('pointermove', (e) => {
+  const prev = ptrs.get(e.pointerId);
+  if (!prev) return;
+  const cur = { x: e.offsetX, y: e.offsetY };
+  ptrs.set(e.pointerId, cur);
+  if (ptrs.size === 1) {
+    pan(cur.x - prev.x, cur.y - prev.y);
+  } else if (ptrs.size === 2 && pinch) {
+    const [a, b] = [...ptrs.values()];
+    const d = Math.hypot(a.x - b.x, a.y - b.y), mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    pan(mx - pinch.mx, my - pinch.my);
+    if (pinch.d > 0) zoomAt(mx, my, d / pinch.d);
+    pinch = { d, mx, my };
+  }
+});
+const endPtr = (e) => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null; };
+ed.addEventListener('pointerup', endPtr);
+ed.addEventListener('pointercancel', endPtr);
+ed.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  zoomAt(e.offsetX, e.offsetY, Math.exp(-e.deltaY * (e.deltaMode === 1 ? 0.05 : 0.0016)));
+}, { passive: false });
+ed.addEventListener('keydown', (e) => {
+  const g = edGeom(), stepPx = (e.shiftKey ? 10 : 1) * g.k;
+  const keys = { ArrowLeft: [-stepPx, 0], ArrowRight: [stepPx, 0], ArrowUp: [0, -stepPx], ArrowDown: [0, stepPx] };
+  if (keys[e.key]) { e.preventDefault(); pan(...keys[e.key]); }
+  else if (e.key === '+' || e.key === '=') { e.preventDefault(); zoomAt(edW / 2, edH / 2, 1.08); }
+  else if (e.key === '-' || e.key === '_') { e.preventDefault(); zoomAt(edW / 2, edH / 2, 1 / 1.08); }
+});
+
+// ---------- model and layout ----------
+function layoutKind(id) {    // 'proxl-dual' -> 'dual', 'basic-japanese-vewlix' -> 'vewlix', 'flatxl-wasd' -> 'wasd'
+  return id.replace(/^(mini|basic|slim|proxl|flat|flatxl|flatxxl)-/, '').replace(/^japanese-/, '').replace('wasdleverless', 'wasd-leverless');
+}
+function buildModelPicker() {
+  const box = $('#models');
+  box.textContent = '';
+  for (const [fam, title] of [['ua', 'Ultra Arcade · 5 cm de altura'], ['flat', 'FLAT · 1,4 a 1,7 cm, só leverless']]) {
+    const t = document.createElement('p');
+    t.className = 'sw-title';
+    t.textContent = title;
+    const row = document.createElement('div');
+    row.className = 'model-row';
+    for (const m of SPECS.models.filter((x) => x.family === fam)) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'model';
+      b.setAttribute('role', 'radio');
+      b.dataset.model = m.id;
+      const n = document.createElement('b'), s = document.createElement('small');
+      n.textContent = m.name;
+      s.textContent = m.store;
+      b.append(n, s);
+      b.addEventListener('click', () => chooseModel(m.id));
+      row.appendChild(b);
+    }
+    box.append(t, row);
+  }
+}
+function renderModelPicker() {
+  for (const b of document.querySelectorAll('.model')) {
+    const on = b.dataset.model === model.id;
+    b.setAttribute('aria-checked', String(on));
+    b.tabIndex = on ? 0 : -1;
+  }
+  const sel = $('#layout');
+  sel.textContent = '';
+  for (const l of model.layouts) {
+    const o = document.createElement('option');
+    o.value = l.id;
+    o.textContent = l.name;
+    sel.appendChild(o);
+  }
+  sel.value = spec.id;
+  sel.disabled = model.layouts.length < 2;
+  $('#model-size').textContent = model.store;
+}
+function dimsSnapshot() {
+  return Object.fromEntries(KEYS.map((k) => [k, SURF[k].dims()]));
+}
+function chooseModel(id) {
+  if (id === model.id) return;
+  const old = dimsSnapshot(), kind = layoutKind(spec.id);
+  settings.model = id;
+  const m = SPECS.models.find((x) => x.id === id);
+  const same = m.layouts.find((l) => layoutKind(l.id) === kind);
+  const fallback = m.layouts.find((l) => layoutKind(l.id) === 'dual') || m.layouts.find((l) => layoutKind(l.id) === 'leverless') || m.layouts[0];
+  settings.layout = (same || fallback).id;
+  specChanged(old);
+  toast(`${m.name}: layout ${spec.name.toLowerCase()}${same ? '' : ' (o layout anterior não existe nesse modelo)'}.`);
+}
+$('#layout').addEventListener('change', (e) => {
+  const old = dimsSnapshot();
+  settings.layout = e.target.value;
+  specChanged(old);
+});
+$('#models').addEventListener('keydown', (e) => {
+  const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+  if (!step) return;
+  e.preventDefault();
+  const ids = SPECS.models.map((m) => m.id), i = ids.indexOf(model.id);
+  chooseModel(ids[(i + step + ids.length) % ids.length]);
+  document.querySelector(`.model[data-model="${model.id}"]`).focus();
+});
+function specChanged(old) {
+  pickSpec();
+  for (const k of KEYS) {         // keep the same part of each picture in view on the new size
+    const sf = S[k], n = SURF[k].dims();
+    if (!sf) continue;
+    sf.cx *= n.w / old[k].w;
+    sf.cy *= n.h / old[k].h;
+    clampSurface(k);
+  }
+  const valid = new Set(['g:all', ...groups().map((g) => `g:${g.id}`), ...(spec.joystick ? ['stick'] : []), ...allButtons().map((b) => `b:${b.id}`)]);
+  if (!valid.has(colorTarget)) colorTarget = 'g:all';
+  renderModelPicker();
+  renderTabs();
+  if (!activeKeys().includes(active)) active = 'top';
+  setActive(active, false);
+  buildMap();
+  renderGroups();
+  renderColors();
+  rebuild3D();
+  goView(active === 'top' ? 'left' : active === 'ends' ? 'ends' : 'front');
+  schedulePersist();
+}
+function renderTabs() {
+  for (const k of ['ends', 'sides']) $(`#tab-${k}`).hidden = !isUA();
+  $('.tabs').style.gridTemplateColumns = isUA() ? '' : 'minmax(0, 1fr)';
+  $('#wall-field').hidden = !isUA();
+}
+
+// ---------- panel controls ----------
+function syncControls() {
+  const sf = S[active];
+  for (const k of KEYS) {
+    const { w, h } = SURF[k].dims();
+    document.querySelector(`[data-dims="${k}"]`).textContent =
+      `${mmLabel(w)} × ${mmLabel(h)} mm${SURF[k].copies > 1 ? ' · 2×' : ''}`;
+  }
+  $('#note').textContent = noteFor(active);
+  const copy = $('#btn-copy');
+  copy.hidden = active === 'top';
+  copy.textContent = active === 'ends' ? 'Usar esta imagem também na frente e no fundo' : 'Usar esta imagem também nas pontas';
+  $('#btn-one').textContent = `Baixar só o arquivo ${active === 'top' ? 'do topo' : active === 'ends' ? 'das pontas' : 'da frente e do fundo'}`;
+  if (!sf || !sf.img) return;
+  $('#zoom').value = Math.round(sf.zoom * 100);
+  $('#zoom-out').textContent = `${Math.round(sf.zoom * 100)}%`;
+  $('#btn-flip').setAttribute('aria-pressed', String(sf.flip));
+  $('#btn-holes').setAttribute('aria-pressed', String(settings.holes));
+  $('#file-name').textContent = sf.sample ? 'Nenhuma imagem escolhida' : sf.name;
+  $('#file-name').title = sf.name;
+  const dpi = 25.4 / scaleOf(active);
+  const chip = $('#chip');
+  if (sf.sample) {
+    chip.className = 'chip';
+    chip.textContent = 'Sem arte. Arraste uma imagem para cá ou clique em Escolher imagem';
+  } else if (dpi >= 250) {
+    chip.className = 'chip good'; chip.textContent = `${Math.round(dpi)} DPI · ótima para impressão`;
+  } else if (dpi >= 150) {
+    chip.className = 'chip warn'; chip.textContent = `${Math.round(dpi)} DPI · boa, pode perder um pouco de nitidez`;
+  } else {
+    chip.className = 'chip bad'; chip.textContent = `${Math.round(dpi)} DPI · baixa, a impressão pode sair borrada`;
+  }
+  const { w, h } = SURF[active].dims();
+  const px = (mm) => Math.round(mm * settings.dpi / 25.4);
+  $('#print-size').textContent = `arquivo final ${px(w)} × ${px(h)} px (${settings.dpi} DPI)`;
+}
+
+function setActive(key, moveCamera = true) {
+  active = key;
+  for (const b of document.querySelectorAll('.tab')) b.setAttribute('aria-selected', String(b.dataset.key === key));
+  $('#editor-area').setAttribute('aria-labelledby', `tab-${key}`);
+  syncControls();
+  drawEditor();
+  if (moveCamera) goView(key === 'top' ? 'left' : key === 'ends' ? 'ends' : 'front');
+}
+for (const b of document.querySelectorAll('.tab')) b.addEventListener('click', () => setActive(b.dataset.key));
+$('.tabs').addEventListener('keydown', (e) => {
+  if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+  const keys = activeKeys(), i = keys.indexOf(active), n = keys[(i + (e.key === 'ArrowRight' ? 1 : keys.length - 1)) % keys.length];
+  setActive(n);
+  $(`#tab-${n}`).focus();
+});
+
+$('#btn-pick').addEventListener('click', () => $('#file').click());
+$('#file').addEventListener('change', (e) => {
+  const f = e.target.files && e.target.files[0];
+  if (f) loadUserImage(active, f);
+  e.target.value = '';
+});
+$('#btn-rot').addEventListener('click', () => {
+  const sf = S[active]; if (!sf) return;
+  sf.rot = (sf.rot + 1) % 4;
+  const { w, h } = SURF[active].dims();
+  sf.cx = w / 2; sf.cy = h / 2;
+  clampSurface(active); changed(active);
+});
+$('#btn-flip').addEventListener('click', () => {
+  const sf = S[active]; if (!sf) return;
+  const { w } = SURF[active].dims();
+  sf.flip = !sf.flip;
+  sf.cx = w - sf.cx;               // keep the same part of the picture in view, mirrored
+  clampSurface(active); changed(active);
+});
+$('#btn-fit').addEventListener('click', () => {
+  const sf = S[active]; if (!sf) return;
+  const { w, h } = SURF[active].dims();
+  sf.zoom = 1; sf.cx = w / 2; sf.cy = h / 2;
+  clampSurface(active); changed(active);
+});
+$('#btn-holes').addEventListener('click', () => {
+  settings.holes = !settings.holes;
+  syncControls(); drawEditor(); schedulePersist();
+});
+$('#zoom').addEventListener('input', (e) => {
+  const sf = S[active]; if (!sf) return;
+  zoomAt(edW / 2, edH / 2, (e.target.value / 100) / sf.zoom);
+});
+$('#btn-copy').addEventListener('click', () => {
+  const from = S[active], to = active === 'ends' ? 'sides' : 'ends';
+  if (!from) return;
+  const { w, h } = SURF[to].dims();
+  S[to] = { img: from.img, blob: from.blob, name: from.name, sample: from.sample, zoom: 1, cx: w / 2, cy: h / 2, rot: from.rot, flip: from.flip };
+  clampSurface(to);
+  changed(to);
+  toast(`Imagem copiada para ${to === 'sides' ? 'a frente e o fundo' : 'as pontas'}. Ajuste o enquadramento na aba dela.`);
+});
+
+$('#wall-h').addEventListener('change', (e) => {
+  const v = clamp(Math.round(Number(e.target.value) || 40), 20, 90);
+  e.target.value = v;
+  if (v === settings.wallH) return;
+  settings.wallH = v;
+  for (const k of ['ends', 'sides']) if (S[k]) clampSurface(k);
+  rebuild3D();
+  syncControls(); drawEditor(); schedulePersist();
+});
+$('#dpi').addEventListener('change', (e) => { settings.dpi = Number(e.target.value); syncControls(); schedulePersist(); });
+$('#guides').addEventListener('change', (e) => { settings.guides = e.target.checked; schedulePersist(); });
+$('#btn-reset').addEventListener('click', () => { $('#reset-confirm').hidden = false; });
+$('#btn-reset-no').addEventListener('click', () => { $('#reset-confirm').hidden = true; });
+$('#btn-reset-yes').addEventListener('click', async () => {
+  $('#reset-confirm').hidden = true;
+  for (const k of KEYS) await useSample(k);
+  for (const k of KEYS) changed(k);
+  toast('As superfícies ficaram sem arte.');
+});
+
+// drag and drop, paste
+const editorBox = $('#editor');
+function wantsFile(e) { return e.dataTransfer && [...e.dataTransfer.types].includes('Files'); }
+for (const el of [editorBox, $('#stage')]) {
+  el.addEventListener('dragover', (e) => {
+    if (!wantsFile(e)) return;
+    e.preventDefault();
+    editorBox.classList.add('dropping'); $('#drop-hint').hidden = false;
+  });
+  el.addEventListener('dragleave', () => { editorBox.classList.remove('dropping'); $('#drop-hint').hidden = true; });
+  el.addEventListener('drop', (e) => {
+    editorBox.classList.remove('dropping'); $('#drop-hint').hidden = true;
+    if (!wantsFile(e)) return;
+    e.preventDefault();
+    const f = [...e.dataTransfer.files].find((x) => x.type.startsWith('image/'));
+    if (f) loadUserImage(active, f); else toast('Esse arquivo não é uma imagem. Use JPG, PNG ou WEBP.');
+  });
+}
+window.addEventListener('paste', (e) => {
+  const item = e.clipboardData && [...e.clipboardData.items].find((i) => i.type.startsWith('image/'));
+  if (!item) return;
+  const f = item.getAsFile();
+  if (f) loadUserImage(active, new File([f], `colada-${active}.png`, { type: f.type }));
+});
+
+// ---------- button and stick colours ----------
+// target: 'g:all' | 'g:<group>' | 'b:<button>' | 'stick'
+let colorTarget = 'g:all';
+function swatchBg(hex, alpha, metal) {
+  if (alpha && alpha < 1) {
+    return `linear-gradient(${hexA(hex, alpha)}, ${hexA(hex, alpha)}), conic-gradient(#cdcac3 25%, #f5f3ef 0 50%, #cdcac3 0 75%, #f5f3ef 0) 0 0 / 10px 10px`;
+  }
+  return metal
+    ? `linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, 0.18)), ${hex}`
+    : `radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 52%), ${hex}`;
+}
+const btnSwatch = (c) => swatchBg(c.hex, c.clear, c.metal);
+const stickSwatch = (sid) => { const c = stickById(sid); return swatchBg(c.hex, c.opacity); };
+function targetButtons() {
+  if (colorTarget === 'stick') return [];
+  if (colorTarget.startsWith('b:')) return [colorTarget.slice(2)];
+  const gid = colorTarget.slice(2);
+  if (gid === 'all') return allButtons().map((b) => b.id);
+  const g = groups().find((x) => x.id === gid);
+  return g ? g.members : [];
+}
+function targetColor() {
+  if (colorTarget === 'stick') return settings.stick;
+  const ids = [...new Set(targetButtons().map((b) => colorOf(b).id))];
+  return ids.length === 1 ? ids[0] : null;
+}
+function targetName() {
+  if (colorTarget === 'stick') return 'Stick';
+  if (colorTarget.startsWith('b:')) return `Botão ${labelOf(colorTarget.slice(2))}`;
+  const gid = colorTarget.slice(2);
+  return gid === 'all' ? 'Todos os botões' : (groups().find((g) => g.id === gid) || { name: '' }).name;
+}
+function describe(cid) {
+  if (colorTarget === 'stick') return `bastão ${stickById(cid).pt.toLowerCase()}`;
+  const c = palette().find((x) => x.id === cid);
+  if (!c) return '';
+  return isUA() ? `${c.pt} · Sanwa ${c.line} ${c.en}` : `${c.pt} · capa low-profile`;
+}
+function showPicked(cid) {
+  $('#picked').textContent = `${targetName()}: ${cid ? describe(cid) : 'cores misturadas. Escolha uma cor para aplicar em todos.'}`;
+}
+function makeSwatch(row, id, bg, label) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'sw';
+  b.dataset.color = id;
+  b.style.background = bg;
+  b.title = label;
+  b.setAttribute('aria-label', label);
+  b.setAttribute('aria-pressed', 'false');
+  b.addEventListener('click', () => pickColor(id));
+  b.addEventListener('mouseenter', () => showPicked(id));
+  b.addEventListener('focus', () => showPicked(id));
+  row.appendChild(b);
+}
+function buildSwatches() {
+  for (const c of SANWA) makeSwatch(c.line === 'OBSF' ? $('#sw-solid') : $('#sw-clear'), c.id, btnSwatch(c), `${c.pt} · Sanwa ${c.line} ${c.en}`);
+  for (const c of CAPS) makeSwatch($('#sw-caps'), c.id, btnSwatch(c), `${c.pt} · capa low-profile`);
+  for (const c of STICK_COLORS) makeSwatch($('#sw-stick'), c.id, stickSwatch(c.id), `Bastão ${c.pt.toLowerCase()}`);
+  $('#swatches').addEventListener('mouseleave', () => showPicked(targetColor()));
+}
+function renderGroups() {
+  const box = $('#groups');
+  box.textContent = '';
+  const n = allButtons().length;
+  const rows = [['g:all', 'Todos', `${n} botões`], ...groups().map((g) => [`g:${g.id}`, g.name, '']), ...(spec.joystick ? [['stick', 'Stick', '']] : [])];
+  for (const [t, name] of rows) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'group';
+    b.setAttribute('role', 'radio');
+    b.dataset.target = t;
+    const dot = document.createElement('span'), nm = document.createElement('b'), sub = document.createElement('span');
+    dot.className = 'dot';
+    sub.className = 'sub';
+    nm.textContent = name;
+    b.append(dot, nm, sub);
+    b.addEventListener('click', () => selectTarget(t));
+    box.appendChild(b);
+  }
+}
+function buildMap() {
+  const svg = $('#btn-map'), NS = 'http://www.w3.org/2000/svg';
+  svg.textContent = '';
+  const ua = isUA(), pad = ua ? 26 : 4;
+  svg.setAttribute('viewBox', `${-pad} -4 ${spec.w + 2 * pad} ${spec.h + 8}`);
+  const el = (tag, attrs, parent) => {
+    const n = document.createElementNS(NS, tag);
+    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+    (parent || svg).appendChild(n);
+    return n;
+  };
+  el('rect', { x: 0, y: 0, width: spec.w, height: spec.h, rx: spec.radius, class: 'map-panel' });
+  for (const c of spec.cutouts) el('rect', { x: c.x, y: c.y, width: c.w, height: c.h, rx: 3, class: 'map-cut' });
+  for (const e of spec.extras) el('circle', { cx: e.x, cy: e.y, r: Math.max(1.5, e.r), class: 'map-extra' });
+  const item = (id, x, y, shape, text) => {
+    const g = el('g', { class: 'map-btn', tabindex: '0', role: 'button', 'data-id': id });
+    if (shape.w) el('rect', { x: x - shape.w / 2, y: y - shape.h / 2, width: shape.w, height: shape.h, rx: 1.5 }, g);
+    else el('circle', { cx: x, cy: y, r: shape.r }, g);
+    const t = el('text', { x, y, class: 'map-label', 'font-size': text.length > 2 ? 7.5 : 9 }, g);
+    t.textContent = text;
+    const choose = () => selectTarget(id === 'stick' ? 'stick' : `b:${id}`);
+    g.addEventListener('click', choose);
+    g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(); } });
+  };
+  for (const b of spec.buttons) item(b.id, b.x, b.y, b.key ? { w: b.w, h: b.h } : { r: b.r }, labelOf(b.id));
+  if (spec.joystick) item('stick', spec.joystick.x, spec.joystick.y, { r: 13.5 }, 'Stick');
+  if (ua) for (const s of spec.side) item(s.id, s.end === 'R' ? spec.w + 13 : -13, s.y, { r: 10 }, s.id);
+}
+function shoppingLines() {
+  const byPart = new Map();
+  for (const b of allButtons()) {
+    const name = partName(b, colorOf(b.id));
+    if (!byPart.has(name)) byPart.set(name, []);
+    byPart.get(name).push(labelOf(b.id));
+  }
+  const lines = [...byPart].map(([name, list]) => `${list.length}× ${name}: ${list.join(' ')}`);
+  if (spec.joystick) lines.push(`1× stick com bastão ${stickById(settings.stick).pt.toLowerCase()}`);
+  return lines;
+}
+function renderColors() {
+  const ua = isUA();
+  $('#colors-kind').textContent = ua ? 'Sanwa' : 'capas low-profile';
+  for (const b of document.querySelectorAll('.group')) {
+    const t = b.dataset.target, dot = b.querySelector('.dot'), sub = b.querySelector('.sub');
+    b.setAttribute('aria-checked', String(t === colorTarget));
+    b.tabIndex = t === colorTarget || (colorTarget.startsWith('b:') && t === 'g:all') ? 0 : -1;
+    if (t === 'stick') {
+      dot.style.background = stickSwatch(settings.stick);
+      sub.textContent = `Bastão · ${stickById(settings.stick).pt}`;
+      continue;
+    }
+    const gid = t.slice(2), members = gid === 'all' ? allButtons().map((x) => x.id) : groups().find((g) => g.id === gid).members;
+    const cs = [...new Map(members.map((m) => [colorOf(m).id, colorOf(m)])).values()];
+    if (cs.length === 1) {
+      dot.style.background = btnSwatch(cs[0]);
+      sub.textContent = `${members.length} · ${cs[0].pt}`;
+    } else {
+      const step = 100 / cs.length;
+      dot.style.background = `conic-gradient(${cs.map((c, i) => `${c.hex} ${i * step}% ${(i + 1) * step}%`).join(', ')})`;
+      sub.textContent = `${members.length} · cores misturadas`;
+    }
+  }
+  const sel = new Set(colorTarget === 'stick' ? ['stick'] : colorTarget === 'g:all' ? [] : targetButtons());
+  for (const g of document.querySelectorAll('.map-btn')) {
+    const id = g.dataset.id, shape = g.firstElementChild, text = g.querySelector('text');
+    let fill, ink, name;
+    if (id === 'stick') {
+      const c = stickById(settings.stick);
+      fill = c.opacity ? hexA(c.hex, c.opacity) : c.hex;
+      ink = labelInk({ id: c.id, hex: c.hex, clear: c.opacity && c.opacity < 1 ? c.opacity : 0 });
+      name = `bastão ${c.pt.toLowerCase()}`;
+    } else {
+      const c = colorOf(id);
+      fill = c.clear ? hexA(c.hex, Math.min(0.85, c.clear + 0.15)) : c.hex;
+      ink = labelInk(c);
+      name = c.pt;
+    }
+    shape.setAttribute('fill', fill);
+    text.setAttribute('fill', ink);
+    g.classList.toggle('sel', sel.has(id));
+    g.setAttribute('aria-pressed', String(sel.has(id)));
+    g.setAttribute('aria-label', `${id === 'stick' ? 'Stick' : `Botão ${labelOf(id)}`}, ${name}`);
+  }
+  const stickMode = colorTarget === 'stick';
+  $('#pal-sanwa').hidden = stickMode || !ua;
+  $('#pal-caps').hidden = stickMode || ua;
+  $('#pal-stick').hidden = !stickMode;
+  const cur = targetColor();
+  const rows = stickMode ? '#sw-stick .sw' : ua ? '#pal-sanwa .sw' : '#sw-caps .sw';
+  for (const s of document.querySelectorAll('.sw')) s.setAttribute('aria-pressed', 'false');
+  for (const s of document.querySelectorAll(rows)) s.setAttribute('aria-pressed', String(s.dataset.color === cur));
+  showPicked(cur);
+  const ul = $('#shop');
+  ul.textContent = '';
+  for (const line of shoppingLines()) {
+    const li = document.createElement('li');
+    li.textContent = line;
+    ul.appendChild(li);
+  }
+}
+function pickColor(cid) {
+  if (colorTarget === 'stick') {
+    if (!STICK_COLORS.some((c) => c.id === cid)) return;
+    settings.stick = cid;
+    paintStick();
+  } else {
+    if (!palette().some((c) => c.id === cid)) return;
+    for (const b of targetButtons()) { settings.colors[palKey()][b] = cid; paintButton(b); }
+  }
+  renderColors();
+  drawEditor();
+  schedulePersist();
+}
+function selectTarget(t, fromView, focus) {
+  colorTarget = t;
+  renderColors();
+  showSelection();
+  if (focus) document.querySelector(`.group[data-target="${t}"]`).focus();
+  if (fromView) return;               // picked in the 3D view: it is already in sight
+  const side = t.startsWith('b:') && spec.side.find((s) => s.id === t.slice(2));
+  if (side && isUA()) goView(side.end === 'R' ? 'endsR' : 'ends');
+  else if (t === 'g:lateral') goView('ends');
+  else if (lastView === 'ends' || lastView === 'endsR') goView('left');
+}
+$('#groups').addEventListener('keydown', (e) => {
+  const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+  if (!step) return;
+  e.preventDefault();
+  const order = [...document.querySelectorAll('.group')].map((b) => b.dataset.target);
+  const i = Math.max(0, order.indexOf(colorTarget));
+  selectTarget(order[(i + step + order.length) % order.length], false, true);
+});
+
+// ---------- images ----------
+const sampleCache = {};
+async function sampleImage(src) {
+  if (!sampleCache[src]) sampleCache[src] = loadImage(src);
+  return sampleCache[src];
+}
+async function useSample(key) {
+  const smp = SAMPLES[key];
+  const img = await sampleImage(smp.src);
+  S[key] = { img, blob: null, name: smp.name, sample: true, ...smp.t() };
+  clampSurface(key);
+}
+async function loadUserImage(key, file) {
+  if (!file.type.startsWith('image/')) { toast('Esse arquivo não é uma imagem. Use JPG, PNG ou WEBP.'); return; }
+  let img;
+  try {
+    img = await loadImage(URL.createObjectURL(file));
+  } catch (err) {
+    toast('Não consegui abrir essa imagem. Tente salvar como JPG ou PNG.');
+    return;
+  }
+  const { w, h } = SURF[key].dims();
+  S[key] = { img, blob: file, name: file.name, sample: false, zoom: 1, cx: w / 2, cy: h / 2, rot: 0, flip: false };
+  clampSurface(key);
+  changed(key);
+  toast(`${SURF[key].name}: ${file.name} carregada. Arraste para posicionar.`);
+}
+
+// ---------- persistence (this browser only) ----------
+const IDB_NAME = 'atelie-controle', IDB_STORE = 'kv';
+function idb() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open(IDB_NAME, 1);
+    r.onupgradeneeded = () => r.result.createObjectStore(IDB_STORE);
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+async function idbGet(key) {
+  const db = await idb();
+  return new Promise((res, rej) => {
+    const q = db.transaction(IDB_STORE).objectStore(IDB_STORE).get(key);
+    q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error);
+  });
+}
+async function idbSet(key, val) {
+  const db = await idb();
+  return new Promise((res, rej) => {
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).put(val, key);
+    tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error);
+  });
+}
+let persistTimer;
+function schedulePersist() {
+  clearTimeout(persistTimer);
+  persistTimer = setTimeout(async () => {
+    try {
+      const rec = { v: 2, settings: JSON.parse(JSON.stringify(settings)), surfaces: {} };
+      for (const k of KEYS) {
+        const sf = S[k]; if (!sf) continue;
+        rec.surfaces[k] = { blob: sf.sample ? null : sf.blob, name: sf.name, zoom: sf.zoom, cx: sf.cx, cy: sf.cy, rot: sf.rot, flip: sf.flip };
+      }
+      await idbSet('estado', rec);
+    } catch (err) { /* storage unavailable: the page still works, it just starts fresh next time */ }
+  }, 600);
+}
+const OLD_IDS = { '←': 'left', '↓': 'down', '→': 'right', '↑': 'up' };
+const OLD_GROUPS = { dir: ['left', 'down', 'right', 'up'], soco: ['lp', 'mp', 'hp', '3p'], chute: ['lk', 'mk', 'hk', '3k'], lateral: ['A1', 'A2', 'A3', 'A4', 'A5', 'A6'] };
+async function restore() {
+  let rec = null;
+  try { rec = await idbGet('estado'); } catch (err) { rec = null; }
+  const st = rec && rec.settings;
+  if (st) {
+    settings.wallH = clamp(Number(st.wallH) || 40, 20, 90);
+    settings.dpi = [150, 200, 300].includes(st.dpi) ? st.dpi : 300;
+    settings.guides = st.guides !== false;
+    settings.holes = st.holes !== false;
+    if (SPECS.models.some((m) => m.id === st.model)) { settings.model = st.model; settings.layout = st.layout; }
+    if (STICK_COLORS.some((c) => c.id === st.stick)) settings.stick = st.stick;
+    const ok = (list, v) => list.some((c) => c.id === v);
+    if (st.colors && typeof st.colors.sanwa === 'object') {
+      for (const [k, v] of Object.entries(st.colors.sanwa || {})) if (ok(SANWA, v)) settings.colors.sanwa[k] = v;
+      for (const [k, v] of Object.entries(st.colors.caps || {})) if (ok(CAPS, v)) settings.colors.caps[k] = v;
+    } else {           // earlier versions: one colour per button (old ids) or per group
+      for (const [k, v] of Object.entries(st.btn || {})) if (ok(SANWA, v)) settings.colors.sanwa[OLD_IDS[k] || (/^A\d/.test(k) ? k : k.toLowerCase())] = v;
+      for (const [g, v] of Object.entries(st.colors || {})) {
+        if (ok(SANWA, v) && OLD_GROUPS[g]) for (const b of OLD_GROUPS[g]) if (!settings.colors.sanwa[b]) settings.colors.sanwa[b] = v;
+      }
+    }
+    pickSpec();
+  }
+  $('#wall-h').value = settings.wallH;
+  $('#dpi').value = String(settings.dpi);
+  $('#guides').checked = settings.guides;
+  for (const k of KEYS) {
+    const saved = rec && rec.surfaces && rec.surfaces[k];
+    if (saved && saved.blob) {
+      try {
+        const img = await loadImage(URL.createObjectURL(saved.blob));
+        S[k] = { img, blob: saved.blob, name: saved.name || 'imagem', sample: false, zoom: saved.zoom || 1, cx: saved.cx, cy: saved.cy, rot: saved.rot || 0, flip: !!saved.flip };
+        clampSurface(k);
+        continue;
+      } catch (err) { /* fall back to an empty surface */ }
+    }
+    await useSample(k);
+    if (saved && !saved.blob && typeof saved.cx === 'number') {
+      Object.assign(S[k], { zoom: saved.zoom || 1, cx: saved.cx, cy: saved.cy, rot: saved.rot || 0, flip: !!saved.flip });
+      clampSurface(k);
+    }
+  }
+}
+
+// ---------- change propagation ----------
+const texQueue = new Set();
+let texFrame = 0;
+function changed(key) {
+  if (key === active) { drawEditor(); syncControls(); }
+  texQueue.add(key);
+  if (!texFrame) texFrame = requestAnimationFrame(() => {
+    texFrame = 0;
+    for (const k of texQueue) updateTexture(k);
+    texQueue.clear();
+  });
+  schedulePersist();
+}
+
+// ---------- 3D preview ----------
+const has3D = typeof THREE !== 'undefined';
+const D = Math.PI / 180;
+let renderer, scene, camera, model3D, keyLight;
+const texCanvas = {}, tex = {}, mats = {}, geo = {}, geoCache = {}, matCache = {};
+const view = { az: -58 * D, el: 27 * D, zoom: 1, target: null, fitR: 250 };
+const PRESETS = {
+  left: { az: -58, el: 27 }, right: { az: 58, el: 27 }, front: { az: -14, el: 17 },
+  top: { az: 0, el: 86 }, ends: { az: -74, el: 17 }, endsR: { az: 74, el: 17 },
+};
+let lastView = 'left';
+let stageAspect = 1, exportAspect = null, renderQueued = false, anim = null;
+
+const lin = (hex) => new THREE.Color(hex).convertSRGBToLinear();
+
+function updateTexture(key) {
+  if (!has3D || !renderer || !S[key]) return;
+  const { w, h } = SURF[key].dims();
+  const cw = key === 'top' ? 2048 : key === 'ends' ? 1536 : 2048;
+  const ch = Math.max(16, Math.round(cw * h / w));
+  let c = texCanvas[key];
+  if (!c) { c = texCanvas[key] = document.createElement('canvas'); }
+  if (c.width !== cw || c.height !== ch) {
+    c.width = cw; c.height = ch;
+    if (tex[key]) { tex[key].dispose(); tex[key] = null; }
+  }
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#111'; ctx.fillRect(0, 0, cw, ch);
+  drawArt(ctx, key, cw / w, 0, 0);
+  if (!tex[key]) {
+    tex[key] = new THREE.CanvasTexture(c);
+    tex[key].encoding = THREE.sRGBEncoding;
+    tex[key].anisotropy = renderer.capabilities.getMaxAnisotropy();
+    const m = mats[key];
+    if (m) { m.map = tex[key]; m.needsUpdate = true; }
+  }
+  tex[key].needsUpdate = true;
+  requestRender();
+}
+
+function studioEquirect() {
+  const c = document.createElement('canvas'); c.width = 1024; c.height = 512;
+  const g = c.getContext('2d');
+  const grad = g.createLinearGradient(0, 0, 0, 512);
+  grad.addColorStop(0, '#ffffff'); grad.addColorStop(0.42, '#d9d8d4'); grad.addColorStop(0.5, '#a3a19c');
+  grad.addColorStop(0.62, '#6c6a66'); grad.addColorStop(1, '#3a3937');
+  g.fillStyle = grad; g.fillRect(0, 0, 1024, 512);
+  g.filter = 'blur(18px)';
+  g.fillStyle = '#ffffff';
+  g.fillRect(300, 70, 190, 120);   // soft boxes for the reflections
+  g.fillRect(700, 110, 140, 90);
+  g.filter = 'none';
+  return c;
+}
+function roundedRect(w, d, r) {
+  const s = new THREE.Shape(), x0 = -w / 2, y0 = -d / 2;
+  r = Math.min(r, w / 2 - 0.01, d / 2 - 0.01);
+  s.moveTo(x0 + r, y0);
+  s.lineTo(x0 + w - r, y0); s.absarc(x0 + w - r, y0 + r, r, -Math.PI / 2, 0, false);
+  s.lineTo(x0 + w, y0 + d - r); s.absarc(x0 + w - r, y0 + d - r, r, 0, Math.PI / 2, false);
+  s.lineTo(x0 + r, y0 + d); s.absarc(x0 + r, y0 + d - r, r, Math.PI / 2, Math.PI, false);
+  s.lineTo(x0, y0 + r); s.absarc(x0 + r, y0 + r, r, Math.PI, 1.5 * Math.PI, false);
+  return s;
+}
+function slab(w, d, r, y0, y1, matList, withUV) {
+  const g = new THREE.ExtrudeGeometry(roundedRect(w, d, r), { depth: y1 - y0, bevelEnabled: false, curveSegments: 10 });
+  g.rotateX(-Math.PI / 2);
+  g.translate(0, y0, 0);
+  if (withUV) {
+    const p = g.attributes.position, uv = new Float32Array(p.count * 2);
+    for (let i = 0; i < p.count; i++) {
+      uv[2 * i] = (p.getX(i) + w / 2) / w;
+      uv[2 * i + 1] = (-p.getZ(i) + d / 2) / d;   // back edge = top of the picture
+    }
+    g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  }
+  const m = new THREE.Mesh(g, matList);
+  m.castShadow = true; m.receiveShadow = true;
+  return m;
+}
+function roundedProfile(r, h, rr) {
+  const p = [new THREE.Vector2(0, 0), new THREE.Vector2(r, 0), new THREE.Vector2(r, h - rr)];
+  for (let i = 1; i <= 6; i++) {
+    const a = i / 6 * Math.PI / 2;
+    p.push(new THREE.Vector2(r - rr + rr * Math.cos(a), h - rr + rr * Math.sin(a)));
+  }
+  p.push(new THREE.Vector2(0, h));
+  return p;
+}
+function batProfile() {          // bat top as in the reference photos, mm above the panel
+  const rb = 13, rt = 13.5, zb = 35, zt = 60;
+  const p = [];
+  for (let i = 0; i <= 12; i++) {
+    const a = Math.PI / 2 * i / 12;
+    p.push(new THREE.Vector2(rb * Math.sin(a), zb - rb * Math.cos(a)));
+  }
+  p.push(new THREE.Vector2(rt, zt));
+  for (let i = 1; i <= 14; i++) {
+    const a = Math.PI / 2 * i / 14;
+    p.push(new THREE.Vector2(i === 14 ? 0 : rt * Math.cos(a), zt + rt * Math.sin(a)));
+  }
+  return p;
+}
+function cachedGeo(key, make) {
+  if (!geoCache[key]) { geoCache[key] = make(); geoCache[key].userData.shared = true; }
+  return geoCache[key];
+}
+function keycapGeo(w, h) {        // tapered MX keycap, 7 mm tall
+  const g = new THREE.BoxGeometry(w - 0.8, 7, h - 0.8);
+  const p = g.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    if (p.getY(i) > 0) { p.setX(i, p.getX(i) * 0.72); p.setZ(i, p.getZ(i) * 0.78); }
+    p.setY(i, p.getY(i) + 3.5);
+  }
+  g.computeVertexNormals();
+  return g;
+}
+function btnMaterial(c, part) {   // OBSF housings match the plunger; OBSC ones are clear plastic
+  const key = `${palKey()}|${c.id}|${part}`;
+  if (matCache[key]) return matCache[key];
+  return (matCache[key] = new THREE.MeshPhysicalMaterial({
+    color: lin(c.hex).multiplyScalar(part === 'lip' ? 0.86 : 1),
+    transparent: !!c.clear,
+    opacity: c.clear || 1,
+    depthWrite: !c.clear,
+    metalness: c.metal ? 0.85 : 0,
+    roughness: c.clear ? (c.frost ? 0.42 : 0.06) : c.metal ? 0.3 : 0.34,
+    clearcoat: c.clear ? 1 : 0.15,
+    clearcoatRoughness: 0.06,
+    envMapIntensity: c.clear || c.metal ? 1 : 0.6,
+    flatShading: part === 'key',
+  }));
+}
+const buttons3D = {};             // button id -> { parts: [[mesh, part]], ring }
+let stick3D = null, pickables = [];
+function makeButton(b) {
+  const g = new THREE.Group(), parts = [];
+  let ringR;
+  if (b.key) {
+    parts.push([new THREE.Mesh(cachedGeo(`key${b.w}x${b.h}`, () => keycapGeo(b.w, b.h))), 'key']);
+    ringR = Math.max(b.w, b.h) * 0.62;
+  } else if (isUA()) {
+    const r = b.r;
+    parts.push([new THREE.Mesh(cachedGeo(`lip${r}`, () => new THREE.LatheGeometry(roundedProfile(r + BEZEL, 2.2, 0.9), 56))), 'lip']);
+    parts.push([new THREE.Mesh(cachedGeo(`cap${r}`, () => new THREE.LatheGeometry(roundedProfile(r * 0.82, 8.0, Math.min(1.8, r * 0.12)), 56))), 'cap']);
+    ringR = r + BEZEL + 2.3;
+  } else {
+    const r = b.r;
+    parts.push([new THREE.Mesh(cachedGeo(`choc${r}`, () => new THREE.LatheGeometry(roundedProfile(r - 0.6, 3.4, 1.0), 56))), 'cap']);
+    ringR = r + 1.8;
+  }
+  const ring = new THREE.Mesh(cachedGeo(`ring${ringR.toFixed(1)}`, () => new THREE.TorusGeometry(ringR, 0.75, 8, 64)), mats.select);
+  ring.rotation.x = Math.PI / 2;
+  ring.position.y = 1.2;
+  ring.visible = false;
+  for (const [mesh] of parts) { mesh.userData.pick = b.id; pickables.push(mesh); g.add(mesh); }
+  g.add(ring);
+  buttons3D[b.id] = { parts, ring };
+  paintButton(b.id);
+  return g;
+}
+function paintButton(id) {
+  const b = buttons3D[id];
+  if (!b) return;
+  const c = colorOf(id);
+  for (const [mesh, part] of b.parts) {
+    mesh.material = btnMaterial(c, part);
+    mesh.castShadow = !c.clear;
+  }
+  requestRender();
+}
+function paintStick() {
+  if (!stick3D) return;
+  const c = stickById(settings.stick), m = mats.bat, op = c.opacity || 1;
+  m.color.copy(lin(c.hex));
+  m.emissive.copy(lin(c.hex)).multiplyScalar(c.glow);
+  m.transparent = op < 1;
+  m.opacity = op;
+  m.depthWrite = op >= 1;
+  m.roughness = c.rough;
+  m.needsUpdate = true;
+  requestRender();
+}
+function showSelection() {
+  const ids = new Set(colorTarget === 'g:all' ? [] : targetButtons());
+  for (const [id, b] of Object.entries(buttons3D)) b.ring.visible = ids.has(id);
+  if (stick3D) stick3D.ring.visible = colorTarget === 'stick';
+  requestRender();
+}
+function contactShadow(W, Dp) {
+  const pad = 70, w = W + 2 * pad, d = Dp + 2 * pad;
+  const c = document.createElement('canvas'); c.width = 1024; c.height = Math.round(1024 * d / w);
+  const g = c.getContext('2d'), k = c.width / w;
+  g.shadowColor = 'rgba(0, 0, 0, 0.75)';
+  g.shadowBlur = 14 * k;
+  g.shadowOffsetX = 10000;
+  g.fillStyle = '#000';
+  g.fillRect(pad * k - 10000, pad * k, W * k, Dp * k);
+  const t = new THREE.CanvasTexture(c);
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false, opacity: 0.55 }));
+  m.rotation.x = -Math.PI / 2;
+  m.position.y = 0.3;
+  m.userData.ownTexture = t;
+  return m;
+}
+
+function init3D() {
+  if (!has3D) throw new Error('three');
+  const canvas = $('#gl');
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.NoToneMapping;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.setClearColor(0x000000, 0);
+
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(26, 1, 10, 8000);
+  view.target = new THREE.Vector3(0, 34, 0);
+
+  const pm = new THREE.PMREMGenerator(renderer);
+  const env = new THREE.CanvasTexture(studioEquirect());
+  env.encoding = THREE.sRGBEncoding;
+  env.mapping = THREE.EquirectangularReflectionMapping;
+  scene.environment = pm.fromEquirectangular(env).texture;
+  env.dispose(); pm.dispose();
+
+  keyLight = new THREE.DirectionalLight(0xffffff, 0.6);
+  keyLight.position.set(-260, 640, 380);
+  keyLight.castShadow = true;
+  keyLight.shadow.mapSize.set(2048, 2048);
+  Object.assign(keyLight.shadow.camera, { left: -380, right: 380, top: 380, bottom: -380, near: 200, far: 1500 });
+  keyLight.shadow.camera.updateProjectionMatrix();
+  keyLight.shadow.bias = -0.0006;
+  keyLight.shadow.normalBias = 0.4;
+  scene.add(keyLight, keyLight.target);
+  const fill = new THREE.DirectionalLight(0xffffff, 0.22);
+  fill.position.set(520, 260, 420);
+  scene.add(fill);
+
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(5000, 5000), new THREE.ShadowMaterial({ opacity: 0.18 }));
+  ground.rotation.x = -Math.PI / 2;
+  ground.receiveShadow = true;
+  scene.add(ground);
+
+  const phys = (o) => new THREE.MeshPhysicalMaterial(o);
+  mats.top = phys({ color: 0xffffff, roughness: 0.5, clearcoat: 0.5, clearcoatRoughness: 0.07, envMapIntensity: 0.6 });
+  mats.ends = phys({ color: 0xffffff, roughness: 0.55, clearcoat: 0.3, clearcoatRoughness: 0.1, envMapIntensity: 0.6 });
+  mats.sides = mats.ends.clone();
+  mats.edge = new THREE.MeshStandardMaterial({ color: lin(0xc8c2b5), roughness: 0.25, envMapIntensity: 0.8 });
+  mats.black = phys({ color: lin(0x0d0e10), roughness: 0.3, clearcoat: 0.8, clearcoatRoughness: 0.1, envMapIntensity: 1 });
+  mats.flatBody = phys({ color: lin(0x1a1b1e), roughness: 0.25, clearcoat: 0.6, clearcoatRoughness: 0.1, envMapIntensity: 1 });
+  mats.window = phys({ color: lin(0x14706f), roughness: 0.15, clearcoat: 0.8, envMapIntensity: 0.8 });
+  mats.bat = phys({ color: 0xffffff, roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 0.8 });
+  mats.shaft = new THREE.MeshStandardMaterial({ color: lin(0xcfd3d8), metalness: 1, roughness: 0.25, envMapIntensity: 1 });
+  mats.select = new THREE.MeshBasicMaterial({ color: lin(0x3d6df2) });
+  mats.washer = phys({ color: 0xffffff, roughness: 0.05, clearcoat: 1, transparent: true, opacity: 0.28, envMapIntensity: 1 });
+  mats.hole = new THREE.MeshStandardMaterial({ color: lin(0x111113), roughness: 0.6 });
+  mats.screw = new THREE.MeshStandardMaterial({ color: lin(0xd8dadd), metalness: 1, roughness: 0.28, envMapIntensity: 1 });
+  mats.socket = new THREE.MeshStandardMaterial({ color: lin(0x1a1a1c), roughness: 0.6 });
+
+  geo.bat = new THREE.LatheGeometry(batProfile(), 56);
+  geo.shaft = new THREE.CylinderGeometry(4.2, 4.2, 26, 24);
+  geo.ringStick = new THREE.TorusGeometry(22.5, 0.85, 8, 72);
+  geo.washer = new THREE.CylinderGeometry(20, 20, 1.5, 64);
+  geo.hole = new THREE.CircleGeometry(12, 40);
+  geo.screwUA = new THREE.CylinderGeometry(3.4, 3.4, 0.9, 28);
+  geo.screwFlat = new THREE.CylinderGeometry(2.8, 2.8, 0.9, 28);
+  geo.socket = new THREE.CylinderGeometry(1.2, 1.2, 1.0, 6);
+  geo.extra = new THREE.CylinderGeometry(1.85, 1.85, 1.2, 20);
+  for (const g of Object.values(geo)) g.userData.shared = true;
+
+  buildModel();
+  new ResizeObserver(resizeStage).observe($('#stage'));
+  resizeStage();
+  bindOrbit(canvas);
+}
+
+function buildModel() {
+  if (model3D) {
+    scene.remove(model3D);
+    model3D.traverse((o) => {
+      if (o.geometry && !o.geometry.userData.shared) o.geometry.dispose();
+      if (o.userData.ownTexture) { o.userData.ownTexture.dispose(); o.material.dispose(); }
+    });
+  }
+  model3D = new THREE.Group();
+  for (const id of Object.keys(buttons3D)) delete buttons3D[id];
+  pickables = [];
+  stick3D = null;
+  const W = spec.w, Dp = spec.h, R = spec.radius;
+  const at = (x, y) => [x - W / 2, y - Dp / 2];      // layout mm -> scene x, z (z towards the player)
+  let top;
+  if (isUA()) {
+    const HW = settings.wallH, y1 = T_BOT + HW, y2 = y1 + T_MID;
+    top = y2 + T_TOP;
+    model3D.add(slab(W, Dp, R, y2, top, [mats.top, mats.edge], true));
+    model3D.add(slab(W, Dp, R, y1, y2, [mats.black, mats.black], false));
+    model3D.add(slab(W, Dp, R, 0, T_BOT, [mats.black, mats.black], false));
+    const WW = W - 2 * INSET, WD = Dp - 2 * INSET;
+    const wall = (w, mat, x, z, ry) => {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, HW), mat);
+      m.position.set(x, T_BOT + HW / 2, z);
+      m.rotation.y = ry;
+      m.castShadow = true; m.receiveShadow = true;
+      model3D.add(m);
+    };
+    wall(WW, mats.sides, 0, WD / 2, 0);              // front, seen from the player
+    wall(WW, mats.sides, 0, -WD / 2, Math.PI);       // back
+    wall(WD, mats.ends, WW / 2, 0, Math.PI / 2);     // right end
+    wall(WD, mats.ends, -WW / 2, 0, -Math.PI / 2);   // left end
+    for (const s of spec.side) {
+      const b = makeButton({ id: s.id, r: s.r });
+      b.rotation.z = s.end === 'R' ? -Math.PI / 2 : Math.PI / 2;
+      b.position.set(s.end === 'R' ? WW / 2 : -WW / 2, T_BOT + HW / 2, s.y - Dp / 2);
+      model3D.add(b);
+    }
+    view.target.set(0, T_BOT + HW * 0.55 + 14, 0);
+  } else {
+    top = model.height;
+    model3D.add(slab(W, Dp, R, top - F_PLATE, top, [mats.top, mats.edge], true));
+    model3D.add(slab(W, Dp, R, F_PLATE, top - F_PLATE, [mats.flatBody, mats.flatBody], false));
+    model3D.add(slab(W, Dp, R, 0, F_PLATE, [mats.black, mats.black], false));
+    view.target.set(0, top + 4, 0);
+  }
+  for (const c of spec.cutouts) {    // windows in the top plate showing the inner layer
+    const win = slab(c.w, c.h, 3, top, top + 0.08, [mats.window, mats.window], false);
+    const [x, z] = at(c.x + c.w / 2, c.y + c.h / 2);
+    win.position.set(x, 0, z);
+    model3D.add(win);
+  }
+  for (const b of spec.buttons) {
+    const g = makeButton(b), [x, z] = at(b.x, b.y);
+    g.position.set(x, top, z);
+    model3D.add(g);
+  }
+  if (spec.joystick) {
+    const [sx, sz] = at(spec.joystick.x, spec.joystick.y);
+    const hole = new THREE.Mesh(geo.hole, mats.hole); hole.rotation.x = -Math.PI / 2; hole.position.set(sx, top + 0.05, sz);
+    const washer = new THREE.Mesh(geo.washer, mats.washer); washer.position.set(sx, top + 0.85, sz);
+    const shaft = new THREE.Mesh(geo.shaft, mats.shaft); shaft.position.set(sx, top + 13, sz); shaft.castShadow = true;
+    const bat = new THREE.Mesh(geo.bat, mats.bat); bat.position.set(sx, top + 1.6, sz); bat.castShadow = true;
+    const sring = new THREE.Mesh(geo.ringStick, mats.select);
+    sring.rotation.x = Math.PI / 2; sring.position.set(sx, top + 1.9, sz); sring.visible = false;
+    shaft.userData.pick = bat.userData.pick = 'stick';
+    pickables.push(shaft, bat);
+    stick3D = { bat, ring: sring };
+    paintStick();
+    model3D.add(hole, washer, shaft, bat, sring);
+  }
+  for (const e of spec.extras) {
+    const m = new THREE.Mesh(geo.extra, mats.hole), [x, z] = at(e.x, e.y);
+    m.position.set(x, top + 0.6, z);
+    model3D.add(m);
+  }
+  for (const sc of spec.screws) {
+    const [x, z] = at(sc.x, sc.y);
+    const s = new THREE.Mesh(isUA() ? geo.screwUA : geo.screwFlat, mats.screw); s.position.set(x, top + 0.45, z);
+    const k = new THREE.Mesh(geo.socket, mats.socket); k.position.set(x, top + 0.55, z);
+    model3D.add(s, k);
+  }
+  model3D.add(contactShadow(W, Dp));
+  scene.add(model3D);
+  view.fitR = Math.hypot(W, Dp) / 2 * 1.02 + (spec.joystick ? 18 : 6);
+  showSelection();
+}
+
+function rebuild3D() {
+  if (!renderer) return;
+  buildModel();
+  for (const k of activeKeys()) updateTexture(k);
+}
+
+function placeCamera() {
+  const aspect = exportAspect || stageAspect;
+  camera.aspect = aspect;
+  camera.updateProjectionMatrix();
+  const vf = camera.fov * D / 2, hf = Math.atan(Math.tan(vf) * aspect);
+  const dist = view.fitR / Math.sin(Math.min(vf, hf)) * 0.9 * view.zoom;
+  const t = view.target, ce = Math.cos(view.el);
+  camera.position.set(t.x + dist * ce * Math.sin(view.az), t.y + dist * Math.sin(view.el), t.z + dist * ce * Math.cos(view.az));
+  camera.lookAt(t);
+}
+function renderNow() { placeCamera(); renderer.render(scene, camera); }
+function requestRender() {
+  if (!renderer || renderQueued) return;
+  renderQueued = true;
+  requestAnimationFrame(() => { renderQueued = false; renderNow(); });
+}
+function resizeStage() {
+  const st = $('#stage'), w = st.clientWidth, h = st.clientHeight;
+  if (!w || !h) return;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(w, h, false);
+  stageAspect = w / h;
+  requestRender();
+}
+function goView(name) {
+  if (!isUA() && (name === 'ends' || name === 'endsR')) name = 'left';
+  lastView = name;
+  const shown = name === 'ends' ? 'left' : name === 'endsR' ? 'right' : name;
+  for (const b of document.querySelectorAll('.views button')) b.setAttribute('aria-pressed', String(b.dataset.view === shown));
+  if (!renderer) return;
+  const p = PRESETS[name];
+  const to = { az: p.az * D, el: p.el * D, zoom: 1 };
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) { Object.assign(view, to); requestRender(); return; }
+  const from = { az: view.az, el: view.el, zoom: view.zoom }, t0 = performance.now(), dur = 520;
+  cancelAnimationFrame(anim);
+  const step = (now) => {
+    const u = clamp((now - t0) / dur, 0, 1), e = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+    view.az = from.az + (to.az - from.az) * e;
+    view.el = from.el + (to.el - from.el) * e;
+    view.zoom = from.zoom + (to.zoom - from.zoom) * e;
+    renderNow();
+    if (u < 1) anim = requestAnimationFrame(step);
+  };
+  anim = requestAnimationFrame(step);
+}
+for (const b of document.querySelectorAll('.views button')) b.addEventListener('click', () => goView(b.dataset.view));
+
+function bindOrbit(canvas) {
+  const pts = new Map(), ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  let pd = 0, tap = null;
+  const hitAt = (cx, cy) => {      // which button (or the stick) is under the pointer
+    const r = canvas.getBoundingClientRect();
+    ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
+    placeCamera();
+    ray.setFromCamera(ndc, camera);
+    const hit = ray.intersectObjects(pickables, false)[0];
+    return hit ? hit.object.userData.pick : null;
+  };
+  canvas.addEventListener('pointerdown', (e) => {
+    canvas.setPointerCapture(e.pointerId);
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    cancelAnimationFrame(anim);
+    tap = pts.size === 1 ? { x: e.clientX, y: e.clientY } : null;
+    if (pts.size === 2) { const [a, b] = [...pts.values()]; pd = Math.hypot(a.x - b.x, a.y - b.y); }
+  });
+  canvas.addEventListener('pointerup', (e) => {
+    if (tap && pts.size === 1 && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) < 6) {
+      const id = hitAt(e.clientX, e.clientY);
+      if (id) selectTarget(id === 'stick' ? 'stick' : `b:${id}`, true);
+    }
+    tap = null;
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    if (!pts.size) {
+      if (e.pointerType === 'mouse') canvas.style.cursor = hitAt(e.clientX, e.clientY) ? 'pointer' : '';
+      return;
+    }
+    const prev = pts.get(e.pointerId); if (!prev) return;
+    const cur = { x: e.clientX, y: e.clientY };
+    pts.set(e.pointerId, cur);
+    if (pts.size === 1) {
+      view.az -= (cur.x - prev.x) * 0.0065;
+      view.el = clamp(view.el + (cur.y - prev.y) * 0.0055, 4 * D, 88 * D);
+      for (const b of document.querySelectorAll('.views button')) b.setAttribute('aria-pressed', 'false');
+    } else if (pts.size === 2) {
+      const [a, b] = [...pts.values()], d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (pd > 0) view.zoom = clamp(view.zoom * pd / d, 0.45, 2.2);
+      pd = d;
+    }
+    requestRender();
+  });
+  const end = (e) => { pts.delete(e.pointerId); pd = 0; };
+  canvas.addEventListener('pointerup', end);
+  canvas.addEventListener('pointercancel', end);
+  canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    view.zoom = clamp(view.zoom * Math.exp(e.deltaY * (e.deltaMode === 1 ? 0.04 : 0.0012)), 0.45, 2.2);
+    requestRender();
+  }, { passive: false });
+}
+
+// ---------- files ----------
+let downloadsNS;
+function downloads() {
+  if (downloadsNS === undefined) {
+    const c = window.claude;
+    downloadsNS = c && typeof c.use === 'function'
+      ? Promise.resolve(c.use('downloads')).catch(() => null)
+      : Promise.resolve('local');     // opened as a plain file: the browser saves directly
+  }
+  return downloadsNS;
+}
+async function saveFile(filename, blob) {
+  const dl = await downloads();
+  if (dl === 'local') {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 20000);
+    toast(`${filename} baixado.`);
+    return true;
+  }
+  if (!dl) { toast('Esta visualização não permite baixar arquivos. Abra o ateliê pelo claude.ai.'); return false; }
+  try {
+    const r = await dl.save({ filename, data: blob });
+    if (r && r.status === 'saved') toast(`${filename} salvo.`);
+    return true;
+  } catch (err) {
+    const code = err && err.code;
+    if (code === 'declined') toast('Download cancelado.');
+    else if (code === 'rate_limited') toast('Já existe um download esperando confirmação. Confirme ou cancele e tente de novo.');
+    else if (code === 'too_large') toast('O arquivo ficou grande demais. Tente com 200 DPI.');
+    else toast('Não foi possível baixar o arquivo nesta visualização.');
+    return false;
+  }
+}
+const modelSlug = () => model.name.toLowerCase().replace(/\s+/g, '-');
+function fileBase(key) {
+  const { w, h } = SURF[key].dims();
+  return `${modelSlug()}_${SURF[key].file}_${mmLabel(w)}x${mmLabel(h)}mm`;
+}
+async function renderPrint(key) {
+  const { w, h } = SURF[key].dims(), k = settings.dpi / 25.4;
+  const c = document.createElement('canvas');
+  c.width = Math.round(w * k); c.height = Math.round(h * k);
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, c.width, c.height);
+  drawArt(ctx, key, k, 0, 0);
+  return toBlob(c);
+}
+async function renderGuide(key) {
+  const { w, h } = SURF[key].dims(), k = 100 / 25.4, m = 40;
+  const c = document.createElement('canvas');
+  c.width = Math.round(w * k) + 2 * m; c.height = Math.round(h * k) + 2 * m + 26;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, c.width, c.height);
+  drawArt(ctx, key, k, m, m);
+  drawOverlay(ctx, key, k, m, m);
+  ctx.strokeStyle = '#d4202a'; ctx.lineWidth = 2; ctx.setLineDash([10, 6]);
+  ctx.strokeRect(m, m, w * k, h * k);
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#333'; ctx.font = '600 16px sans-serif'; ctx.textBaseline = 'top';
+  ctx.fillText(`${model.name} · ${SURF[key].name}: ${w.toFixed(1)} × ${h.toFixed(1)} mm${SURF[key].copies > 1 ? ' · imprimir 2 cópias' : ''} · guia, não imprimir`, m, m + h * k + 12);
+  return toBlob(c);
+}
+async function render3DBlob() {
+  const W = 2400, H = 1600;
+  exportAspect = W / H;
+  renderer.setPixelRatio(1);
+  renderer.setSize(W, H, false);
+  renderNow();
+  const out = document.createElement('canvas'); out.width = W; out.height = H;
+  const c = out.getContext('2d');
+  const g = c.createRadialGradient(W * 0.55, H * 0.3, 0, W * 0.55, H * 0.3, W * 0.85);
+  g.addColorStop(0, '#f6f5f2'); g.addColorStop(1, '#d9d6cf');
+  c.fillStyle = g; c.fillRect(0, 0, W, H);
+  c.drawImage(renderer.domElement, 0, 0, W, H);
+  exportAspect = null;
+  resizeStage();
+  renderNow();
+  return toBlob(out);
+}
+function busy(btn, on, label) {
+  if (on) { btn.dataset.label = btn.innerHTML; btn.disabled = true; btn.textContent = label; }
+  else { btn.disabled = false; if (btn.dataset.label) btn.innerHTML = btn.dataset.label; }
+}
+
+$('#btn-one').addEventListener('click', async (e) => {
+  const btn = e.currentTarget;
+  busy(btn, true, 'Gerando…');
+  try {
+    const blob = await renderPrint(active);
+    await saveFile(`${fileBase(active)}_${settings.dpi}dpi.png`, blob);
+  } catch (err) { toast('Não consegui gerar o arquivo. Tente com uma resolução menor.'); }
+  busy(btn, false);
+});
+$('#btn-3d').addEventListener('click', async (e) => {
+  if (!renderer) { toast('A prévia 3D não carregou neste navegador.'); return; }
+  const btn = e.currentTarget;
+  busy(btn, true, 'Gerando…');
+  try { await saveFile(`previa-3d-${modelSlug()}.png`, await render3DBlob()); }
+  catch (err) { toast('Não consegui gerar a prévia 3D.'); }
+  busy(btn, false);
+});
+$('#btn-zip').addEventListener('click', async (e) => {
+  const btn = e.currentTarget;
+  busy(btn, true, 'Gerando arquivos…');
+  try {
+    const files = [], keys = activeKeys();
+    for (const k of keys) {
+      files.push([`${fileBase(k)}_${settings.dpi}dpi${SURF[k].copies > 1 ? '_imprimir-2x' : ''}.png`, await renderPrint(k)]);
+      if (settings.guides) files.push([`guias/guia_${SURF[k].file}.png`, await renderGuide(k)]);
+    }
+    if (renderer) files.push([`previa-3d-${modelSlug()}.png`, await render3DBlob()]);
+    const lines = [
+      'Arquivos para impressão (Ateliê do Controle)',
+      '',
+      `Modelo: ${model.name} (${model.store}), layout ${spec.name}.`,
+      '',
+      ...keys.map((k) => {
+        const { w, h } = SURF[k].dims();
+        return `- ${SURF[k].name}: ${w.toFixed(1)} × ${h.toFixed(1)} mm, ${SURF[k].copies} ${SURF[k].copies > 1 ? 'cópias' : 'cópia'}${k === 'ends' ? ' (ponta esquerda e ponta direita)' : k === 'sides' ? ' (frente e fundo)' : ''}`;
+      }),
+      '',
+      isUA() ? 'Botões e stick:' : 'Teclas:',
+      ...shoppingLines().map((l) => `- ${l}`),
+      '',
+      `Resolução: ${settings.dpi} DPI.`,
+      'As guias mostram onde ficam os botões e furos. Elas servem só para conferir e não vão para a gráfica.',
+      isUA()
+        ? `Medidas usadas: painel ${spec.w.toFixed(1)} × ${spec.h.toFixed(1)} mm (do montador da loja) e lateral com ${settings.wallH} mm de altura, recuada ${INSET} mm. Confirme a lateral com a loja antes de imprimir.`
+        : `Medidas usadas: painel ${spec.w.toFixed(1)} × ${spec.h.toFixed(1)} mm (do montador da loja).`,
+      ...keys.filter((k) => S[k].sample).map((k) => `Atenção: ${SURF[k].name.toLowerCase()} ainda está sem arte.`),
+    ];
+    files.push(['LEIA-ME.txt', new Blob([lines.join('\n')], { type: 'text/plain' })]);
+    if (typeof JSZip !== 'undefined') {
+      const zip = new JSZip();
+      for (const [name, blob] of files) zip.file(name, blob);
+      const blob = await zip.generateAsync({ type: 'blob' });
+      await saveFile(`arte-${modelSlug()}.zip`, blob);
+    } else {
+      for (const [name, blob] of files) if (!name.startsWith('guias/') && name.endsWith('.png')) await saveFile(name, blob);
+    }
+  } catch (err) {
+    toast('Não consegui gerar os arquivos. Tente com uma resolução menor.');
+  }
+  busy(btn, false);
+});
+
+// ---------- theme changes repaint the mat ----------
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => drawEditor());
+new MutationObserver(() => drawEditor()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+// ---------- boot ----------
+async function boot() {
+  new ResizeObserver(resizeEditor).observe(ed);
+  await restore();
+  buildModelPicker();
+  renderModelPicker();
+  renderTabs();
+  buildSwatches();
+  buildMap();
+  renderGroups();
+  renderColors();
+  resizeEditor();
+  setActive('top', false);
+  try {
+    init3D();
+    for (const k of activeKeys()) updateTexture(k);
+    goView('left');
+    $('#veil').hidden = true;
+  } catch (err) {
+    $('#veil').textContent = 'A prévia 3D não carregou neste navegador. O editor e os downloads continuam funcionando.';
+  }
+  downloads().then((dl) => {
+    if (dl === null) {
+      for (const id of ['#btn-zip', '#btn-3d', '#btn-one']) {
+        $(id).disabled = true;
+        $(id).title = 'Esta visualização não permite baixar arquivos';
+      }
+    }
+  });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => drawEditor());
+}
+boot();
+})();
+</script>
+</body></html>
