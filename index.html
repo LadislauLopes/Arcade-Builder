@@ -119,7 +119,7 @@ button, summary, select, input[type="range"], input[type="checkbox"] { touch-act
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   background: var(--panel);
 }
-.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand { flex: 1 1 22em; display: flex; align-items: center; gap: 12px; min-width: 0; }   /* the line under the name wraps before the buttons drop to a second row */
 .brand svg { flex: none; color: var(--accent); }
 .brand h1 {
   margin: 0;
@@ -200,7 +200,7 @@ button, summary, select, input[type="range"], input[type="checkbox"] { touch-act
   border-radius: calc(var(--r) + 3px);
   background: var(--panel);
 }
-.views { left: max(12px, env(safe-area-inset-left, 0px)); flex-wrap: wrap; }
+.views { left: max(12px, env(safe-area-inset-left, 0px)); flex-wrap: wrap; max-width: calc(100% - 104px); }   /* clear of the zoom pair */
 .zoom3d { right: 12px; }
 .views button, .zoom3d button {
   min-height: 32px;
@@ -226,8 +226,27 @@ button, summary, select, input[type="range"], input[type="checkbox"] { touch-act
   padding: 24px;
   color: var(--muted);
 }
+/* while the turn is recorded the stage shows the video frame and takes no input */
+.stage .rec { position: absolute; inset: 0; cursor: progress; }
+.rec-badge {
+  position: absolute;
+  top: 12px;
+  left: max(12px, env(safe-area-inset-left, 0px));
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 11px;
+  border-radius: var(--r);
+  background: var(--panel);
+  font-size: var(--t-small);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.rec-badge::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--bad); }
+.stage.recording :is(.hint, .views, .zoom3d) { visibility: hidden; }
 
 .panel {
+  position: relative;             /* holds the hidden file inputs, which otherwise stretched the page past the screen */
   min-height: 0;
   overflow: auto;
   overscroll-behavior: contain;
@@ -288,7 +307,7 @@ button, summary, select, input[type="range"], input[type="checkbox"] { touch-act
 .model small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pick .field select { width: auto; min-width: 13em; max-width: 100%; }
 
-.tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
 .tab { padding: 9px 12px; }
 .tab b { display: block; font-weight: 700; }
 
@@ -432,6 +451,7 @@ details.settings summary:hover { background: var(--raise-hover); }
 details.settings .btn:not(.primary):not(.danger):not([aria-pressed="true"]) { background: var(--panel); }
 details.settings .btn:not(.primary):not(.danger):not([aria-pressed="true"]):hover { background: var(--raise-hover); }
 .settings-body { display: grid; gap: 14px; padding: 4px 14px 16px; }
+.settings-body > .btn { justify-self: start; }
 .field { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 12px; }
 .field > span { min-width: 0; }
 .field small { display: block; color: var(--muted); font-size: var(--t-small); }
@@ -490,8 +510,23 @@ details.settings .btn:not(.primary):not(.danger):not([aria-pressed="true"]):hove
 .sw[aria-pressed="true"] { outline: 2px solid var(--ink); outline-offset: 2px; }
 @media (pointer: coarse) { .sw { width: 36px; height: 36px; } }
 .picked { margin: 0; font-size: var(--t-small); color: var(--muted); min-height: 1.4em; }
+.shop { display: grid; gap: 8px; }
 .shop b { font-weight: 650; }
-.shop ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 3px; font-size: var(--t-small); font-variant-numeric: tabular-nums; }
+.shop ul { margin: 0; padding-left: 18px; display: grid; gap: 3px; font-size: var(--t-small); font-variant-numeric: tabular-nums; }
+.shop .field { grid-template-columns: minmax(0, 1fr); }
+#order-text {
+  width: 100%;
+  min-height: 14em;
+  padding: 8px 10px;
+  border: 1px solid var(--field-line); /* taste-skill-ignore: a text field, edged like the other inputs */
+  border-radius: var(--r);
+  background-color: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--t-small);
+  line-height: 1.45;
+  resize: vertical;
+}
 
 .map-cut { fill: var(--cut); }
 .map-extra { fill: var(--muted); }
@@ -505,6 +540,9 @@ details.settings .btn:not(.primary):not(.danger):not([aria-pressed="true"]):hove
 .map-label { font-family: var(--sans); font-weight: 700; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
 
 /* the panel narrows before the page does (desktop at 900-1100 px), so it answers to its own width */
+@container (max-width: 520px) {
+  .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @container (max-width: 440px) {
   .model-row, .groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .combos { grid-template-columns: minmax(0, 1fr); }
@@ -525,6 +563,7 @@ details.settings .btn:not(.primary):not(.danger):not([aria-pressed="true"]):hove
   }
 }
 @media (max-width: 460px) {
+  .views button { padding-inline: 6px; }
   .actions { width: 100%; }
   .actions .btn { flex: 1 1 auto; }
 }
@@ -556,6 +595,10 @@ details.settings .btn:not(.primary):not(.danger):not([aria-pressed="true"]):hove
       <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4.5 8 1.5l6 3v7l-6 3-6-3z M2 4.5l6 3 6-3 M8 7.5v7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
       Baixar prévia 3D
     </button>
+    <button class="btn" id="btn-video" type="button" title="Grava o controle dando uma volta inteira em 8 segundos. Se a base tiver arte, o vídeo passa por baixo também e fica com 16 segundos.">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 4h9v8h-9z M10.5 7l4-2.2v6.4l-4-2.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+      Baixar vídeo
+    </button>
     <button class="btn primary" id="btn-zip" type="button">
       <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5v9m0 0L4.5 7M8 10.5 11.5 7M2 12v2.5h12V12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Baixar arquivos para impressão
@@ -575,12 +618,14 @@ details.settings .btn:not(.primary):not(.danger):not([aria-pressed="true"]):hove
       <button type="button" data-view="front" aria-pressed="false">Frente</button>
       <button type="button" data-view="right" aria-pressed="false">Direita</button>
       <button type="button" data-view="top" aria-pressed="false">Cima</button>
+      <button type="button" data-view="bottom" aria-pressed="false">Baixo</button>
     </div>
     <div class="zoom3d" role="group" aria-label="Zoom da prévia">
       <button type="button" data-zoom="out" aria-label="Afastar" title="Afastar">−</button>
       <button type="button" data-zoom="in" aria-label="Aproximar" title="Aproximar">+</button>
     </div>
     <div class="veil" id="veil">Montando o controle…</div>
+    <div class="rec" id="rec" hidden><span class="rec-badge" id="rec-text" role="status">Gravando o vídeo</span></div>
   </section>
 
   <aside class="panel" id="panel" tabindex="-1" aria-label="Editor de arte">
@@ -604,6 +649,9 @@ details.settings .btn:not(.primary):not(.danger):not([aria-pressed="true"]):hove
       </button>
       <button class="tab" role="tab" id="tab-sides" data-key="sides" aria-selected="false" aria-controls="editor-area" type="button">
         <b>Frente e fundo</b><small data-dims="sides">418 × 40 mm · 2×</small>
+      </button>
+      <button class="tab" role="tab" id="tab-base" data-key="base" aria-selected="false" aria-controls="editor-area" type="button">
+        <b>Base</b><small data-dims="base">430 × 230 mm</small>
       </button>
     </div>
 
@@ -769,8 +817,35 @@ details.settings .btn:not(.primary):not(.danger):not([aria-pressed="true"]):hove
         </div>
       </div>
       <p class="picked" id="picked"></p>
-      <div class="shop"><b>Lista de compras</b><ul id="shop" translate="no"></ul></div>
+      <div class="shop">
+        <b>Lista de compras</b>
+        <ul id="shop" translate="no"></ul>
+        <div class="row">
+          <button class="btn" id="btn-order" type="button">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 2.5h7v9h-7z M3.5 4.5v9h7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+            Copiar pedido
+          </button>
+        </div>
+        <p class="note small">Copia um texto com o modelo, o layout, a lateral e os botões com as cores, pronto para colar na conversa com a loja.</p>
+        <label class="field" for="order-text" id="order-field" hidden>
+          <span>Texto do pedido<small>O navegador não deixou copiar sozinho. O texto está selecionado: copie e cole na conversa.</small></span>
+          <textarea id="order-text" name="order-text" readonly spellcheck="false"></textarea>
+        </label>
+      </div>
     </section>
+
+    <details class="settings" id="project">
+      <summary>Projeto</summary>
+      <div class="settings-body">
+        <p class="note small">Guarda tudo num arquivo .atelie: o modelo, o layout, as artes com os ajustes, os textos, os logos e as cores. Abra esse arquivo em outro computador ou guarde como cópia de segurança.</p>
+        <div class="row">
+          <button class="btn" id="btn-proj-save" type="button">Salvar projeto</button>
+          <button class="btn" id="btn-proj-open" type="button">Abrir projeto</button>
+          <input type="file" id="proj-file" name="projeto" accept=".atelie,.zip,application/zip" class="sr-only" tabindex="-1" aria-label="Arquivo de projeto .atelie">
+        </div>
+        <button class="btn" id="btn-proj-undo" type="button" hidden>Voltar ao que estava antes de abrir</button>
+      </div>
+    </details>
 
     <details class="settings" id="settings">
       <summary>Medidas e exportação</summary>
@@ -818,6 +893,15 @@ const BLANK = (() => {
   x.fillRect(0, 0, 16, 16);
   return c.toDataURL('image/png');
 })();
+// the base starts plain black, as the bottom plate of the case is
+const PLAIN_BASE = (() => {
+  const c = document.createElement('canvas');
+  c.width = c.height = 16;
+  const x = c.getContext('2d');
+  x.fillStyle = '#141416';
+  x.fillRect(0, 0, 16, 16);
+  return c.toDataURL('image/png');
+})();
 const SPECS = {"models":[{"id":"mini","name":"MINI","family":"tall","height":50,"store":"28 × 18 × 5 cm","layouts":[{"id":"mini-vewlix","name":"Japonês (Vewlix)","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"lk","x":126.82,"y":106.04,"r":12.0},{"id":"lp","x":132.82,"y":76.58,"r":12.0},{"id":"mk","x":157.09,"y":95.22,"r":12.0},{"id":"mp","x":163.09,"y":65.76,"r":12.0},{"id":"hp","x":193.12,"y":65.75,"r":12.0},{"id":"hk","x":187.12,"y":95.22,"r":12.0},{"id":"3k","x":216.76,"y":95.22,"r":12.0},{"id":"3p","x":222.76,"y":65.76,"r":12.0}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":{"x":66.13,"y":89.55},"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-sega","name":"Japonês (Sega)","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"lk","x":126.82,"y":106.04,"r":12.0},{"id":"lp","x":132.82,"y":76.58,"r":12.0},{"id":"mk","x":157.09,"y":95.22,"r":12.0},{"id":"mp","x":163.09,"y":65.76,"r":12.0},{"id":"hp","x":193.12,"y":65.75,"r":12.0},{"id":"hk","x":187.12,"y":95.22,"r":12.0},{"id":"3k","x":216.76,"y":106.04,"r":12.0},{"id":"3p","x":222.76,"y":76.58,"r":12.0}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":{"x":66.13,"y":89.55},"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-leverless","name":"Leverless","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"left","x":48.1,"y":56.36,"r":12.0},{"id":"down","x":79.55,"y":56.34,"r":12.0},{"id":"right","x":107.08,"y":70.38,"r":12.0},{"id":"lk","x":140.0,"y":85.3,"r":12.0},{"id":"lp","x":139.98,"y":52.35,"r":12.0},{"id":"mp","x":167.43,"y":38.3,"r":12.0},{"id":"mk","x":167.43,"y":71.31,"r":12.0},{"id":"hp","x":198.98,"y":38.31,"r":12.0},{"id":"hk","x":198.99,"y":71.34,"r":12.0},{"id":"3k","x":228.99,"y":74.34,"r":12.0},{"id":"3p","x":228.98,"y":43.31,"r":12.0},{"id":"up","x":130.58,"y":125.88,"r":15.0}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-wasd-leverless","name":"Leverless WASD","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"up","x":70.25,"y":46.87,"r":12.0},{"id":"left","x":40.25,"y":76.87,"r":12.0},{"id":"down","x":70.25,"y":76.87,"r":12.0},{"id":"right","x":100.25,"y":76.87,"r":12.0},{"id":"lk","x":132.91,"y":93.04,"r":12.0},{"id":"lp","x":138.91,"y":63.58,"r":12.0},{"id":"mk","x":163.18,"y":82.22,"r":12.0},{"id":"mp","x":169.18,"y":52.76,"r":12.0},{"id":"hp","x":199.22,"y":52.75,"r":12.0},{"id":"hk","x":193.22,"y":82.22,"r":12.0},{"id":"3k","x":222.85,"y":82.22,"r":12.0},{"id":"3p","x":228.85,"y":52.76,"r":12.0}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-keyboard","name":"Leverless com teclas","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"lk","x":132.91,"y":93.04,"r":12.0},{"id":"lp","x":138.91,"y":63.58,"r":12.0},{"id":"mk","x":163.18,"y":82.22,"r":12.0},{"id":"mp","x":169.18,"y":52.76,"r":12.0},{"id":"hp","x":199.22,"y":52.75,"r":12.0},{"id":"hk","x":193.22,"y":82.22,"r":12.0},{"id":"3k","x":222.85,"y":82.22,"r":12.0},{"id":"3p","x":228.85,"y":52.76,"r":12.0},{"id":"left","x":52.47,"y":78.23,"w":13.7,"h":13.7,"key":1},{"id":"down","x":71.57,"y":78.23,"w":13.7,"h":13.7,"key":1},{"id":"right","x":90.67,"y":78.23,"w":13.7,"h":13.7,"key":1},{"id":"up","x":71.57,"y":59.12,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-fullkeyboard","name":"Leverless só teclas","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"lk","x":170.64,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"mk","x":189.74,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"hk","x":208.84,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"mp","x":189.74,"y":52.26,"w":13.7,"h":13.7,"key":1},{"id":"lp","x":170.64,"y":52.26,"w":13.7,"h":13.7,"key":1},{"id":"hp","x":208.84,"y":52.26,"w":13.7,"h":13.7,"key":1},{"id":"3k","x":227.94,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"3p","x":227.94,"y":52.26,"w":13.7,"h":13.7,"key":1},{"id":"left","x":48.92,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"down","x":68.02,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"right","x":87.12,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"up","x":68.02,"y":52.26,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]}]},{"id":"basic","name":"BASIC","family":"tall","height":50,"store":"38 × 22 × 5 cm","layouts":[{"id":"basic-japanese-vewlix","name":"Japonês (Vewlix)","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"lp","x":181.16,"y":82.49,"r":15.0},{"id":"lk","x":175.16,"y":121.98,"r":15.0},{"id":"mp","x":216.16,"y":67.64,"r":15.0},{"id":"mk","x":210.16,"y":107.13,"r":15.0},{"id":"hp","x":251.16,"y":67.63,"r":15.0},{"id":"hk","x":245.16,"y":107.13,"r":15.0},{"id":"3p","x":286.16,"y":67.64,"r":15.0},{"id":"3k","x":280.16,"y":107.13,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":{"x":104.01,"y":102.04},"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-japanese-sega","name":"Japonês (Sega)","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"lp","x":181.16,"y":82.49,"r":15.0},{"id":"lk","x":175.16,"y":121.98,"r":15.0},{"id":"mp","x":216.16,"y":67.64,"r":15.0},{"id":"mk","x":210.16,"y":107.13,"r":15.0},{"id":"hp","x":251.16,"y":71.39,"r":15.0},{"id":"hk","x":245.16,"y":110.81,"r":15.0},{"id":"3p","x":286.16,"y":86.53,"r":15.0},{"id":"3k","x":280.16,"y":125.15,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":{"x":104.01,"y":102.04},"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-dual","name":"Dual (botões + stick)","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"lp","x":177.96,"y":95.25,"r":15.0},{"id":"lk","x":175.41,"y":129.04,"r":15.0},{"id":"mp","x":210.91,"y":85.93,"r":15.0},{"id":"mk","x":207.6,"y":119.38,"r":15.0},{"id":"hp","x":244.85,"y":85.25,"r":15.0},{"id":"hk","x":241.34,"y":118.99,"r":15.0},{"id":"3p","x":278.21,"y":90.32,"r":15.0},{"id":"3k","x":275.18,"y":123.48,"r":15.0},{"id":"left","x":186.05,"y":62.58,"r":15.0},{"id":"down","x":218.34,"y":52.83,"r":15.0},{"id":"right","x":251.98,"y":52.34,"r":15.0},{"id":"up","x":177.85,"y":162.39,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":{"x":108.28,"y":101.4},"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-leverless","name":"Leverless","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"left","x":98.1,"y":68.07,"r":12.0},{"id":"down","x":129.55,"y":68.04,"r":12.0},{"id":"right","x":157.08,"y":82.08,"r":12.0},{"id":"lk","x":190.0,"y":97.0,"r":12.0},{"id":"lp","x":189.98,"y":64.05,"r":12.0},{"id":"mp","x":217.43,"y":50.0,"r":12.0},{"id":"mk","x":217.43,"y":83.02,"r":12.0},{"id":"hp","x":248.98,"y":50.02,"r":12.0},{"id":"hk","x":248.99,"y":83.04,"r":12.0},{"id":"3k","x":278.99,"y":86.04,"r":12.0},{"id":"3p","x":278.98,"y":55.02,"r":12.0},{"id":"up","x":180.58,"y":137.58,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-shiokenstar","name":"Leverless Shiokenstar","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"left","x":98.1,"y":68.07,"r":12.0},{"id":"down","x":129.55,"y":68.04,"r":12.0},{"id":"right","x":157.08,"y":82.08,"r":12.0},{"id":"up","x":180.58,"y":137.58,"r":15.0},{"id":"lp","x":190.89,"y":62.56,"r":15.0},{"id":"mp","x":224.58,"y":42.6,"r":15.0},{"id":"hp","x":259.58,"y":42.6,"r":15.0},{"id":"3p","x":294.58,"y":51.31,"r":15.0},{"id":"lk","x":190.89,"y":96.95,"r":15.0},{"id":"mk","x":224.58,"y":82.1,"r":15.0},{"id":"hk","x":259.58,"y":82.1,"r":15.0},{"id":"3k","x":294.58,"y":88.22,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-wasd-leverless","name":"Leverless WASD","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"lp","x":207.26,"y":79.88,"r":15.0},{"id":"lk","x":201.26,"y":119.37,"r":15.0},{"id":"mp","x":242.26,"y":65.03,"r":15.0},{"id":"mk","x":236.26,"y":104.52,"r":15.0},{"id":"hp","x":277.26,"y":65.02,"r":15.0},{"id":"hk","x":271.26,"y":104.52,"r":15.0},{"id":"3p","x":312.26,"y":65.03,"r":15.0},{"id":"3k","x":306.26,"y":104.52,"r":15.0},{"id":"up","x":99.26,"y":69.51,"r":12.0},{"id":"left","x":69.26,"y":99.51,"r":12.0},{"id":"down","x":99.26,"y":99.51,"r":12.0},{"id":"right","x":129.26,"y":99.51,"r":12.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-keyboard","name":"Leverless com teclas","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"left","x":72.8,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"down","x":91.9,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"right","x":111.0,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"up","x":91.9,"y":63.37,"w":13.7,"h":13.7,"key":1},{"id":"lk","x":200.0,"y":117.49,"r":15.0},{"id":"lp","x":206.0,"y":78.0,"r":15.0},{"id":"mk","x":235.0,"y":102.64,"r":15.0},{"id":"mp","x":241.0,"y":63.15,"r":15.0},{"id":"hp","x":276.0,"y":63.14,"r":15.0},{"id":"hk","x":270.0,"y":102.64,"r":15.0},{"id":"3k","x":305.0,"y":102.64,"r":15.0},{"id":"3p","x":311.0,"y":63.15,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-fullkeyboard","name":"Leverless só teclas","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"left","x":72.8,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"down","x":91.9,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"right","x":111.0,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"up","x":91.9,"y":63.37,"w":13.7,"h":13.7,"key":1},{"id":"lk","x":232.72,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"lp","x":232.72,"y":63.37,"w":13.7,"h":13.7,"key":1},{"id":"mk","x":251.82,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"mp","x":251.82,"y":63.37,"w":13.7,"h":13.7,"key":1},{"id":"hp","x":270.92,"y":63.37,"w":13.7,"h":13.7,"key":1},{"id":"hk","x":270.92,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"3k","x":290.02,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"3p","x":290.02,"y":63.37,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]}]},{"id":"slim","name":"SLIM","family":"tall","height":50,"store":"40 × 18 × 5 cm","layouts":[{"id":"slim-vewlix","name":"Japonês (Vewlix)","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"lp","x":188.39,"y":57.91,"r":15.0},{"id":"lk","x":182.39,"y":97.4,"r":15.0},{"id":"mp","x":223.39,"y":43.06,"r":15.0},{"id":"mk","x":217.39,"y":82.55,"r":15.0},{"id":"hp","x":258.39,"y":43.05,"r":15.0},{"id":"hk","x":252.39,"y":82.55,"r":15.0},{"id":"3p","x":293.39,"y":43.06,"r":15.0},{"id":"3k","x":287.39,"y":82.55,"r":15.0}],"side":[{"id":"A1","end":"B","x":352.33,"r":15.0},{"id":"A2","end":"B","x":307.33,"r":15.0},{"id":"A3","end":"B","x":262.33,"r":15.0},{"id":"A4","end":"B","x":217.33,"r":15.0},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":{"x":111.24,"y":77.46},"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-sega","name":"Japonês (Sega)","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"lp","x":188.39,"y":57.91,"r":15.0},{"id":"lk","x":182.39,"y":97.4,"r":15.0},{"id":"mp","x":223.39,"y":43.06,"r":15.0},{"id":"mk","x":217.39,"y":82.55,"r":15.0},{"id":"hp","x":258.39,"y":43.05,"r":15.0},{"id":"hk","x":252.39,"y":82.55,"r":15.0},{"id":"3p","x":293.39,"y":57.91,"r":15.0},{"id":"3k","x":287.39,"y":97.4,"r":15.0}],"side":[{"id":"A1","end":"B","x":352.33,"r":15.0},{"id":"A2","end":"B","x":307.33,"r":15.0},{"id":"A3","end":"B","x":262.33,"r":15.0},{"id":"A4","end":"B","x":217.33,"r":15.0},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":{"x":111.24,"y":77.46},"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-leverless","name":"Leverless","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"left","x":108.1,"y":57.7,"r":12.0},{"id":"down","x":139.55,"y":57.68,"r":12.0},{"id":"right","x":167.08,"y":71.71,"r":12.0},{"id":"lk","x":200.0,"y":86.64,"r":13.0},{"id":"lp","x":199.98,"y":53.69,"r":13.0},{"id":"mp","x":227.43,"y":39.64,"r":13.0},{"id":"mk","x":227.43,"y":72.65,"r":13.0},{"id":"hp","x":258.98,"y":39.65,"r":13.0},{"id":"hk","x":258.99,"y":72.68,"r":13.0},{"id":"3k","x":288.99,"y":75.68,"r":13.0},{"id":"3p","x":288.98,"y":44.65,"r":13.0},{"id":"up","x":190.58,"y":127.21,"r":15.0}],"side":[{"id":"A1","end":"B","x":352.33,"r":15.0},{"id":"A2","end":"B","x":307.33,"r":15.0},{"id":"A3","end":"B","x":262.33,"r":15.0},{"id":"A4","end":"B","x":217.33,"r":15.0},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-shiokenstar","name":"Leverless Shiokenstar","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"left","x":100.34,"y":64.61,"r":12.0},{"id":"down","x":131.79,"y":64.58,"r":12.0},{"id":"right","x":159.32,"y":78.62,"r":12.0},{"id":"lp","x":193.13,"y":59.1,"r":15.0},{"id":"mp","x":226.82,"y":39.15,"r":15.0},{"id":"hp","x":261.82,"y":39.15,"r":15.0},{"id":"3p","x":296.82,"y":47.85,"r":15.0},{"id":"lk","x":193.13,"y":93.5,"r":15.0},{"id":"mk","x":226.82,"y":78.65,"r":15.0},{"id":"hk","x":261.82,"y":78.65,"r":15.0},{"id":"3k","x":296.82,"y":84.76,"r":15.0},{"id":"up","x":182.69,"y":133.84,"r":15.0}],"side":[{"id":"A1","end":"B","x":352.33,"r":15.0},{"id":"A2","end":"B","x":307.33,"r":15.0},{"id":"A3","end":"B","x":262.33,"r":15.0},{"id":"A4","end":"B","x":217.33,"r":15.0},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-wasd-leverless","name":"Leverless WASD","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"up","x":107.73,"y":52.43,"r":12.0},{"id":"left","x":77.73,"y":82.43,"r":12.0},{"id":"down","x":107.73,"y":82.43,"r":12.0},{"id":"right","x":137.73,"y":82.43,"r":12.0},{"id":"lp","x":215.74,"y":62.8,"r":15.0},{"id":"lk","x":209.74,"y":102.28,"r":15.0},{"id":"mp","x":250.74,"y":47.95,"r":15.0},{"id":"mk","x":244.74,"y":87.43,"r":15.0},{"id":"hp","x":285.74,"y":47.93,"r":15.0},{"id":"hk","x":279.74,"y":87.43,"r":15.0},{"id":"3k","x":314.74,"y":87.43,"r":15.0},{"id":"3p","x":320.74,"y":47.95,"r":15.0}],"side":[{"id":"A1","end":"B","x":352.33,"r":15.0},{"id":"A2","end":"B","x":307.33,"r":15.0},{"id":"A3","end":"B","x":262.33,"r":15.0},{"id":"A4","end":"B","x":217.33,"r":15.0},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-keyboard","name":"Leverless com teclas","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"left","x":76.94,"y":68.1,"w":13.7,"h":13.7,"key":1},{"id":"down","x":96.04,"y":68.1,"w":13.7,"h":13.7,"key":1},{"id":"right","x":115.14,"y":68.1,"w":13.7,"h":13.7,"key":1},{"id":"up","x":96.04,"y":49.0,"w":13.7,"h":13.7,"key":1},{"id":"lk","x":204.15,"y":103.12,"r":15.0},{"id":"lp","x":210.15,"y":63.63,"r":15.0},{"id":"mk","x":239.15,"y":88.27,"r":15.0},{"id":"mp","x":245.15,"y":48.78,"r":15.0},{"id":"hp","x":280.15,"y":48.77,"r":15.0},{"id":"hk","x":274.15,"y":88.27,"r":15.0},{"id":"3k","x":309.15,"y":88.27,"r":15.0},{"id":"3p","x":315.15,"y":48.78,"r":15.0}],"side":[{"id":"A1","end":"B","x":352.33,"r":15.0},{"id":"A2","end":"B","x":307.33,"r":15.0},{"id":"A3","end":"B","x":262.33,"r":15.0},{"id":"A4","end":"B","x":217.33,"r":15.0},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-fullkeyboard","name":"Leverless só teclas","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"lk","x":249.29,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"mk","x":268.39,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"hk","x":287.49,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"mp","x":268.39,"y":44.34,"w":13.7,"h":13.7,"key":1},{"id":"lp","x":249.29,"y":44.34,"w":13.7,"h":13.7,"key":1},{"id":"hp","x":287.49,"y":44.34,"w":13.7,"h":13.7,"key":1},{"id":"3k","x":306.59,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"3p","x":306.59,"y":44.34,"w":13.7,"h":13.7,"key":1},{"id":"left","x":89.37,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"down","x":108.47,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"right","x":127.57,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"up","x":108.47,"y":44.34,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"B","x":352.33,"r":15.0},{"id":"A2","end":"B","x":307.33,"r":15.0},{"id":"A3","end":"B","x":262.33,"r":15.0},{"id":"A4","end":"B","x":217.33,"r":15.0},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]}]},{"id":"proxl","name":"PRO XL","family":"tall","height":50,"store":"43 × 23 × 5 cm","layouts":[{"id":"proxl-vewlix","name":"Japonês (Vewlix)","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"lp","x":205.82,"y":82.63,"r":15.0},{"id":"lk","x":199.82,"y":122.11,"r":15.0},{"id":"mp","x":240.82,"y":67.78,"r":15.0},{"id":"mk","x":234.82,"y":107.26,"r":15.0},{"id":"hp","x":275.82,"y":67.76,"r":15.0},{"id":"hk","x":269.82,"y":107.26,"r":15.0},{"id":"3p","x":310.82,"y":67.78,"r":15.0},{"id":"3k","x":304.82,"y":107.26,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":{"x":128.67,"y":102.18},"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-sega","name":"Japonês (Sega)","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"lp","x":205.82,"y":82.63,"r":15.0},{"id":"lk","x":199.82,"y":122.11,"r":15.0},{"id":"mp","x":240.82,"y":67.78,"r":15.0},{"id":"mk","x":234.82,"y":107.26,"r":15.0},{"id":"hp","x":275.82,"y":67.76,"r":15.0},{"id":"hk","x":269.82,"y":107.26,"r":15.0},{"id":"3k","x":304.82,"y":121.53,"r":15.0},{"id":"3p","x":310.82,"y":82.9,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":{"x":128.67,"y":102.18},"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-dual","name":"Dual (botões + stick)","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"lp","x":201.16,"y":101.9,"r":15.0},{"id":"left","x":209.26,"y":69.23,"r":15.0},{"id":"down","x":241.54,"y":59.48,"r":15.0},{"id":"right","x":275.18,"y":58.99,"r":15.0},{"id":"mp","x":234.12,"y":92.58,"r":15.0},{"id":"hp","x":268.06,"y":91.89,"r":15.0},{"id":"3p","x":301.41,"y":96.97,"r":15.0},{"id":"lk","x":198.62,"y":135.68,"r":15.0},{"id":"mk","x":230.8,"y":126.03,"r":15.0},{"id":"hk","x":264.55,"y":125.64,"r":15.0},{"id":"3k","x":298.39,"y":130.12,"r":15.0},{"id":"up","x":201.05,"y":169.04,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":{"x":131.48,"y":108.04},"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-leverless","name":"Leverless","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"left","x":123.1,"y":77.92,"r":12.0},{"id":"down","x":154.55,"y":77.89,"r":12.0},{"id":"right","x":182.07,"y":91.93,"r":12.0},{"id":"lk","x":215.0,"y":106.86,"r":12.0},{"id":"lp","x":214.98,"y":73.91,"r":12.0},{"id":"mp","x":242.42,"y":59.86,"r":12.0},{"id":"mk","x":242.42,"y":92.87,"r":12.0},{"id":"hp","x":273.97,"y":59.87,"r":12.0},{"id":"hk","x":273.99,"y":92.89,"r":12.0},{"id":"3k","x":303.99,"y":95.89,"r":12.0},{"id":"3p","x":303.97,"y":64.87,"r":12.0},{"id":"up","x":205.58,"y":147.43,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-wasd-leverless","name":"Leverless WASD","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"up","x":120.8,"y":62.53,"r":12.0},{"id":"left","x":90.8,"y":92.53,"r":12.0},{"id":"down","x":120.8,"y":92.53,"r":12.0},{"id":"right","x":150.8,"y":92.53,"r":12.0},{"id":"lp","x":228.81,"y":72.9,"r":15.0},{"id":"lk","x":222.81,"y":112.39,"r":15.0},{"id":"mp","x":263.81,"y":58.05,"r":15.0},{"id":"mk","x":257.81,"y":97.54,"r":15.0},{"id":"hp","x":298.81,"y":58.04,"r":15.0},{"id":"hk","x":292.81,"y":97.54,"r":15.0},{"id":"3k","x":327.81,"y":97.54,"r":15.0},{"id":"3p","x":333.81,"y":58.05,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-shiokenstar","name":"Leverless Shiokenstar","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"left","x":123.1,"y":77.92,"r":12.0},{"id":"down","x":154.55,"y":77.89,"r":12.0},{"id":"right","x":182.07,"y":91.93,"r":12.0},{"id":"lp","x":215.89,"y":72.41,"r":15.0},{"id":"mp","x":249.58,"y":52.46,"r":15.0},{"id":"hp","x":284.58,"y":52.46,"r":15.0},{"id":"3p","x":319.58,"y":61.17,"r":15.0},{"id":"lk","x":215.89,"y":106.81,"r":15.0},{"id":"mk","x":249.57,"y":91.96,"r":15.0},{"id":"hk","x":284.57,"y":91.96,"r":15.0},{"id":"3k","x":319.57,"y":98.08,"r":15.0},{"id":"up","x":205.45,"y":147.16,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-keyboard","name":"Leverless com teclas","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"3p","x":310.82,"y":67.78,"r":15.0},{"id":"left","x":88.61,"y":91.2,"w":14.0,"h":14.0,"key":1},{"id":"down","x":107.71,"y":91.2,"w":14.0,"h":14.0,"key":1},{"id":"right","x":126.81,"y":91.2,"w":14.0,"h":14.0,"key":1},{"id":"up","x":107.71,"y":72.1,"w":14.0,"h":14.0,"key":1},{"id":"lk","x":199.82,"y":122.11,"r":15.0},{"id":"lp","x":205.82,"y":82.63,"r":15.0},{"id":"mk","x":234.82,"y":107.26,"r":15.0},{"id":"mp","x":240.82,"y":67.78,"r":15.0},{"id":"hp","x":275.82,"y":67.76,"r":15.0},{"id":"hk","x":269.82,"y":107.26,"r":15.0},{"id":"3k","x":304.82,"y":107.26,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-fullkeyboard","name":"Leverless só teclas","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"left","x":105.52,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"lk","x":265.44,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"mk","x":284.54,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"hk","x":303.64,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"mp","x":284.54,"y":73.55,"w":13.7,"h":13.7,"key":1},{"id":"lp","x":265.44,"y":73.55,"w":13.7,"h":13.7,"key":1},{"id":"hp","x":303.64,"y":73.55,"w":13.7,"h":13.7,"key":1},{"id":"3k","x":322.74,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"3p","x":322.74,"y":73.55,"w":13.7,"h":13.7,"key":1},{"id":"down","x":124.62,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"right","x":143.72,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"up","x":124.62,"y":73.55,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]}]},{"id":"flat-wmx","name":"FLAT WMX","family":"flat","height":17,"store":"20 × 12 × 1,7 cm","layouts":[{"id":"flat-wmx","name":"Padrão","w":200.0,"h":120.0,"radius":4.45,"buttons":[{"id":"left","x":26.72,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"down","x":45.82,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"right","x":64.92,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"up","x":45.82,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"lp","x":116.82,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"mp","x":135.92,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"hp","x":155.02,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"3p","x":174.12,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"3k","x":174.12,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"hk","x":155.02,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"mk","x":135.92,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"lk","x":116.82,"y":77.56,"w":18.0,"h":18.0,"key":1}],"side":[],"extras":[{"x":55.47,"y":41.57,"r":3.1},{"x":45.47,"y":41.57,"r":3.1},{"x":35.47,"y":41.57,"r":3.1},{"x":154.67,"y":41.57,"r":3.1},{"x":144.67,"y":41.57,"r":3.1},{"x":164.67,"y":41.57,"r":3.1}],"joystick":null,"screws":[{"x":194.0,"y":6.0},{"x":6.0,"y":6.0},{"x":100.0,"y":107.77},{"x":189.0,"y":39.77},{"x":11.0,"y":107.77},{"x":189.0,"y":107.77},{"x":124.0,"y":7.77},{"x":76.0,"y":7.77},{"x":11.0,"y":39.77}],"cutouts":[{"x":8.25,"y":10.27,"w":50.0,"h":20.0},{"x":141.75,"y":10.27,"w":50.0,"h":20.0}]}]},{"id":"flat-default","name":"FLAT","family":"flat","height":14,"store":"22 × 13 × 1,4 cm","layouts":[{"id":"flat-default","name":"Padrão","w":218.0,"h":127.0,"radius":7.0,"buttons":[{"id":"mp","x":139.42,"y":26.58,"r":10.95},{"id":"down","x":51.32,"y":38.17,"r":10.95},{"id":"lk","x":107.25,"y":69.15,"r":10.95},{"id":"3k","x":191.92,"y":58.04,"r":10.95},{"id":"lp","x":112.86,"y":38.11,"r":10.95},{"id":"3p","x":197.36,"y":26.7,"r":10.95},{"id":"mk","x":133.86,"y":58.04,"r":10.95},{"id":"left","x":22.23,"y":38.05,"r":10.95},{"id":"hk","x":162.71,"y":58.04,"r":10.95},{"id":"right","x":77.92,"y":49.52,"r":10.95},{"id":"up","x":95.42,"y":102.62,"r":13.57},{"id":"hp","x":168.39,"y":26.46,"r":10.95}],"side":[],"extras":[{"x":31.75,"y":12.85,"r":1.85},{"x":41.75,"y":12.85,"r":1.85},{"x":54.75,"y":12.85,"r":1.85},{"x":64.75,"y":12.85,"r":1.85},{"x":74.75,"y":12.85,"r":1.85},{"x":21.75,"y":12.85,"r":1.85}],"joystick":null,"screws":[{"x":207.0,"y":116.0},{"x":207.0,"y":10.0},{"x":114.0,"y":10.0},{"x":114.0,"y":116.0},{"x":11.0,"y":116.0},{"x":11.0,"y":10.0}],"cutouts":[]},{"id":"flat-wasd","name":"WASD","w":218.0,"h":127.0,"radius":7.0,"buttons":[{"id":"hp","x":168.39,"y":35.96,"r":10.95},{"id":"mp","x":139.42,"y":36.08,"r":10.95},{"id":"lk","x":107.25,"y":78.65,"r":10.95},{"id":"3k","x":191.92,"y":67.54,"r":10.95},{"id":"lp","x":112.86,"y":47.61,"r":10.95},{"id":"3p","x":197.36,"y":36.2,"r":10.95},{"id":"mk","x":133.86,"y":67.54,"r":10.95},{"id":"hk","x":162.71,"y":67.54,"r":10.95},{"id":"left","x":22.2,"y":64.35,"r":10.95},{"id":"down","x":48.31,"y":64.49,"r":10.95},{"id":"right","x":74.5,"y":64.6,"r":10.95},{"id":"up","x":48.3,"y":37.9,"r":10.95}],"side":[],"extras":[{"x":21.75,"y":12.85,"r":1.85},{"x":31.75,"y":12.85,"r":1.85},{"x":41.75,"y":12.85,"r":1.85},{"x":54.75,"y":12.85,"r":1.85},{"x":64.75,"y":12.85,"r":1.85},{"x":74.75,"y":12.85,"r":1.85}],"joystick":null,"screws":[{"x":207.0,"y":116.0},{"x":207.0,"y":10.0},{"x":114.0,"y":10.0},{"x":114.0,"y":116.0},{"x":11.0,"y":116.0},{"x":11.0,"y":10.0}],"cutouts":[]}]},{"id":"flatxl-default","name":"FLAT XL","family":"flat","height":14,"store":"32 × 16 × 1,4 cm","layouts":[{"id":"flatxl-default","name":"Padrão","w":320.0,"h":156.88,"radius":10.28,"buttons":[{"id":"mp","x":190.42,"y":26.56,"r":10.95},{"id":"down","x":102.32,"y":38.15,"r":10.95},{"id":"lk","x":158.25,"y":69.13,"r":10.95},{"id":"3k","x":242.92,"y":58.02,"r":10.95},{"id":"lp","x":163.86,"y":38.09,"r":10.95},{"id":"3p","x":248.36,"y":26.68,"r":10.95},{"id":"mk","x":184.86,"y":58.02,"r":10.95},{"id":"left","x":73.23,"y":38.03,"r":10.95},{"id":"hk","x":213.71,"y":58.02,"r":10.95},{"id":"right","x":128.92,"y":49.5,"r":10.95},{"id":"up","x":146.42,"y":102.6,"r":13.57},{"id":"hp","x":219.39,"y":26.44,"r":10.95}],"side":[],"extras":[{"x":82.75,"y":12.83,"r":1.85},{"x":92.75,"y":12.83,"r":1.85},{"x":105.75,"y":12.83,"r":1.85},{"x":115.75,"y":12.83,"r":1.85},{"x":125.75,"y":12.83,"r":1.85},{"x":72.75,"y":12.83,"r":1.85}],"joystick":null,"screws":[{"x":165.0,"y":146.91},{"x":310.03,"y":146.91},{"x":10.03,"y":146.91},{"x":310.03,"y":9.98},{"x":10.03,"y":9.98},{"x":258.0,"y":115.98},{"x":258.0,"y":9.98},{"x":62.0,"y":115.98},{"x":62.0,"y":9.98},{"x":165.0,"y":9.98},{"x":165.0,"y":115.98}],"cutouts":[]},{"id":"flatxl-wasd","name":"WASD","w":320.0,"h":156.88,"radius":10.28,"buttons":[{"id":"hp","x":219.39,"y":35.94,"r":10.95},{"id":"mp","x":190.42,"y":36.06,"r":10.95},{"id":"lk","x":158.25,"y":78.63,"r":10.95},{"id":"3k","x":242.92,"y":67.52,"r":10.95},{"id":"lp","x":163.86,"y":47.59,"r":10.95},{"id":"3p","x":248.36,"y":36.18,"r":10.95},{"id":"mk","x":184.86,"y":67.52,"r":10.95},{"id":"hk","x":213.71,"y":67.52,"r":10.95},{"id":"left","x":73.2,"y":64.33,"r":10.95},{"id":"down","x":99.31,"y":64.47,"r":10.95},{"id":"right","x":125.5,"y":64.58,"r":10.95},{"id":"up","x":99.3,"y":37.88,"r":10.95}],"side":[],"extras":[{"x":72.75,"y":12.83,"r":1.85},{"x":82.75,"y":12.83,"r":1.85},{"x":92.75,"y":12.83,"r":1.85},{"x":105.75,"y":12.83,"r":1.85},{"x":115.75,"y":12.83,"r":1.85},{"x":125.75,"y":12.83,"r":1.85}],"joystick":null,"screws":[{"x":165.0,"y":146.91},{"x":310.03,"y":146.91},{"x":10.03,"y":146.91},{"x":310.03,"y":9.98},{"x":10.03,"y":9.98},{"x":258.0,"y":115.98},{"x":258.0,"y":9.98},{"x":62.0,"y":115.98},{"x":62.0,"y":9.98},{"x":165.0,"y":9.98},{"x":165.0,"y":115.98}],"cutouts":[]}]},{"id":"flatxxl","name":"FLAT XXL","family":"flat","height":14,"store":"30 × 21 × 1,4 cm","layouts":[{"id":"flatxxl-14","name":"14 botões","w":300.0,"h":210.0,"radius":10.0,"buttons":[{"id":"hp","x":221.89,"y":26.46,"r":10.95},{"id":"up","x":148.92,"y":102.62,"r":13.58},{"id":"right","x":131.42,"y":49.52,"r":10.95},{"id":"hk","x":216.21,"y":58.04,"r":10.95},{"id":"left","x":75.73,"y":38.05,"r":10.95},{"id":"mk","x":187.36,"y":58.04,"r":10.95},{"id":"3p","x":250.86,"y":26.7,"r":10.95},{"id":"lp","x":166.36,"y":38.11,"r":10.95},{"id":"3k","x":245.42,"y":58.04,"r":10.95},{"id":"lk","x":160.75,"y":69.15,"r":10.95},{"id":"down","x":104.82,"y":38.17,"r":10.95},{"id":"mp","x":192.92,"y":26.58,"r":10.95},{"id":"A2","x":185.22,"y":89.4,"r":13.57},{"id":"A1","x":49.1,"y":49.7,"r":10.95}],"side":[],"extras":[{"x":75.25,"y":12.85,"r":1.85},{"x":85.25,"y":12.85,"r":1.85},{"x":95.25,"y":12.85,"r":1.85},{"x":108.25,"y":12.85,"r":1.85}],"joystick":null,"screws":[{"x":40.5,"y":10.0},{"x":167.5,"y":10.0},{"x":260.5,"y":10.0},{"x":40.5,"y":116.0},{"x":167.5,"y":116.0},{"x":260.5,"y":116.0},{"x":150.0,"y":200.0},{"x":10.0,"y":200.0},{"x":290.0,"y":200.0},{"x":10.0,"y":10.0},{"x":290.0,"y":10.0}],"cutouts":[]},{"id":"flatxxl-17","name":"17 botões","w":300.0,"h":210.0,"radius":10.0,"buttons":[{"id":"mp","x":192.85,"y":52.56,"r":10.95},{"id":"down","x":105.99,"y":64.74,"r":10.95},{"id":"lk","x":162.49,"y":94.75,"r":10.95},{"id":"3k","x":249.64,"y":85.81,"r":10.95},{"id":"lp","x":165.55,"y":64.9,"r":10.95},{"id":"3p","x":252.71,"y":55.66,"r":10.95},{"id":"mk","x":189.91,"y":82.4,"r":10.95},{"id":"left","x":75.99,"y":64.02,"r":10.95},{"id":"hk","x":219.88,"y":82.9,"r":10.95},{"id":"right","x":132.79,"y":78.19,"r":10.95},{"id":"up","x":150.69,"y":131.39,"r":13.58},{"id":"hp","x":222.89,"y":52.38,"r":10.95},{"id":"A1","x":46.91,"y":71.31,"r":10.95},{"id":"A2","x":112.53,"y":35.42,"r":10.95},{"id":"A5","x":168.54,"y":35.02,"r":10.95},{"id":"A4","x":186.79,"y":112.28,"r":10.95},{"id":"A3","x":128.12,"y":107.84,"r":10.95}],"side":[],"extras":[{"x":217.87,"y":13.33,"r":1.85},{"x":227.87,"y":13.33,"r":1.85},{"x":237.87,"y":13.33,"r":1.85},{"x":247.87,"y":13.33,"r":1.85}],"joystick":null,"screws":[{"x":40.5,"y":10.0},{"x":167.5,"y":10.0},{"x":260.5,"y":10.0},{"x":40.5,"y":116.0},{"x":167.5,"y":116.0},{"x":260.5,"y":116.0},{"x":150.0,"y":200.0},{"x":10.0,"y":200.0},{"x":290.0,"y":200.0},{"x":10.0,"y":10.0},{"x":290.0,"y":10.0}],"cutouts":[]}]}]};          // every model and layout of the store builder (mm, origin = outline top-left)
 
 // ---------- case construction (mm) ----------
@@ -845,14 +929,25 @@ const SURF = {
   top:   { name: 'Topo', file: 'topo', copies: 1, dims: () => ({ w: spec.w, h: spec.h }) },
   ends:  { name: 'Pontas', file: 'pontas', copies: 2, dims: () => ({ w: spec.h - 2 * INSET, h: settings.wallH }) },
   sides: { name: 'Frente e fundo', file: 'frente-e-fundo', copies: 2, dims: () => ({ w: spec.w - 2 * INSET, h: settings.wallH }) },
+  // the bottom plate seen from below, the case flipped over its long side: left stays left, the front edge is at the top
+  base:  { name: 'Base', file: 'base', copies: 1, dims: () => ({ w: spec.w, h: spec.h }) },
 };
-const KEYS = ['top', 'ends', 'sides'];
-const activeKeys = () => (isTall() ? KEYS : ['top']);
+const KEYS = ['top', 'ends', 'sides', 'base'];
+const activeKeys = () => (isTall() ? KEYS : ['top', 'base']);
+const isWall = (key) => key === 'ends' || key === 'sides';
+const hasArt = (key) => !S[key].sample || LAYERS[key].length > 0;
+// the base is optional: it goes to print only once it has a picture, a text or a logo
+const printKeys = () => activeKeys().filter((k) => k !== 'base' || hasArt(k));
+const THE = { top: 'o topo', ends: 'as pontas', sides: 'a frente e o fundo', base: 'a base' };
+const OF = { top: 'do topo', ends: 'das pontas', sides: 'da frente e do fundo', base: 'da base' };
 function noteFor(key) {
   if (key === 'top') {
     return isTall()
       ? `Os círculos mostram onde ficam os botões${spec.joystick ? ', o stick' : ''} e os parafusos. A arte embaixo deles fica coberta.`
-      : 'Os círculos mostram onde ficam as teclas e os parafusos. Na linha FLAT só o topo leva arte.';
+      : 'Os círculos mostram onde ficam as teclas e os parafusos. Na linha FLAT o topo e a base levam arte.';
+  }
+  if (key === 'base') {
+    return 'A base é a placa de baixo, vista por baixo com o controle virado sobre o lado comprido: a esquerda continua à esquerda e a frente, do lado de quem joga, fica na borda de cima. Os círculos mostram os parafusos. Sem arte ela fica preta e não entra nos arquivos. Confirme com a loja se ela imprime a base.';
   }
   const where = new Set(spec.side.map((s) => s.end));
   if (key === 'ends') {
@@ -871,6 +966,7 @@ const SAMPLES = {
   top:   { src: BLANK, name: 'sem arte', t: () => ({ zoom: 1, cx: spec.w / 2, cy: spec.h / 2, rot: 0, flip: false }) },
   ends:  { src: BLANK, name: 'sem arte', t: () => ({ zoom: 1, cx: SURF.ends.dims().w / 2, cy: settings.wallH / 2, rot: 0, flip: false }) },
   sides: { src: BLANK, name: 'sem arte', t: () => ({ zoom: 1, cx: SURF.sides.dims().w / 2, cy: settings.wallH / 2, rot: 0, flip: false }) },
+  base:  { src: PLAIN_BASE, name: 'sem arte', t: () => ({ zoom: 1, cx: spec.w / 2, cy: spec.h / 2, rot: 0, flip: false }) },
 };
 
 // ---------- colours ----------
@@ -1112,7 +1208,7 @@ const FONTS = [
 const FONT_SHEET = 'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@700&family=Noto+Sans+JP:wght@700&family=Permanent+Marker&family=Press+Start+2P&display=swap';
 const fontById = (id) => FONTS.find((f) => f.id === id) || FONTS[0];
 const layerFont = (L, px) => { const f = fontById(L.font); return `${f.weight} ${px}px ${f.css}, "Archivo", system-ui, sans-serif`; };
-const LAYERS = { top: [], ends: [], sides: [] };
+const LAYERS = { top: [], ends: [], sides: [], base: [] };
 let selLayer = null, layerSeq = 0, lastRemoved = null, fontSheet = null;
 function ensureFont(L) {          // the display faces load only once a text uses them
   if (L.type !== 'text' || !document.fonts) return Promise.resolve();
@@ -1164,6 +1260,7 @@ function viewFor(key) {           // camera for a surface tab: the wall that act
   const where = new Set(isTall() ? spec.side.map((s) => s.end) : []);
   if (key === 'ends') return where.has('L') || !where.has('R') ? 'ends' : 'endsR';
   if (key === 'sides') return where.has('B') ? 'back' : 'front';
+  if (key === 'base') return 'bottom';
   return 'left';
 }
 function printHoles(key) {   // wall buttons as they fall on the shared print of that surface, each wall seen from outside
@@ -1237,6 +1334,11 @@ function drawOverlay(ctx, key, k, ox, oy) {
     for (const s of spec.screws) {
       ctx.beginPath(); ctx.arc(ox + s.x * k, oy + s.y * k, sr * k, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(30, 30, 33, 0.75)'; ctx.fill();
+    }
+  } else if (key === 'base') {        // the screws come through the bottom plate at the same spots, seen from below
+    for (const s of spec.screws) {
+      ctx.beginPath(); ctx.arc(ox + s.x * k, oy + (spec.h - s.y) * k, (isTall() ? 3.4 : 2.8) * k, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(205, 207, 211, 0.85)'; ctx.fill(); stroke();
     }
   } else {
     const { h } = SURF[key].dims();
@@ -1366,7 +1468,7 @@ function layerAt(px, py) {        // on the mat: about 8 screen pixels of slack,
   return layerAtMM(active, (px - g.ox) / g.k, (py - g.oy) / g.k, Math.max(1.5, 8 / g.k));
 }
 function placeLayer(key, L, x, y) {   // mm; on a wall, a layer that fits its height stays whole in it
-  const { w, h } = SURF[key].dims(), b = layerBox(L), my = key !== 'top' && b.h <= h ? b.h / 2 : 0;
+  const { w, h } = SURF[key].dims(), b = layerBox(L), my = isWall(key) && b.h <= h ? b.h / 2 : 0;
   L.x = clamp(x, 0, w);
   L.y = clamp(y, my, h - my);
 }
@@ -1557,7 +1659,7 @@ window.addEventListener('hashchange', () => {
 });
 function renderTabs() {
   for (const k of ['ends', 'sides']) $(`#tab-${k}`).hidden = !isTall();
-  $('.tabs').style.gridTemplateColumns = isTall() ? '' : 'minmax(0, 1fr)';
+  $('.tabs').style.gridTemplateColumns = isTall() ? '' : 'repeat(2, minmax(0, 1fr))';
   $('#wall-field').hidden = !isTall();
 }
 
@@ -1571,9 +1673,9 @@ function syncControls() {
   }
   $('#note').textContent = noteFor(active);
   const copy = $('#btn-copy');
-  copy.hidden = active === 'top';
+  copy.hidden = !isWall(active);
   copy.textContent = active === 'ends' ? 'Usar esta imagem também na frente e no fundo' : 'Usar esta imagem também nas pontas';
-  $('#btn-one').textContent = `Baixar só o arquivo ${active === 'top' ? 'do topo' : active === 'ends' ? 'das pontas' : 'da frente e do fundo'}`;
+  $('#btn-one').textContent = `Baixar só o arquivo ${OF[active]}`;
   if (!sf || !sf.img) return;
   $('#zoom').value = Math.round(sf.zoom * 100);
   $('#zoom-out').textContent = `${Math.round(sf.zoom * 100)}%`;
@@ -1585,7 +1687,9 @@ function syncControls() {
   const chip = $('#chip');
   if (sf.sample) {
     chip.className = 'chip';
-    chip.textContent = 'Sem arte. Arraste uma imagem para cá ou clique em Escolher imagem';
+    chip.textContent = active === 'base'
+      ? 'Sem arte: a base fica preta. Arraste uma imagem para cá ou clique em Escolher imagem'
+      : 'Sem arte. Arraste uma imagem para cá ou clique em Escolher imagem';
   } else if (dpi >= 250) {
     chip.className = 'chip good'; chip.textContent = `${Math.round(dpi)} DPI · ótima para impressão`;
   } else if (dpi >= 150) {
@@ -1772,7 +1876,7 @@ function removeLayer() {
 }
 function freeSpot(key) {          // where a new text or logo starts: the centre, or on a wall the widest gap between button holes
   const { w, h } = SURF[key].dims();
-  if (key === 'top' || !isTall()) return { x: w / 2, y: h / 2 };
+  if (!isWall(key) || !isTall()) return { x: w / 2, y: h / 2 };
   const holes = printHoles(key).map((p) => [p.x - p.r - BEZEL - 2, p.x + p.r + BEZEL + 2]).sort((a, b) => a[0] - b[0]);
   let cur = 0, best = [0, w], len = -1;
   for (const [a, b] of [...holes, [w, w]]) {
@@ -1781,7 +1885,7 @@ function freeSpot(key) {          // where a new text or logo starts: the centre
   }
   return { x: (best[0] + best[1]) / 2, y: h / 2 };
 }
-const startSize = (key) => { const { h } = SURF[key].dims(); return Math.round(clamp(h * (key === 'top' ? 0.18 : 0.3), 6, 28)); };
+const startSize = (key) => { const { h } = SURF[key].dims(); return Math.round(clamp(h * (isWall(key) ? 0.3 : 0.18), 6, 28)); };
 function fitLayer(key, L) {       // a layer that moves to a smaller surface shrinks to fit its height
   const { w, h } = SURF[key].dims();
   if (L.type === 'text') { L.size = Math.min(L.size, Math.max(3, Math.round(h * 0.6))); return; }
@@ -1893,8 +1997,10 @@ for (const el of [editorBox, $('#stage')]) {
     editorBox.classList.remove('dropping'); $('#drop-hint').hidden = true;
     if (!wantsFile(e)) return;
     e.preventDefault();
-    const f = [...e.dataTransfer.files].find((x) => x.type.startsWith('image/'));
-    if (f) loadUserImage(active, f); else toast('Esse arquivo não é uma imagem. Use JPG, PNG ou WEBP.');
+    const files = [...e.dataTransfer.files], proj = files.find((x) => /\.atelie$/i.test(x.name));
+    if (proj) { openProject(proj); return; }
+    const f = files.find((x) => x.type.startsWith('image/'));
+    if (f) loadUserImage(active, f); else toast('Esse arquivo não é uma imagem. Use JPG, PNG ou WEBP, ou um projeto .atelie.');
   });
 }
 window.addEventListener('paste', (e) => {
@@ -2108,7 +2214,7 @@ function selectTarget(t, fromView, focus) {
   const side = t.startsWith('b:') && spec.side.find((s) => s.id === t.slice(2));
   if (side && isTall()) goView(WALL_VIEW[side.end]);
   else if (t === 'g:lateral') goView(viewFor('ends'));
-  else if (['ends', 'endsR', 'back'].includes(lastView)) goView('left');
+  else if (['ends', 'endsR', 'back', 'bottom'].includes(lastView)) goView('left');
 }
 $('#groups').addEventListener('keydown', (e) => {
   const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
@@ -2219,7 +2325,7 @@ function buildSuggestions(key) {
 }
 function renderSuggestions(sg) {
   const tall = isTall();
-  $('#suggest-hint').textContent = `Tiradas da arte ${sg.key === 'top' ? 'do topo' : sg.key === 'ends' ? 'das pontas' : 'da frente e do fundo'} e trocadas pelas ${tall ? 'Sanwa' : 'capas'} mais parecidas. Clique numa para pintar o que estiver selecionado.`;
+  $('#suggest-hint').textContent = `Tiradas da arte ${OF[sg.key]} e trocadas pelas ${tall ? 'Sanwa' : 'capas'} mais parecidas. Clique numa para pintar o que estiver selecionado.`;
   const row = $('#sw-art');
   row.textContent = '';
   for (const c of sg.art) {
@@ -2275,7 +2381,7 @@ function applyCombo(cmb) {
   toast(`Combinação ${cmb.name} aplicada. Ajuste qualquer botão no mapa ou use Desfazer combinação.`);
 }
 $('#btn-suggest').addEventListener('click', () => {
-  const key = ['top', 'ends', 'sides'].filter((k) => activeKeys().includes(k)).find((k) => (S[k] && !S[k].sample) || LAYERS[k].length);
+  const key = activeKeys().find((k) => S[k] && hasArt(k));
   if (!key) { toast('Escolha uma arte primeiro. As sugestões saem das cores dela.'); return; }
   renderSuggestions(buildSuggestions(key));
 });
@@ -2353,20 +2459,24 @@ async function idbSet(key, val) {
     tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error);
   });
 }
+// the whole work as one record: what the browser stores, and what a project file carries
+function projectRecord() {
+  const rec = { v: 3, settings: JSON.parse(JSON.stringify(settings)), surfaces: {}, layers: {} };
+  for (const k of KEYS) {
+    const sf = S[k]; if (!sf) continue;
+    rec.surfaces[k] = { blob: sf.sample ? null : sf.blob, name: sf.name, zoom: sf.zoom, cx: sf.cx, cy: sf.cy, rot: sf.rot, flip: sf.flip,
+      adj: { ...sf.adj }, fit: sf.fit, bg: sf.bg, bgSet: sf.bgSet };
+    rec.layers[k] = LAYERS[k].map(({ img, id, ...rest }) => rest);    // a logo keeps its file (blob)
+  }
+  return rec;
+}
 let persistTimer, canPersist = true;
 function schedulePersist() {
   if (!canPersist) return;
   clearTimeout(persistTimer);
   persistTimer = setTimeout(async () => {
     try {
-      const rec = { v: 3, settings: JSON.parse(JSON.stringify(settings)), surfaces: {}, layers: {} };
-      for (const k of KEYS) {
-        const sf = S[k]; if (!sf) continue;
-        rec.surfaces[k] = { blob: sf.sample ? null : sf.blob, name: sf.name, zoom: sf.zoom, cx: sf.cx, cy: sf.cy, rot: sf.rot, flip: sf.flip,
-          adj: sf.adj, fit: sf.fit, bg: sf.bg, bgSet: sf.bgSet };
-        rec.layers[k] = LAYERS[k].map(({ img, id, ...rest }) => rest);    // a logo keeps its file (blob)
-      }
-      await idbSet('estado', rec);
+      await idbSet('estado', projectRecord());
     } catch (err) { /* storage unavailable: the page still works, it just starts fresh next time */ }
   }, 600);
 }
@@ -2383,6 +2493,15 @@ async function restore() {
       setTimeout(() => toast('O armazenamento do navegador não respondeu, então esta aba abriu do zero e não vai salvar. Recarregue a página para tentar de novo.'), 1500);
     }
   }
+  await applyRecord(rec);
+}
+// puts a record (stored, or read from a project file) in place of the current work; anything it lacks
+// or that does not check out falls back to the defaults
+async function applyRecord(rec) {
+  Object.assign(settings, { model: 'proxl', layout: 'proxl-dual', wallH: 40, dpi: 300, guides: true, holes: true, colors: { sanwa: {}, caps: {} }, stick: 'creme' });
+  pickSpec();
+  for (const k of KEYS) LAYERS[k] = [];
+  selLayer = null; lastRemoved = null;
   const st = rec && rec.settings;
   if (st) {
     settings.wallH = clamp(Number(st.wallH) || 40, 20, 90);
@@ -2411,14 +2530,14 @@ async function restore() {
     if (saved && saved.blob) {
       try {
         const img = await loadImage(URL.createObjectURL(saved.blob));
-        S[k] = { img, blob: saved.blob, name: saved.name || 'imagem', sample: false, zoom: saved.zoom || 1, cx: saved.cx, cy: saved.cy, rot: saved.rot || 0, flip: !!saved.flip, ...lookFrom(saved) };
+        S[k] = { img, blob: saved.blob, name: String(saved.name || 'imagem'), sample: false, ...placeFrom(k, saved), ...lookFrom(saved) };
         clampSurface(k);
         continue;
       } catch (err) { /* fall back to an empty surface */ }
     }
     await useSample(k);
     if (saved && !saved.blob && typeof saved.cx === 'number') {
-      Object.assign(S[k], { zoom: saved.zoom || 1, cx: saved.cx, cy: saved.cy, rot: saved.rot || 0, flip: !!saved.flip, ...lookFrom(saved) });
+      Object.assign(S[k], { ...placeFrom(k, saved), ...lookFrom(saved) });
       clampSurface(k);
     }
   }
@@ -2436,6 +2555,10 @@ async function restore() {
       }
     }
   }
+}
+function placeFrom(key, saved) {  // framing from storage or a file: anything that is not a sane number falls back
+  const { w, h } = SURF[key].dims(), n = (v, d) => (Number.isFinite(v) ? v : d);
+  return { zoom: clamp(n(saved.zoom, 1), 1, 6), cx: n(saved.cx, w / 2), cy: n(saved.cy, h / 2), rot: [0, 1, 2, 3].includes(saved.rot) ? saved.rot : 0, flip: !!saved.flip };
 }
 function lookFrom(saved) {        // adjustments saved by this or an earlier version (older ones have none)
   const look = LOOK(), a = saved.adj;
@@ -2465,20 +2588,23 @@ const has3D = typeof THREE !== 'undefined';
 const D = Math.PI / 180;
 let renderer, scene, camera, model3D, keyLight;
 const texCanvas = {}, tex = {}, mats = {}, geo = {}, geoCache = {}, matCache = {};
-const view = { az: -58 * D, el: 27 * D, zoom: 1, target: null, fitR: 250 };
+const view = { az: -58 * D, el: 27 * D, zoom: 1, target: null, fitR: 250, drop: 0 };   // drop: mm the aim point sinks (the video's look under the case)
+let aimAt = null;
 const PRESETS = {
   left: { az: -58, el: 27 }, right: { az: 58, el: 27 }, front: { az: -14, el: 17 },
   top: { az: 0, el: 86 }, ends: { az: -74, el: 17 }, endsR: { az: 74, el: 17 }, back: { az: 148, el: 20 },
+  bottom: { az: 0, el: -84 },       // from below, the front edge at the top of the screen as on the base print
 };
 let lastView = 'left';
 let stageAspect = 1, exportAspect = null, renderQueued = false, anim = null;
+let recording = false;            // a video of the turn is being recorded (see recordTurn)
 
 const lin = (hex) => new THREE.Color(hex).convertSRGBToLinear();
 
 function updateTexture(key) {
   if (!has3D || !renderer || !S[key]) return;
   const { w, h } = SURF[key].dims();
-  const cw = key === 'top' ? 2048 : key === 'ends' ? 1536 : 2048;
+  const cw = key === 'ends' ? 1536 : 2048;
   const ch = Math.max(16, Math.round(cw * h / w));
   let c = texCanvas[key];
   if (!c) { c = texCanvas[key] = document.createElement('canvas'); }
@@ -2528,13 +2654,21 @@ function slab(w, d, r, y0, y1, matList, withUV) {
   const g = new THREE.ExtrudeGeometry(roundedRect(w, d, r), { depth: y1 - y0, bevelEnabled: false, curveSegments: 10 });
   g.rotateX(-Math.PI / 2);
   g.translate(0, y0, 0);
-  if (withUV) {
-    const p = g.attributes.position, uv = new Float32Array(p.count * 2);
+  if (withUV) {           // true: the top print (back edge at the top of the picture); 'base': the bottom print
+    const p = g.attributes.position, uv = new Float32Array(p.count * 2), base = withUV === 'base';
     for (let i = 0; i < p.count; i++) {
       uv[2 * i] = (p.getX(i) + w / 2) / w;
-      uv[2 * i + 1] = (-p.getZ(i) + d / 2) / d;   // back edge = top of the picture
+      uv[2 * i + 1] = ((base ? 1 : -1) * p.getZ(i) + d / 2) / d;   // the base is seen from below, front edge at the top
     }
     g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  }
+  if (withUV === 'base') {   // both lids share material 0; the upper one (inside the case) moves to material 2
+    const lids = g.groups.find((x) => x.materialIndex === 0), pos = g.attributes.position;
+    let i = lids.start;
+    while (i < lids.start + lids.count && pos.getY(i) < y0 + 0.01) i += 3;
+    g.groups = g.groups.filter((x) => x !== lids);
+    g.addGroup(lids.start, i - lids.start, 0);
+    g.addGroup(i, lids.start + lids.count - i, 2);
   }
   const m = new THREE.Mesh(g, matList);
   m.castShadow = true; m.receiveShadow = true;
@@ -2650,6 +2784,10 @@ function showSelection() {
   if (stick3D) stick3D.ring.visible = colorTarget === 'stick';
   requestRender();
 }
+function hideSelection() {        // exported pictures and the video show the case without the blue selection rings
+  for (const b of Object.values(buttons3D)) b.ring.visible = false;
+  if (stick3D) stick3D.ring.visible = false;
+}
 function contactShadow(W, Dp) {
   const pad = 70, w = W + 2 * pad, d = Dp + 2 * pad;
   const c = document.createElement('canvas'); c.width = 1024; c.height = Math.round(1024 * d / w);
@@ -2700,6 +2838,9 @@ function init3D() {
   const fill = new THREE.DirectionalLight(0xffffff, 0.22);
   fill.position.set(520, 260, 420);
   scene.add(fill);
+  const under = new THREE.DirectionalLight(0xffffff, 0.62);    // straight up: lights only the base, seen from below
+  under.position.set(0, -600, 0);
+  scene.add(under);
 
   const ground = new THREE.Mesh(new THREE.PlaneGeometry(5000, 5000), new THREE.ShadowMaterial({ opacity: 0.18 }));
   ground.rotation.x = -Math.PI / 2;
@@ -2710,6 +2851,7 @@ function init3D() {
   mats.top = phys({ color: 0xffffff, roughness: 0.5, clearcoat: 0.5, clearcoatRoughness: 0.07, envMapIntensity: 0.6 });
   mats.ends = phys({ color: 0xffffff, roughness: 0.55, clearcoat: 0.3, clearcoatRoughness: 0.1, envMapIntensity: 0.6 });
   mats.sides = mats.ends.clone();
+  mats.base = phys({ color: 0xffffff, roughness: 0.7, clearcoat: 0.1, clearcoatRoughness: 0.35, envMapIntensity: 0.45 });   // matte: seen from below there is no studio light to reflect
   mats.edge = new THREE.MeshStandardMaterial({ color: lin(0xc8c2b5), roughness: 0.25, envMapIntensity: 0.8 });
   mats.black = phys({ color: lin(0x0d0e10), roughness: 0.3, clearcoat: 0.8, clearcoatRoughness: 0.1, envMapIntensity: 1 });
   mats.flatBody = phys({ color: lin(0x1a1b1e), roughness: 0.25, clearcoat: 0.6, clearcoatRoughness: 0.1, envMapIntensity: 1 });
@@ -2760,7 +2902,7 @@ function buildModel() {
     top = y2 + T_TOP;
     model3D.add(artSurface(slab(W, Dp, R, y2, top, [mats.top, mats.edge], true), 'top'));
     model3D.add(slab(W, Dp, R, y1, y2, [mats.black, mats.black], false));
-    model3D.add(slab(W, Dp, R, 0, T_BOT, [mats.black, mats.black], false));
+    model3D.add(artSurface(slab(W, Dp, R, 0, T_BOT, [mats.base, mats.black, mats.black], 'base'), 'base'));
     const WW = W - 2 * INSET, WD = Dp - 2 * INSET;
     const wall = (w, mat, x, z, ry) => {
       const m = new THREE.Mesh(new THREE.PlaneGeometry(w, HW), mat);
@@ -2789,7 +2931,7 @@ function buildModel() {
     top = model.height;
     model3D.add(artSurface(slab(W, Dp, R, top - F_PLATE, top, [mats.top, mats.edge], true), 'top'));
     model3D.add(slab(W, Dp, R, F_PLATE, top - F_PLATE, [mats.flatBody, mats.flatBody], false));
-    model3D.add(slab(W, Dp, R, 0, F_PLATE, [mats.black, mats.black], false));
+    model3D.add(artSurface(slab(W, Dp, R, 0, F_PLATE, [mats.base, mats.black, mats.black], 'base'), 'base'));
     view.target.set(0, top + 4, 0);
   }
   for (const c of spec.cutouts) {    // windows in the top plate showing the inner layer
@@ -2826,7 +2968,9 @@ function buildModel() {
     const [x, z] = at(sc.x, sc.y);
     const s = new THREE.Mesh(isTall() ? geo.screwUA : geo.screwFlat, mats.screw); s.position.set(x, top + 0.45, z);
     const k = new THREE.Mesh(geo.socket, mats.socket); k.position.set(x, top + 0.55, z);
-    model3D.add(s, k);
+    const sb = s.clone(), kb = k.clone();       // the same screw through the base, seen from below
+    sb.position.y = -0.45; kb.position.y = -0.55;
+    model3D.add(s, k, sb, kb);
   }
   model3D.add(contactShadow(W, Dp));
   scene.add(model3D);
@@ -2846,7 +2990,8 @@ function placeCamera() {
   camera.updateProjectionMatrix();
   const vf = camera.fov * D / 2, hf = Math.atan(Math.tan(vf) * aspect);
   const dist = view.fitR / Math.sin(Math.min(vf, hf)) * 0.9 * view.zoom;
-  const t = view.target, ce = Math.cos(view.el);
+  const t = (aimAt = aimAt || new THREE.Vector3()).copy(view.target), ce = Math.cos(view.el);
+  t.y -= view.drop;
   camera.position.set(t.x + dist * ce * Math.sin(view.az), t.y + dist * Math.sin(view.el), t.z + dist * ce * Math.cos(view.az));
   camera.lookAt(t);
 }
@@ -2858,7 +3003,7 @@ function requestRender() {
 }
 function resizeStage() {
   const st = $('#stage'), w = st.clientWidth, h = st.clientHeight;
-  if (!w || !h) return;
+  if (!w || !h || recording) return;      // a recording keeps the video size until it ends
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(w, h, false);
   stageAspect = w / h;
@@ -2919,6 +3064,7 @@ function bindOrbit(canvas) {
     const key = hit && hit.object.userData.surface;
     if (!key || !hit.uv || !activeKeys().includes(key)) return null;
     if (key === 'top' && !(hit.face.materialIndex === 0 && hit.face.normal.y > 0.5)) return null;   // the slab's edge
+    if (key === 'base' && !(hit.face.materialIndex === 0 && hit.face.normal.y < -0.5)) return null;
     const { w, h } = SURF[key].dims();
     return { key, x: hit.uv.x * w, y: (1 - hit.uv.y) * h };
   };
@@ -2975,7 +3121,7 @@ function bindOrbit(canvas) {
         setActive(s.key, false);
         selectLayer(L.id);
         changed(from);
-        toast(`${L.type === 'logo' ? 'Logo' : 'Texto'} passou para ${s.key === 'top' ? 'o topo' : s.key === 'ends' ? 'as pontas' : 'a frente e o fundo'}.`);
+        toast(`${L.type === 'logo' ? 'Logo' : 'Texto'} passou para ${THE[s.key]}.`);
       }
       placeLayer(s.key, L, s.x + layerDrag.dx, s.y + layerDrag.dy);
       changed(s.key);
@@ -2986,7 +3132,7 @@ function bindOrbit(canvas) {
     pts.set(e.pointerId, cur);
     if (pts.size === 1) {
       view.az -= (cur.x - prev.x) * 0.0065;
-      view.el = clamp(view.el + (cur.y - prev.y) * 0.0055, 4 * D, 88 * D);
+      view.el = clamp(view.el + (cur.y - prev.y) * 0.0055, -88 * D, 88 * D);    // below zero shows the base
       for (const b of document.querySelectorAll('.views button')) b.setAttribute('aria-pressed', 'false');
     } else if (pts.size === 2) {
       const [a, b] = [...pts.values()], d = Math.hypot(a.x - b.x, a.y - b.y);
@@ -3069,11 +3215,13 @@ async function renderGuide(key) {
   ctx.strokeRect(m, m, w * k, h * k);
   ctx.setLineDash([]);
   ctx.fillStyle = '#333'; ctx.font = '600 16px sans-serif'; ctx.textBaseline = 'top';
-  ctx.fillText(`${model.name} · ${SURF[key].name}: ${nf1.format(w)} × ${nf1.format(h)} mm${SURF[key].copies > 1 ? ' · imprimir 2 cópias' : ''} · guia, não imprimir`, m, m + h * k + 12);
+  ctx.fillText(`${model.name} · ${SURF[key].name}: ${nf1.format(w)} × ${nf1.format(h)} mm${SURF[key].copies > 1 ? ' · imprimir 2 cópias' : ''}${key === 'base' ? ' · vista por baixo, frente em cima' : ''} · guia, não imprimir`, m, m + h * k + 12);
   return toBlob(c);
 }
 async function render3DBlob() {
+  while (recording) await new Promise((r) => setTimeout(r, 200));     // the video owns the renderer until it ends
   const W = 2400, H = 1600;
+  hideSelection();
   exportAspect = W / H;
   renderer.setPixelRatio(1);
   renderer.setSize(W, H, false);
@@ -3085,6 +3233,7 @@ async function render3DBlob() {
   c.fillStyle = g; c.fillRect(0, 0, W, H);
   c.drawImage(renderer.domElement, 0, 0, W, H);
   exportAspect = null;
+  showSelection();
   resizeStage();
   renderNow();
   return toBlob(out);
@@ -3118,7 +3267,7 @@ $('#btn-zip').addEventListener('click', async (e) => {
   busy(btn, true, 'Gerando arquivos…');
   await layerFontsReady();
   try {
-    const files = [], keys = activeKeys();
+    const files = [], keys = printKeys();
     for (const k of keys) {
       files.push([`${fileBase(k)}_${settings.dpi}dpi${SURF[k].copies > 1 ? '_imprimir-2x' : ''}.png`, await renderPrint(k)]);
       if (settings.guides) files.push([`guias/guia_${SURF[k].file}.png`, await renderGuide(k)]);
@@ -3131,7 +3280,7 @@ $('#btn-zip').addEventListener('click', async (e) => {
       '',
       ...keys.map((k) => {
         const { w, h } = SURF[k].dims();
-        return `- ${SURF[k].name}: ${nf1.format(w)} × ${nf1.format(h)} mm, ${SURF[k].copies} ${SURF[k].copies > 1 ? 'cópias' : 'cópia'}${k === 'ends' ? ' (ponta esquerda e ponta direita)' : k === 'sides' ? ' (frente e fundo)' : ''}`;
+        return `- ${SURF[k].name}: ${nf1.format(w)} × ${nf1.format(h)} mm, ${SURF[k].copies} ${SURF[k].copies > 1 ? 'cópias' : 'cópia'}${k === 'base' ? ' (placa de baixo, vista por baixo: a borda de cima da imagem é a frente, do lado de quem joga)' : k === 'ends' ? ' (ponta esquerda e ponta direita)' : k === 'sides' ? ' (frente e fundo)' : ''}`;
       }),
       '',
       isTall() ? 'Botões e stick:' : 'Teclas:',
@@ -3142,7 +3291,7 @@ $('#btn-zip').addEventListener('click', async (e) => {
       isTall()
         ? `Medidas usadas: painel ${nf1.format(spec.w)} × ${nf1.format(spec.h)} mm (do montador da loja) e lateral com ${settings.wallH} mm de altura, recuada ${INSET} mm. Confirme a lateral com a loja antes de imprimir.`
         : `Medidas usadas: painel ${nf1.format(spec.w)} × ${nf1.format(spec.h)} mm (do montador da loja).`,
-      ...keys.filter((k) => S[k].sample).map((k) => `Atenção: ${SURF[k].name.toLowerCase()} ainda está sem arte.`),
+      ...keys.filter((k) => !hasArt(k)).map((k) => `Atenção: a arte ${OF[k]} ainda está vazia.`),
     ];
     files.push(['LEIA-ME.txt', new Blob([lines.join('\n')], { type: 'text/plain' })]);
     if (typeof JSZip !== 'undefined') {
@@ -3157,6 +3306,242 @@ $('#btn-zip').addEventListener('click', async (e) => {
     toast('Os arquivos não foram gerados. Baixe a resolução em Medidas e exportação e tente de novo.');
   }
   busy(btn, false);
+});
+
+// ---------- project file (.atelie): a zip with projeto.json and the original pictures ----------
+const PROJECT_FORMAT = 'atelie-do-controle';
+const IMG_EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif', 'image/avif': 'avif', 'image/bmp': 'bmp', 'image/svg+xml': 'svg' };
+const today = () => new Intl.DateTimeFormat('sv-SE').format(new Date());     // 2026-11-06, in local time
+async function projectBlob() {
+  const rec = projectRecord(), zip = new JSZip();
+  const out = { formato: PROJECT_FORMAT, versao: 1, salvoEm: new Date().toISOString(), settings: rec.settings, surfaces: {}, layers: {} };
+  let logos = 0;
+  const put = (blob, base) => {
+    if (!blob) return null;
+    const path = `imagens/${base}.${IMG_EXT[blob.type] || 'img'}`;
+    zip.file(path, blob);
+    return { path, type: blob.type || '' };
+  };
+  for (const k of KEYS) {
+    if (!rec.surfaces[k]) continue;
+    const { blob, ...framing } = rec.surfaces[k];
+    out.surfaces[k] = { ...framing, file: put(blob, SURF[k].file) };
+    out.layers[k] = rec.layers[k].map(({ blob: b, ...L }) => (L.type === 'logo' ? { ...L, file: put(b, `logo-${++logos}`) } : L));
+  }
+  zip.file('projeto.json', JSON.stringify(out, null, 2));
+  return zip.generateAsync({ type: 'blob', mimeType: 'application/zip' });
+}
+async function readProject(file) {      // the file back into the record applyRecord takes
+  const zip = await JSZip.loadAsync(file);
+  const entry = zip.file('projeto.json');
+  if (!entry) throw new Error('format');
+  const p = JSON.parse(await entry.async('string'));
+  if (!p || p.formato !== PROJECT_FORMAT) throw new Error('format');
+  const picture = async (f) => {
+    const e = f && typeof f.path === 'string' && zip.file(f.path);
+    if (!e) return null;
+    return new Blob([await e.async('arraybuffer')], { type: IMG_EXT[f.type] ? f.type : '' });
+  };
+  const obj = (v) => (v && typeof v === 'object' ? v : null);
+  const rec = { v: 3, settings: obj(p.settings), surfaces: {}, layers: {} };
+  for (const k of KEYS) {
+    const s = obj(p.surfaces && p.surfaces[k]);
+    if (s) { const { file, ...framing } = s; rec.surfaces[k] = { ...framing, blob: await picture(file) }; }
+    rec.layers[k] = [];
+    const list = p.layers && Array.isArray(p.layers[k]) ? p.layers[k] : [];
+    for (const L of list.slice(0, 40)) {
+      if (!obj(L)) continue;
+      const { file, ...rest } = L;
+      rec.layers[k].push(L.type === 'logo' ? { ...rest, blob: await picture(file) } : rest);
+    }
+  }
+  return rec;
+}
+function refreshAll() {           // every panel and the 3D after the whole work was swapped
+  lastColors = null;
+  colorTarget = 'g:all';
+  $('#suggest-body').hidden = true;
+  $('#btn-suggest-undo').hidden = true;
+  $('#order-field').hidden = true;
+  renderModelPicker();
+  renderTabs();
+  buildMap();
+  renderGroups();
+  renderColors();
+  setActive('top', false);
+  for (const k of KEYS) for (const L of LAYERS[k]) refreshFont(k, L);
+  rebuild3D();
+  goView('left');
+  syncHash();
+  for (const k of KEYS) changed(k);
+}
+let beforeOpen = null;
+async function openProject(file) {
+  if (typeof JSZip === 'undefined') { toast('Para abrir um projeto o ateliê precisa de internet. Recarregue a página conectado.'); return; }
+  let rec;
+  try {
+    rec = await readProject(file);
+  } catch (err) {
+    toast(err.message === 'format'
+      ? `${file.name} não é um projeto do ateliê. Abra um arquivo .atelie salvo em Projeto.`
+      : `${file.name} não abriu. O arquivo pode estar incompleto; salve o projeto de novo e tente outra vez.`);
+    return;
+  }
+  beforeOpen = projectRecord();
+  await applyRecord(rec);
+  refreshAll();
+  $('#btn-proj-undo').hidden = false;
+  const missing = KEYS.filter((k) => rec.surfaces[k] && rec.surfaces[k].blob && S[k].sample).length;
+  toast(`Projeto aberto: ${model.name}, layout ${spec.name.toLowerCase()}.${missing ? ` ${missing === 1 ? 'Uma imagem não abriu' : `${missing} imagens não abriram`} e ficou sem arte.` : ''}`);
+}
+$('#btn-proj-save').addEventListener('click', async (e) => {
+  if (typeof JSZip === 'undefined') { toast('Para salvar o projeto o ateliê precisa de internet. Recarregue a página conectado.'); return; }
+  const btn = e.currentTarget;
+  busy(btn, true, 'Salvando…');
+  try { await saveFile(`projeto-${modelSlug()}-${today()}.atelie`, await projectBlob()); }
+  catch (err) { toast('O projeto não foi salvo. Tente de novo.'); }
+  busy(btn, false);
+});
+$('#btn-proj-open').addEventListener('click', () => $('#proj-file').click());
+$('#proj-file').addEventListener('change', (e) => {
+  const f = e.target.files && e.target.files[0];
+  e.target.value = '';
+  if (f) openProject(f);
+});
+$('#btn-proj-undo').addEventListener('click', async () => {
+  if (!beforeOpen) return;
+  const rec = beforeOpen;
+  beforeOpen = null;
+  await applyRecord(rec);
+  refreshAll();
+  $('#btn-proj-undo').hidden = true;
+  toast('O ateliê voltou ao que estava antes de abrir o projeto.');
+});
+
+// ---------- video: one turn of the case, recorded from the 3D ----------
+const VIDEO_TYPES = ['video/mp4;codecs=avc1.42E01F', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
+function videoType() {             // MP4 where the browser can, since phones and chat apps take it; WEBM otherwise
+  if (typeof MediaRecorder === 'undefined' || !HTMLCanvasElement.prototype.captureStream) return null;
+  return VIDEO_TYPES.find((t) => { try { return MediaRecorder.isTypeSupported(t); } catch (err) { return false; } }) || null;
+}
+// one turn from above; when the base has art, a second turn dips under the case to show it, then comes back up
+const showsBase = () => activeKeys().includes('base') && hasArt('base');
+const videoSeconds = () => (showsBase() ? 16 : 8);
+async function recordTurn(type, onTick) {
+  const under = showsBase(), T = videoSeconds() * 1000, turns = under ? 2 : 1;
+  const W = 1280, H = 720, gl = renderer.domElement, stage = $('#stage');
+  const ease = (a, b, x) => { const v = clamp((x - a) / (b - a), 0, 1); return v * v * (3 - 2 * v); };
+  const out = document.createElement('canvas'); out.width = W; out.height = H;
+  const c = out.getContext('2d');
+  const g = c.createRadialGradient(W * 0.55, H * 0.3, 0, W * 0.55, H * 0.3, W * 0.85);
+  g.addColorStop(0, '#f6f5f2'); g.addColorStop(1, '#d9d6cf');
+  const stream = out.captureStream(30);
+  const rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 6e6 });
+  const chunks = [];
+  rec.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+  const stopped = new Promise((res, rej) => { rec.onstop = res; rec.onerror = (e) => rej(e.error || new Error('recorder')); });
+  stopped.catch(() => {});        // awaited below; this only keeps an early failure from being reported twice
+  const before = { az: view.az, el: view.el, zoom: view.zoom };
+  const frame = (u) => {           // a steady turn from where the camera is, so the clip loops cleanly
+    const t = u * T / 1000, low = under ? ease(7, 8.6, t) - ease(14.4, 16, t) : 0;   // 0 above the case, 1 under it
+    view.az = before.az + u * turns * 2 * Math.PI;
+    view.el = (22 - 62 * low) * D;   // 22° above, −40° under
+    view.zoom = 0.72 + 0.34 * low;   // a wide frame: from above the turning case is bounded by the width, so it can come
+                                     // closer; seen from under, the whole plate faces the camera and needs the room
+    view.drop = 22 * low;            // from below, aim at the base rather than the panel
+    renderNow();
+    c.fillStyle = g; c.fillRect(0, 0, W, H);
+    c.drawImage(gl, 0, 0, W, H);
+  };
+  cancelAnimationFrame(anim);
+  recording = true;
+  stage.classList.add('recording');
+  $('#rec').hidden = false;
+  hideSelection();
+  exportAspect = W / H;
+  renderer.setPixelRatio(1);
+  renderer.setSize(W, H, false);
+  gl.style.objectFit = 'contain';      // the stage shows the frame being recorded, letterboxed
+  try {
+    frame(0);
+    rec.start();
+    const t0 = performance.now();
+    await new Promise((res) => {
+      const step = (now) => {
+        const u = Math.min(1, (now - t0) / T);
+        frame(u);
+        onTick(Math.ceil((1 - u) * T / 1000));
+        if (u < 1) requestAnimationFrame(step); else res();
+      };
+      requestAnimationFrame(step);
+    });
+    rec.stop();
+    await stopped;
+  } finally {
+    for (const t of stream.getTracks()) t.stop();
+    recording = false;
+    stage.classList.remove('recording');
+    $('#rec').hidden = true;
+    gl.style.objectFit = '';
+    Object.assign(view, before, { drop: 0 });
+    exportAspect = null;
+    showSelection();
+    resizeStage();
+    renderNow();
+  }
+  if (!chunks.length) throw new Error('empty');
+  return new Blob(chunks, { type: type.split(';')[0] });
+}
+$('#btn-video').addEventListener('click', async (e) => {
+  if (!renderer) { toast('A prévia 3D não carregou neste navegador.'); return; }
+  if (recording) return;
+  const type = videoType();
+  if (!type) { toast('Este navegador não grava vídeo. Use o Chrome, o Edge, o Firefox ou o Safari atualizados.'); return; }
+  const btn = e.currentTarget;
+  busy(btn, true, 'Gravando…');
+  await layerFontsReady();
+  try {
+    const blob = await recordTurn(type, (s) => { $('#rec-text').textContent = `Gravando o vídeo · falta${s > 1 ? 'm' : ''} ${s} s`; });
+    const ext = blob.type === 'video/mp4' ? 'mp4' : 'webm';
+    if (await saveFile(`video-${modelSlug()}.${ext}`, blob) && ext === 'webm') {
+      toast(`video-${modelSlug()}.webm baixado. Este navegador só grava WEBM; para um MP4, que vai direto no WhatsApp, grave pelo Chrome, pelo Edge ou pelo Safari.`);
+    }
+  } catch (err) { toast('O vídeo não foi gravado. Recarregue a página e tente de novo.'); }
+  busy(btn, false);
+});
+
+// ---------- order text for the shop ----------
+function orderText() {
+  const lines = ['*Pedido de controle arcade*', '', `Modelo: ${model.name} (${model.store})`, `Layout: ${spec.name}`];
+  if (isTall()) lines.push(`Altura da lateral: ${settings.wallH} mm`);
+  lines.push('', isTall() ? '*Botões e stick*' : '*Teclas*', ...shoppingLines().map((l) => `• ${l}`));
+  const art = activeKeys().filter(hasArt);
+  if (art.length) {
+    lines.push('', '*Arte*');
+    for (const k of printKeys()) {
+      const { w, h } = SURF[k].dims(), two = SURF[k].copies > 1;
+      lines.push(`• ${SURF[k].name}: ${mmLabel(w)} × ${mmLabel(h)} mm${two ? ', 2 cópias' : ''}${art.includes(k) ? '' : ' (sem arte)'}`);
+    }
+    lines.push(`Mando os arquivos de impressão em ${settings.dpi} DPI em seguida.`);
+  }
+  return lines.join('\n');
+}
+$('#btn-order').addEventListener('click', () => {
+  const text = orderText(), box = $('#order-text'), field = $('#order-field');
+  box.value = text;
+  const showText = () => {
+    field.hidden = false;
+    box.style.height = '';
+    box.style.height = `${box.scrollHeight + 2}px`;
+    box.focus();
+    box.select();
+    toast('Não deu para copiar sozinho. O texto do pedido está selecionado logo abaixo do botão.');
+  };
+  if (!navigator.clipboard || !navigator.clipboard.writeText) { showText(); return; }
+  navigator.clipboard.writeText(text).then(() => {
+    field.hidden = true;
+    toast('Pedido copiado. Cole na conversa com a loja.');
+  }, showText);
 });
 
 // ---------- theme changes repaint the mat ----------
@@ -3205,7 +3590,7 @@ async function boot() {
   }
   downloads().then((dl) => {
     if (dl === null) {
-      for (const id of ['#btn-zip', '#btn-3d', '#btn-one']) {
+      for (const id of ['#btn-zip', '#btn-3d', '#btn-video', '#btn-one', '#btn-proj-save']) {
         $(id).disabled = true;
         $(id).title = 'Esta visualização não permite baixar arquivos';
       }

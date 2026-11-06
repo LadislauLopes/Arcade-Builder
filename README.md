@@ -13,12 +13,16 @@ O editor está em [`index.html`](index.html). É um arquivo só, sem build.
 
 - Escolha o modelo (MINI, BASIC, SLIM, PRO XL e a linha FLAT) e um dos 36 layouts.
 - Suba a arte do topo, das pontas e da frente/fundo. Arraste para posicionar, use zoom, gire ou espelhe.
+- Se quiser, ponha arte também na base, a placa de baixo. Ela aparece na vista "Baixo" do 3D e só vai para os arquivos quando tem arte. Confirme com a loja se ela imprime a base.
 - Ajuste brilho, contraste e saturação de cada arte, ou mostre a imagem inteira com um fundo de cor ou desfocado.
 - Escreva um texto (seis fontes, inclusive japonesa) ou ponha um logo por cima da arte e arraste para posicionar.
 - Use "Sugerir cores pela arte" para ver as cores Sanwa mais parecidas com a arte e três combinações prontas.
 - Veja o resultado em 3D, com os furos dos botões, do stick e dos parafusos no lugar certo.
 - Pinte cada botão com as cores Sanwa (ou as capas low-profile da linha FLAT) e escolha a cor do bat-top.
 - Baixe os PNGs em 300 DPI prontos para a gráfica, num `.zip` com um `LEIA-ME.txt` que traz as medidas e a lista de botões.
+- Baixe um vídeo de 8 segundos do controle dando uma volta, para mostrar a ideia para alguém. Se a base tiver arte, o vídeo passa por baixo do controle também e fica com 16 segundos. Sai em MP4 no Chrome, no Edge e no Safari, e em WEBM no Firefox.
+- Use "Copiar pedido" para levar à loja um texto com o modelo, o layout, a altura da lateral e os botões com as cores.
+- Salve o projeto num arquivo `.atelie` (em **Projeto**) e abra em outro computador. Ele leva as artes originais, os ajustes, os textos, os logos e as cores.
 
 ### Como usar
 
@@ -27,7 +31,8 @@ internet para carregar o three.js e o JSZip (do cdnjs) e as fontes (do Google
 Fonts).
 
 As imagens e os ajustes ficam salvos só no seu navegador (IndexedDB). Nada é
-enviado para nenhum servidor.
+enviado para nenhum servidor. Para levar o trabalho para outro computador ou
+guardar uma cópia, salve o projeto em `.atelie`.
 
 O endereço guarda o modelo e o layout escolhidos (por exemplo `#proxl-dual`
 ou `#slim-keyboard`), então dá para mandar o link de uma configuração
