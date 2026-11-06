@@ -3433,8 +3433,7 @@ async function recordTurn(type, onTick) {
   const ease = (a, b, x) => { const v = clamp((x - a) / (b - a), 0, 1); return v * v * (3 - 2 * v); };
   const out = document.createElement('canvas'); out.width = W; out.height = H;
   const c = out.getContext('2d');
-  const g = c.createRadialGradient(W * 0.55, H * 0.3, 0, W * 0.55, H * 0.3, W * 0.85);
-  g.addColorStop(0, '#f6f5f2'); g.addColorStop(1, '#d9d6cf');
+  const g = '#16191e';             // the dark stage of the editor, whatever the page theme
   const stream = out.captureStream(30);
   const rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 6e6 });
   const chunks = [];
