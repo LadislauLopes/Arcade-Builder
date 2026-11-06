@@ -11,7 +11,7 @@ um editor que roda no navegador e modelos 3D de oito controles no Blender.
 
 O editor está em [`index.html`](index.html). É um arquivo só, sem build.
 
-- Escolha o modelo (MINI, BASIC, SLIM, PRO XL e a linha FLAT) e um dos 36 layouts.
+- Escolha o modelo (MINI, BASIC, SLIM, PRO XL, o SITONG de alumínio e a linha FLAT) e um dos 37 layouts.
 - Suba a arte do topo, das pontas e da frente/fundo. Arraste para posicionar, use zoom, gire ou espelhe.
 - Se quiser, ponha arte também na base, a placa de baixo. Ela aparece na vista "Baixo" do 3D e só vai para os arquivos quando tem arte. Confirme com a loja se ela imprime a base.
 - Ajuste brilho, contraste e saturação de cada arte, ou mostre a imagem inteira com um fundo de cor ou desfocado.
@@ -29,6 +29,11 @@ O editor está em [`index.html`](index.html). É um arquivo só, sem build.
 Abra o link acima ou o `index.html` direto no navegador. Ele precisa de
 internet para carregar o three.js e o JSZip (do cdnjs) e as fontes (do Google
 Fonts).
+
+No SITONG só o topo leva arte: a caixa é de alumínio, o tampo é preso por ímãs
+e o fundo tem um tapete de silicone. A área da arte (382 × 176 mm), os furos e a
+janelinha do tampo foram medidos nas fotos da loja, então confirme com ela antes
+de imprimir.
 
 As imagens e os ajustes ficam salvos só no seu navegador (IndexedDB). Nada é
 enviado para nenhum servidor. Para levar o trabalho para outro computador ou
