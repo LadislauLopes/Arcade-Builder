@@ -20,7 +20,7 @@ O editor está em [`index.html`](index.html). É um arquivo só, sem build.
 - Veja o resultado em 3D, com os furos dos botões, do stick e dos parafusos no lugar certo.
 - Pinte cada botão com as cores Sanwa (ou as capas low-profile da linha FLAT) e escolha a cor do bat-top.
 - Baixe os PNGs em 300 DPI prontos para a gráfica, num `.zip` com um `LEIA-ME.txt` que traz as medidas e a lista de botões.
-- Baixe um vídeo de 8 segundos do controle dando uma volta, para mostrar a ideia para alguém. Se a base tiver arte, o vídeo passa por baixo do controle também e fica com 16 segundos. Sai em MP4 no Chrome, no Edge e no Safari, e em WEBM no Firefox.
+- Baixe um vídeo do controle dando uma volta e terminando parado na vista de cima, para mostrar a ideia para alguém (12 segundos). Se a base tiver arte, o vídeo passa por baixo do controle também (21 segundos). Sai em MP4 no Chrome, no Edge e no Safari, e em WEBM no Firefox.
 - Use "Copiar pedido" para levar à loja um texto com o modelo, o layout, a altura da lateral e os botões com as cores.
 - Salve o projeto num arquivo `.atelie` (em **Projeto**) e abra em outro computador. Ele leva as artes originais, os ajustes, os textos, os logos e as cores.
 

@@ -595,7 +595,7 @@ details.settings .btn:not(.primary):not(.danger):not([aria-pressed="true"]):hove
       <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4.5 8 1.5l6 3v7l-6 3-6-3z M2 4.5l6 3 6-3 M8 7.5v7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
       Baixar prévia 3D
     </button>
-    <button class="btn" id="btn-video" type="button" title="Grava o controle dando uma volta inteira em 8 segundos. Se a base tiver arte, o vídeo passa por baixo também e fica com 16 segundos.">
+    <button class="btn" id="btn-video" type="button" title="Grava o controle dando uma volta inteira e termina parado na vista de cima. Se a base tiver arte, o vídeo passa por baixo também.">
       <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 4h9v8h-9z M10.5 7l4-2.2v6.4l-4-2.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
       Baixar vídeo
     </button>
@@ -3424,12 +3424,20 @@ function videoType() {             // MP4 where the browser can, since phones an
   if (typeof MediaRecorder === 'undefined' || !HTMLCanvasElement.prototype.captureStream) return null;
   return VIDEO_TYPES.find((t) => { try { return MediaRecorder.isTypeSupported(t); } catch (err) { return false; } }) || null;
 }
-// one turn from above; when the base has art, a second turn dips under the case to show it, then comes back up
+// one turn from above (and, when the base has art, a second one under the case), then the camera slows the turn
+// to a stop while it rises over the panel, and the clip ends held on the view from above, square to the player
 const showsBase = () => activeKeys().includes('base') && hasArt('base');
-const videoSeconds = () => (showsBase() ? 16 : 8);
+const SPIN = 8, HOLD = 1.5;                     // seconds per turn; seconds held on the view from above
+const riseTime = () => (showsBase() ? 3.2 : 2.6);  // from under the case the climb is longer
+const videoSeconds = () => (showsBase() ? 2 : 1) * SPIN + riseTime() + HOLD;
 async function recordTurn(type, onTick) {
-  const under = showsBase(), T = videoSeconds() * 1000, turns = under ? 2 : 1;
+  const under = showsBase(), T = videoSeconds() * 1000, spin = (under ? 2 : 1) * SPIN, rise = riseTime();
+  const w = 2 * Math.PI / SPIN;                 // turn speed, rad/s
+  const a0 = -w * rise / 2;                     // slowing to a stop covers w·rise/2, so starting this far back ends square to the front
   const W = 1280, H = 720, gl = renderer.domElement, stage = $('#stage');
+  // from above, the panel fills about 80 % of the frame height (or 86 % of its width, whichever is tighter)
+  const vf = camera.fov * D / 2, hf = Math.atan(Math.tan(vf) * W / H);
+  const topZoom = Math.max(spec.h / (1.6 * Math.tan(vf)), spec.w / (1.72 * Math.tan(hf))) / (view.fitR / Math.sin(vf) * 0.9);
   const ease = (a, b, x) => { const v = clamp((x - a) / (b - a), 0, 1); return v * v * (3 - 2 * v); };
   const out = document.createElement('canvas'); out.width = W; out.height = H;
   const c = out.getContext('2d');
@@ -3441,13 +3449,15 @@ async function recordTurn(type, onTick) {
   const stopped = new Promise((res, rej) => { rec.onstop = res; rec.onerror = (e) => rej(e.error || new Error('recorder')); });
   stopped.catch(() => {});        // awaited below; this only keeps an early failure from being reported twice
   const before = { az: view.az, el: view.el, zoom: view.zoom };
-  const frame = (u) => {           // a steady turn from where the camera is, so the clip loops cleanly
-    const t = u * T / 1000, low = under ? ease(7, 8.6, t) - ease(14.4, 16, t) : 0;   // 0 above the case, 1 under it
-    view.az = before.az + u * turns * 2 * Math.PI;
-    view.el = (22 - 62 * low) * D;   // 22° above, −40° under
-    view.zoom = 0.72 + 0.34 * low;   // a wide frame: from above the turning case is bounded by the width, so it can come
-                                     // closer; seen from under, the whole plate faces the camera and needs the room
-    view.drop = 22 * low;            // from below, aim at the base rather than the panel
+  const frame = (u) => {
+    const t = u * T / 1000;
+    const low = under ? ease(7, 8.6, t) : 0;                  // 0 above the case, 1 under it (until the climb)
+    const r = clamp((t - spin) / rise, 0, 1), up = r * r * (3 - 2 * r);   // the climb to the view from above
+    view.az = a0 + w * Math.min(t, spin) + w * rise * (r - r * r / 2);   // steady, then slowing evenly to a stop
+    view.el = ((22 - 62 * low) * (1 - up) + 86 * up) * D;   // 22° above, −40° under, 86° at the end (as Cima)
+    view.zoom = (0.72 + 0.34 * low) * (1 - up) + topZoom * up;   // a wide frame: from above the turning case is bounded by
+                                     // the width, so it can come closer; from under, the whole plate faces the camera
+    view.drop = 22 * low * (1 - up);   // from below, aim at the base rather than the panel
     renderNow();
     c.fillStyle = g; c.fillRect(0, 0, W, H);
     c.drawImage(gl, 0, 0, W, H);
