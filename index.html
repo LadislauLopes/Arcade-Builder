@@ -1,69 +1,112 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Ateliê do Controle</title>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ateliê do Controle</title>
+<meta name="description" content="Planeje a arte de um controle arcade: escolha o modelo e o layout, posicione as artes do topo e das laterais, pinte os botões e baixe os PNGs em 300 DPI para a gráfica.">
+<meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1f25" media="(prefers-color-scheme: dark)">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap">
 <style>
-/* Layout: a workbench — the 3D controller on a studio sweep at the left, the cutting mat (crop editor) at the right; stacks on phones */
+/* Layout: a workbench. The 3D controller sits on a flat studio floor at the left; the cutting mat
+   (crop editor), the parts and the export settings run down a panel at the right. They stack on phones.
+   Surfaces are one cool stone family leaning toward the blue accent and are told apart by tone steps,
+   not by lines. One typeface (Archivo): stretched for the name, regular width with tabular figures for
+   every measurement. */
 :root {
-  --bg: #eeece7;
-  --panel: #faf9f6;
-  --ink: #1c1e22;
-  --muted: #64625d;
-  --line: #dbd7ce;
+  --stage: #e2e5ea;
+  --panel: #f6f7f9;
+  --raise: #e9ecf0;
+  --raise-hover: #dde1e7;
+  --mat: #dde0e6;
+  --ink: #15171c;
+  --muted: #4f5561;
+  --field-line: #c3c8d1;
   --accent: #2b59c3;
+  --accent-hover: #234cad;
   --accent-ink: #ffffff;
-  --accent-soft: #e2e8f7;
-  --stage-a: #f5f4f1;
-  --stage-b: #d6d3cb;
-  --mat: #e4e1da;
-  --grid: rgba(28, 30, 34, 0.07);
-  --grid-strong: rgba(28, 30, 34, 0.14);
-  --veil: rgba(238, 236, 231, 0.84);
-  --frame: #1c1e22;
-  --good: #1f7344;
-  --good-soft: #dbeee2;
-  --warn: #8f5500;
-  --warn-soft: #f5e8d1;
-  --bad: #ad2419;
-  --bad-soft: #f6dcd8;
-  --display: "Archivo", "Helvetica Neue", Arial, system-ui, sans-serif;
-  --body: "Archivo", "Helvetica Neue", Arial, system-ui, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --accent-soft: #dbe4f8;
+  --accent-text: #1d438f;
+  --cut: rgba(20, 110, 112, 0.6);
+  --grid: rgba(21, 23, 28, 0.07);
+  --grid-strong: rgba(21, 23, 28, 0.15);
+  --veil: rgba(226, 229, 234, 0.84);
+  --frame: #15171c;
+  --good: #1d6e41;
+  --good-soft: #d7ecdf;
+  --warn: #87500a;
+  --warn-soft: #f3e5cc;
+  --bad: #a32218;
+  --bad-soft: #f5d9d5;
+  --sans: "Archivo", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --t-small: 13px;
+  --t-body: 14px;
+  --t-head: 16px;
+  --t-title: 20px;
+  --r: 6px;
+  color-scheme: light;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #14161a; --panel: #1b1e24; --ink: #ebeae5; --muted: #a09e98; --line: #2e323a;
-    --accent: #87a6ff; --accent-ink: #0d1221; --accent-soft: #212d4b;
-    --stage-a: #2c2f35; --stage-b: #16181c; --mat: #22252c;
-    --grid: rgba(235, 234, 229, 0.06); --grid-strong: rgba(235, 234, 229, 0.12);
-    --veil: rgba(20, 22, 26, 0.82); --frame: #ebeae5;
-    --good: #74d39b; --good-soft: #1c3627; --warn: #f0b45a; --warn-soft: #3a2d16; --bad: #ff8f84; --bad-soft: #42201d;
+    --stage: #16191e; --panel: #1c1f25; --raise: #262a32; --raise-hover: #2f343d; --mat: #22262d;
+    --ink: #eceef2; --muted: #a8aeb9; --field-line: #434955;
+    --accent: #87a6ff; --accent-hover: #9db6ff; --accent-ink: #0d1221; --accent-soft: #233154; --accent-text: #b9caff;
+    --cut: rgba(64, 170, 172, 0.6);
+    --grid: rgba(236, 238, 242, 0.06); --grid-strong: rgba(236, 238, 242, 0.13);
+    --veil: rgba(22, 25, 30, 0.82); --frame: #eceef2;
+    --good: #74d39b; --good-soft: #1b3526; --warn: #f0b45a; --warn-soft: #392c15; --bad: #ff8f84; --bad-soft: #41201d;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #14161a; --panel: #1b1e24; --ink: #ebeae5; --muted: #a09e98; --line: #2e323a;
-  --accent: #87a6ff; --accent-ink: #0d1221; --accent-soft: #212d4b;
-  --stage-a: #2c2f35; --stage-b: #16181c; --mat: #22252c;
-  --grid: rgba(235, 234, 229, 0.06); --grid-strong: rgba(235, 234, 229, 0.12);
-  --veil: rgba(20, 22, 26, 0.82); --frame: #ebeae5;
-  --good: #74d39b; --good-soft: #1c3627; --warn: #f0b45a; --warn-soft: #3a2d16; --bad: #ff8f84; --bad-soft: #42201d;
+  --stage: #16191e; --panel: #1c1f25; --raise: #262a32; --raise-hover: #2f343d; --mat: #22262d;
+  --ink: #eceef2; --muted: #a8aeb9; --field-line: #434955;
+  --accent: #87a6ff; --accent-hover: #9db6ff; --accent-ink: #0d1221; --accent-soft: #233154; --accent-text: #b9caff;
+  --cut: rgba(64, 170, 172, 0.6);
+  --grid: rgba(236, 238, 242, 0.06); --grid-strong: rgba(236, 238, 242, 0.13);
+  --veil: rgba(22, 25, 30, 0.82); --frame: #eceef2;
+  --good: #74d39b; --good-soft: #1b3526; --warn: #f0b45a; --warn-soft: #392c15; --bad: #ff8f84; --bad-soft: #41201d;
   color-scheme: dark;
 }
 
+[hidden] { display: none !important; }
 html, body { height: 100%; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+@media (pointer: fine) { html { overscroll-behavior: none; } }
 body {
-  background: var(--bg);
+  margin: 0;
+  background: var(--panel);
   color: var(--ink);
-  font-family: var(--body);
-  font-size: 14px;
+  font-family: var(--sans);
+  font-size: var(--t-body);
   line-height: 1.45;
   display: flex;
   flex-direction: column;
 }
 button, input, select { font: inherit; color: inherit; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button, summary, select, input[type="range"], input[type="checkbox"] { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+
+.skip {
+  position: absolute;
+  top: 8px;
+  left: max(16px, env(safe-area-inset-left, 0px));
+  z-index: 30;
+  padding: 10px 14px;
+  border-radius: var(--r);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 650;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+.skip:focus { transform: none; }
 
 .bar {
   display: flex;
@@ -75,21 +118,19 @@ button, input, select { font: inherit; color: inherit; }
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   background: var(--panel);
-  border-bottom: 1px solid var(--line);
 }
 .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .brand svg { flex: none; color: var(--accent); }
 .brand h1 {
   margin: 0;
-  font-family: var(--display);
   font-stretch: 122%;
   font-weight: 760;
-  font-size: 19px;
-  letter-spacing: 0.01em;
+  font-size: var(--t-title);
+  letter-spacing: -0.01em;
   line-height: 1.1;
   text-wrap: balance;
 }
-.brand p { margin: 2px 0 0; color: var(--muted); font-size: 12.5px; }
+.brand p { margin: 3px 0 0; color: var(--muted); font-size: var(--t-small); text-wrap: pretty; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; }
 
 .btn {
@@ -97,23 +138,26 @@ button, input, select { font: inherit; color: inherit; }
   align-items: center;
   justify-content: center;
   gap: 7px;
-  padding: 8px 13px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--panel);
+  min-height: 36px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: var(--r);
+  background: var(--raise);
   color: var(--ink);
   font-weight: 600;
-  font-size: 13px;
   line-height: 1.2;
+  text-align: center;
   cursor: pointer;
-  white-space: nowrap;
+  transition: background-color 0.12s ease, transform 0.12s ease;
 }
-.btn:hover { border-color: var(--muted); }
-.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
-.btn.primary:hover { filter: brightness(1.06); }
-.btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn:hover { background: var(--raise-hover); }
+.btn:active { transform: translateY(1px); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { background: var(--accent-hover); }
+.btn[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent-text); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 .btn svg { width: 15px; height: 15px; flex: none; }
+.actions .btn, .tools .btn { white-space: nowrap; }
 
 .work {
   flex: 1;
@@ -126,7 +170,9 @@ button, input, select { font: inherit; color: inherit; }
   position: relative;
   min-height: 0;
   overflow: hidden;
-  background: radial-gradient(120% 95% at 55% 28%, var(--stage-a), var(--stage-b));
+  background: var(--stage);
+  -webkit-user-select: none;
+  user-select: none;
 }
 #gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
 #gl:active { cursor: grabbing; }
@@ -134,34 +180,43 @@ button, input, select { font: inherit; color: inherit; }
   position: absolute;
   top: 12px;
   left: max(14px, env(safe-area-inset-left, 0px));
+  right: 14px;
   margin: 0;
-  font-size: 12px;
+  font-size: var(--t-small);
   color: var(--muted);
   pointer-events: none;
 }
-.views {
+.hint .coarse { display: none; }
+@media (pointer: coarse) {
+  .hint .fine { display: none; }
+  .hint .coarse { display: inline; }
+}
+.views, .zoom3d {
   position: absolute;
-  left: max(12px, env(safe-area-inset-left, 0px));
   bottom: 12px;
   display: flex;
-  flex-wrap: wrap;
   gap: 2px;
   padding: 3px;
-  border-radius: 10px;
+  border-radius: calc(var(--r) + 3px);
   background: var(--panel);
-  border: 1px solid var(--line);
 }
-.views button {
+.views { left: max(12px, env(safe-area-inset-left, 0px)); flex-wrap: wrap; }
+.zoom3d { right: 12px; }
+.views button, .zoom3d button {
+  min-height: 32px;
+  padding: 6px 11px;
   border: 0;
+  border-radius: var(--r);
   background: transparent;
-  padding: 6px 10px;
-  border-radius: 7px;
-  font-size: 12.5px;
+  color: var(--muted);
+  font-size: var(--t-small);
   font-weight: 600;
   cursor: pointer;
-  color: var(--muted);
+  transition: background-color 0.12s ease, color 0.12s ease;
 }
-.views button[aria-pressed="true"] { background: var(--accent-soft); color: var(--ink); }
+.views button:hover, .zoom3d button:hover { background: var(--raise); color: var(--ink); }
+.views button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent-text); }
+.zoom3d button { min-width: 32px; padding-inline: 8px; font-size: 17px; line-height: 1; }
 .stage .veil {
   position: absolute;
   inset: 0;
@@ -170,44 +225,82 @@ button, input, select { font: inherit; color: inherit; }
   text-align: center;
   padding: 24px;
   color: var(--muted);
-  font-size: 13px;
 }
 
 .panel {
   min-height: 0;
   overflow: auto;
+  overscroll-behavior: contain;
+  container-type: inline-size;
   background: var(--panel);
-  border-left: 1px solid var(--line);
-  padding-block: 16px 22px;
+  padding-block: 8px 28px;
   padding-left: 20px;
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 28px;
 }
+.panel:focus { outline: none; }
+
+.pick, .art, .colors { display: grid; gap: 12px; }
+.pick h2, .colors h2 {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  font-stretch: 112%;
+  font-weight: 720;
+  font-size: var(--t-head);
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.pick h2 small, .colors h2 small {
+  font-stretch: 100%;
+  font-weight: 500;
+  font-size: var(--t-small);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.art { gap: 10px; }
+
+.models { display: grid; gap: 8px; }
+.model-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.model, .tab, .group {
+  min-width: 0;
+  border: 0;
+  border-radius: var(--r);
+  background: var(--raise);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+.model:hover, .tab:hover, .group:hover { background: var(--raise-hover); }
+.model[aria-checked="true"], .tab[aria-selected="true"], .group[aria-checked="true"] {
+  background: var(--accent-soft);
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.model[aria-checked="true"] small, .tab[aria-selected="true"] small, .group[aria-checked="true"] .sub { color: var(--accent-text); }
+.model { padding: 8px 10px; }
+.model b { display: block; font-size: var(--t-body); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.model small, .tab small { display: block; font-size: var(--t-small); color: var(--muted); font-variant-numeric: tabular-nums; }
+.model small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pick .field select { width: auto; min-width: 13em; max-width: 100%; }
 
 .tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
-.tab {
-  min-width: 0;
-  text-align: left;
-  padding: 9px 11px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--bg);
-  cursor: pointer;
-}
-.tab b { display: block; font-weight: 700; font-size: 13.5px; }
-.tab small { display: block; font-family: var(--mono); font-size: 10.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.tab[aria-selected="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.tab { padding: 9px 12px; }
+.tab b { display: block; font-weight: 700; }
 
 .editor {
   position: relative;
   aspect-ratio: 16 / 10;
   max-width: 100%;
-  border-radius: 12px;
+  border-radius: var(--r);
   overflow: hidden;
   background: var(--mat);
-  border: 1px solid var(--line);
+  -webkit-user-select: none;
+  user-select: none;
 }
 #ed { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: move; }
 .editor.dropping { outline: 2px dashed var(--accent); outline-offset: -6px; }
@@ -224,49 +317,64 @@ button, input, select { font: inherit; color: inherit; }
 
 .tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .zoom { display: flex; align-items: center; gap: 8px; flex: 1 1 200px; min-width: 0; }
-.zoom label { font-size: 12.5px; color: var(--muted); }
+.zoom label { font-size: var(--t-small); color: var(--muted); }
 .zoom input { flex: 1; min-width: 0; accent-color: var(--accent); }
-.zoom output { font-family: var(--mono); font-size: 12px; min-width: 4.5ch; text-align: right; font-variant-numeric: tabular-nums; }
+.zoom output { font-size: var(--t-small); min-width: 4.5ch; text-align: right; font-variant-numeric: tabular-nums; }
 
-.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; font-size: 12.5px; }
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: var(--t-small); }
 .meta .file { min-width: 0; flex: 1 1 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); }
 .chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 3px 9px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  background: var(--bg);
+  gap: 7px;
+  padding: 4px 10px;
+  border-radius: 13px;
+  background: var(--raise);
   color: var(--muted);
-  border: 1px solid var(--line);
+  font-size: var(--t-small);
+  font-weight: 600;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
 }
-.chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-.chip.good { background: var(--good-soft); color: var(--good); border-color: transparent; }
-.chip.warn { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
-.chip.bad { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
-.print-size { font-family: var(--mono); font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.chip::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.chip.good { background: var(--good-soft); color: var(--good); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); }
+.chip.bad { background: var(--bad-soft); color: var(--bad); }
+.print-size { font-size: var(--t-small); color: var(--muted); font-variant-numeric: tabular-nums; }
 
-.note { margin: 0; font-size: 13px; color: var(--muted); max-width: 62ch; }
+.note { margin: 0; color: var(--ink); max-width: 62ch; text-wrap: pretty; }
 .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.confirm { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.confirm .note { flex: 1 1 100%; }
+.btn.danger { background: var(--bad-soft); color: var(--bad); }
+.btn.danger:hover { background: var(--bad); color: var(--panel); }
+#editor-area { display: grid; gap: 12px; }
 
-details.settings { border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
-details.settings summary { cursor: pointer; padding: 10px 12px; font-weight: 600; font-size: 13px; }
-.settings-body { display: grid; gap: 12px; padding: 4px 12px 14px; }
-.field { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; font-size: 13px; }
-.field small { display: block; color: var(--muted); font-size: 12px; }
-.field input[type="number"], .field select {
-  width: 7.5em;
-  padding: 6px 8px;
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  background: var(--panel);
-  font-family: var(--mono);
-  font-size: 13px;
+details.settings { border-radius: var(--r); background: var(--raise); }
+details.settings summary {
+  padding: 11px 14px;
+  border-radius: var(--r);
+  font-weight: 650;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
 }
-.check { display: flex; align-items: center; gap: 8px; font-size: 13px; }
-.check input { accent-color: var(--accent); width: 16px; height: 16px; }
+details.settings summary:hover { background: var(--raise-hover); }
+.settings-body { display: grid; gap: 14px; padding: 4px 14px 16px; }
+.field { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 12px; }
+.field > span { min-width: 0; }
+.field small { display: block; color: var(--muted); font-size: var(--t-small); }
+.field input[type="number"], .field select {
+  width: 8em;
+  min-height: 36px;
+  padding: 6px 8px;
+  border: 1px solid var(--field-line);
+  border-radius: var(--r);
+  background-color: var(--panel);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.check { display: flex; align-items: center; gap: 9px; }
+.check input { accent-color: var(--accent); width: 18px; height: 18px; margin: 0; }
 
 .toast {
   position: fixed;
@@ -274,114 +382,87 @@ details.settings summary { cursor: pointer; padding: 10px 12px; font-weight: 600
   bottom: calc(18px + env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
   max-width: min(520px, calc(100% - 32px));
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 11px 15px;
+  border-radius: 8px;
   background: var(--ink);
-  color: var(--bg);
-  font-size: 13px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+  color: var(--panel);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22); /* taste-skill-ignore: the toast floats above the work */
   z-index: 20;
 }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-.colors { display: grid; gap: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
-.colors h2 {
-  margin: 0;
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  font-family: var(--display);
-  font-stretch: 112%;
-  font-weight: 720;
-  font-size: 15px;
-}
-.colors h2 small { font-family: var(--mono); font-weight: 400; font-size: 11px; color: var(--muted); }
-.groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 6px; }
+.groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
 .group {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  column-gap: 9px;
+  column-gap: 10px;
   align-items: center;
-  text-align: left;
-  padding: 7px 10px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--bg);
-  cursor: pointer;
+  padding: 8px 10px;
 }
-.group .dot { grid-row: span 2; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line); }
-.group b { font-size: 13px; font-weight: 700; line-height: 1.2; }
-.group .sub { font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.group[aria-checked="true"] { border-color: var(--accent); background: var(--accent-soft); }
-.swatches { display: grid; gap: 6px; }
-.sw-title { margin: 4px 0 0; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
-.sw-row { display: flex; flex-wrap: wrap; gap: 7px; }
-.sw { width: 30px; height: 30px; padding: 0; border-radius: 50%; border: 1px solid var(--line); cursor: pointer; }
+.group .dot { grid-row: span 2; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--field-line); }
+.group b { font-weight: 700; line-height: 1.2; }
+.group .sub { font-size: var(--t-small); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.swatches { display: grid; gap: 8px; }
+.sw-title { margin: 6px 0 0; font-size: var(--t-small); font-weight: 650; color: var(--ink); }
+.sw-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.sw {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--field-line); /* taste-skill-ignore: a white or clear swatch needs an edge to be seen */
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
 .sw:hover { transform: scale(1.08); }
-.sw[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 2px; }
-.picked { margin: 0; font-size: 12.5px; color: var(--muted); min-height: 1.4em; }
-.shop { font-size: 12.5px; }
-.shop ul { margin: 4px 0 0; padding-left: 18px; font-family: var(--mono); font-size: 11.5px; font-variant-numeric: tabular-nums; }
-.pick { display: grid; gap: 10px; }
-.pick h2 {
-  margin: 0;
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  font-family: var(--display);
-  font-stretch: 112%;
-  font-weight: 720;
-  font-size: 15px;
-}
-.pick h2 small { font-family: var(--mono); font-weight: 400; font-size: 11px; color: var(--muted); }
-.models { display: grid; gap: 6px; }
-.model-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
-.model {
-  min-width: 0;
-  text-align: left;
-  padding: 7px 9px;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  background: var(--bg);
-  cursor: pointer;
-}
-.model b { display: block; font-size: 12.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.model small { display: block; font-family: var(--mono); font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.model[aria-checked="true"] { border-color: var(--accent); background: var(--accent-soft); }
-.pick .field select { width: auto; min-width: 12em; max-width: 100%; }
-.map-cut { fill: rgba(20, 110, 112, 0.6); }
+.sw[aria-pressed="true"] { outline: 2px solid var(--ink); outline-offset: 2px; }
+@media (pointer: coarse) { .sw { width: 36px; height: 36px; } }
+.picked { margin: 0; font-size: var(--t-small); color: var(--muted); min-height: 1.4em; }
+.shop b { font-weight: 650; }
+.shop ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 3px; font-size: var(--t-small); font-variant-numeric: tabular-nums; }
+
+.map-cut { fill: var(--cut); }
 .map-extra { fill: var(--muted); }
-.map { display: block; width: 100%; max-width: 100%; height: auto; }
-.map-panel { fill: var(--mat); stroke: var(--line); stroke-width: 1; }
+.map { display: block; width: 100%; max-width: min(100%, 600px); height: auto; }
+.map-panel { fill: var(--mat); }
 .map-btn { cursor: pointer; outline: none; }
-.map-btn circle { stroke: var(--muted); stroke-width: 0.8; }
-.map-btn:hover circle { stroke: var(--ink); stroke-width: 1.6; }
-.map-btn.sel circle { stroke: var(--accent); stroke-width: 3; }
-.map-btn:focus-visible circle { stroke: var(--accent); stroke-width: 3; stroke-dasharray: 3 2; }
-.map-label { font-family: var(--body); font-weight: 700; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+.map-btn :is(circle, rect) { stroke: var(--muted); stroke-width: 0.8; }
+.map-btn:hover :is(circle, rect) { stroke: var(--ink); stroke-width: 1.6; }
+.map-btn.sel :is(circle, rect) { stroke: var(--accent); stroke-width: 3; }
+.map-btn:focus-visible :is(circle, rect) { stroke: var(--accent); stroke-width: 3; stroke-dasharray: 3 2; }
+.map-label { font-family: var(--sans); font-weight: 700; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+
+/* the panel narrows before the page does (desktop at 900-1100 px), so it answers to its own width */
+@container (max-width: 440px) {
+  .model-row, .groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .field { grid-template-columns: minmax(0, 1fr); }
+  .field select, .pick .field select { width: 100%; }
+  .field input[type="number"] { width: 8em; }
+}
 
 @media (max-width: 900px) {
   html, body { height: auto; }
   .work { grid-template-columns: minmax(0, 1fr); }
-  .stage { height: 54vh; min-height: 300px; }
+  .stage { height: 54vh; height: 54svh; min-height: 300px; }
   .panel {
     overflow: visible;
-    border-left: 0;
-    border-top: 1px solid var(--line);
+    padding-top: 20px;
     padding-left: max(16px, env(safe-area-inset-left, 0px));
   }
 }
 @media (max-width: 460px) {
-  .tab small { font-size: 9.5px; }
-  .model-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .actions { width: 100%; }
   .actions .btn { flex: 1 1 auto; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+/* last, so no selected-state outline can hide where the keyboard is */
+:focus-visible:not(.map-btn):not(.panel) { outline: 2px solid var(--accent) !important; outline-offset: 2px !important; }
 </style>
-
+</head>
+<body>
+<a class="skip" href="#panel">Pular para o editor de arte</a>
 <header class="bar">
   <div class="brand">
     <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
@@ -410,27 +491,36 @@ details.settings summary { cursor: pointer; padding: 10px 12px; font-weight: 600
 
 <main class="work">
   <section class="stage" id="stage" aria-label="Prévia 3D do controle">
-    <canvas id="gl"></canvas>
-    <p class="hint">Arraste para girar · role para aproximar · clique num botão para pintar só ele</p>
+    <canvas id="gl" role="img" aria-label="Controle em 3D com as artes aplicadas. Use os botões de ângulo e de zoom abaixo, ou arraste para girar."></canvas>
+    <p class="hint">
+      <span class="fine">Arraste para girar · role para aproximar · clique num botão para pintar só ele</span>
+      <span class="coarse">Arraste para girar · use dois dedos para aproximar · toque num botão para pintar só ele</span>
+    </p>
     <div class="views" role="group" aria-label="Ângulo da prévia">
       <button type="button" data-view="left" aria-pressed="true">Esquerda</button>
       <button type="button" data-view="front" aria-pressed="false">Frente</button>
       <button type="button" data-view="right" aria-pressed="false">Direita</button>
       <button type="button" data-view="top" aria-pressed="false">Cima</button>
     </div>
+    <div class="zoom3d" role="group" aria-label="Zoom da prévia">
+      <button type="button" data-zoom="out" aria-label="Afastar" title="Afastar">−</button>
+      <button type="button" data-zoom="in" aria-label="Aproximar" title="Aproximar">+</button>
+    </div>
     <div class="veil" id="veil">Montando o controle…</div>
   </section>
 
-  <aside class="panel" aria-label="Editor de arte">
+  <aside class="panel" id="panel" tabindex="-1" aria-label="Editor de arte">
     <section class="pick" aria-labelledby="pick-title">
-      <h2 id="pick-title">Modelo <small id="model-size"></small></h2>
-      <div class="models" id="models" role="radiogroup" aria-label="Modelo da caixa"></div>
+      <h2 id="pick-title">Modelo <small id="model-size" translate="no"></small></h2>
+      <div class="models" id="models" role="radiogroup" aria-label="Modelo da caixa" translate="no"></div>
       <label class="field" for="layout">
         <span>Layout<small>As opções que o montador da loja oferece para este modelo.</small></span>
-        <select id="layout"></select>
+        <select id="layout" name="layout" autocomplete="off"></select>
       </label>
     </section>
 
+    <section class="art" aria-labelledby="art-title">
+    <h2 class="sr-only" id="art-title">Artes</h2>
     <div class="tabs" role="tablist" aria-label="Parte do controle">
       <button class="tab" role="tab" id="tab-top" data-key="top" aria-selected="true" aria-controls="editor-area" type="button">
         <b>Topo</b><small data-dims="top">430 × 230 mm</small>
@@ -443,7 +533,7 @@ details.settings summary { cursor: pointer; padding: 10px 12px; font-weight: 600
       </button>
     </div>
 
-    <div id="editor-area" role="tabpanel" aria-labelledby="tab-top" style="display:grid;gap:12px">
+    <div id="editor-area" role="tabpanel" aria-labelledby="tab-top">
       <div class="editor" id="editor">
         <canvas id="ed" tabindex="0" aria-label="Área de recorte. Arraste para mover a imagem, use as setas para ajustar e + ou − para zoom."></canvas>
         <div class="drop" id="drop-hint" hidden>Solte a imagem aqui</div>
@@ -454,7 +544,7 @@ details.settings summary { cursor: pointer; padding: 10px 12px; font-weight: 600
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3.5h12v9H2z M2 10.5l3.5-3 3 2.5 2-1.5 3.5 3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><circle cx="10.5" cy="6" r="1.2" fill="currentColor"/></svg>
           Escolher imagem
         </button>
-        <input type="file" id="file" accept="image/*" class="sr-only" tabindex="-1">
+        <input type="file" id="file" name="arte" accept="image/*" class="sr-only" tabindex="-1" aria-label="Imagem para esta superfície">
         <button class="btn" id="btn-rot" type="button" title="Girar 90°">
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12.5 6A5 5 0 1 0 13 9.5 M12.5 2.5V6H9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Girar
@@ -467,7 +557,7 @@ details.settings summary { cursor: pointer; padding: 10px 12px; font-weight: 600
         <button class="btn" id="btn-holes" type="button" aria-pressed="true" title="Mostrar onde ficam os botões e furos">Furos</button>
         <div class="zoom">
           <label for="zoom">Zoom</label>
-          <input type="range" id="zoom" min="100" max="600" step="1" value="100">
+          <input type="range" id="zoom" name="zoom" min="100" max="600" step="1" value="100" autocomplete="off">
           <output id="zoom-out" for="zoom">100%</output>
         </div>
       </div>
@@ -485,9 +575,10 @@ details.settings summary { cursor: pointer; padding: 10px 12px; font-weight: 600
         <button class="btn" id="btn-copy" type="button" hidden></button>
       </div>
     </div>
+    </section>
 
     <section class="colors" aria-labelledby="colors-title">
-      <h2 id="colors-title">Cores dos botões e do stick <small id="colors-kind">Sanwa</small></h2>
+      <h2 id="colors-title">Cores dos botões e do stick <small id="colors-kind" translate="no">Sanwa</small></h2>
       <p class="note">Clique num botão do mapa ou do 3D para pintar só ele, ou escolha um grupo.</p>
       <svg class="map" id="btn-map" viewBox="-26 -4 490.1 242.3" role="group" aria-label="Mapa dos botões"></svg>
       <div class="groups" id="groups" role="radiogroup" aria-label="Grupos"></div>
@@ -508,7 +599,7 @@ details.settings summary { cursor: pointer; padding: 10px 12px; font-weight: 600
         </div>
       </div>
       <p class="picked" id="picked"></p>
-      <div class="shop"><b>Lista de compras</b><ul id="shop"></ul></div>
+      <div class="shop"><b>Lista de compras</b><ul id="shop" translate="no"></ul></div>
     </section>
 
     <details class="settings" id="settings">
@@ -516,25 +607,25 @@ details.settings summary { cursor: pointer; padding: 10px 12px; font-weight: 600
       <div class="settings-body">
         <label class="field" for="wall-h" id="wall-field">
           <span>Altura da lateral<small>Confirme com a loja. Muda o tamanho das bordas.</small></span>
-          <input type="number" id="wall-h" min="20" max="90" step="1" value="40" inputmode="numeric">
+          <input type="number" id="wall-h" name="wall-h" min="20" max="90" step="1" value="40" inputmode="numeric" autocomplete="off">
         </label>
         <label class="field" for="dpi">
           <span>Resolução dos arquivos<small>300 DPI é o padrão de gráfica.</small></span>
-          <select id="dpi">
+          <select id="dpi" name="dpi" autocomplete="off">
             <option value="150">150 DPI</option>
             <option value="200">200 DPI</option>
             <option value="300" selected>300 DPI</option>
           </select>
         </label>
-        <label class="check" for="guides"><input type="checkbox" id="guides" checked> Incluir guias com a posição dos furos</label>
+        <label class="check" for="guides"><input type="checkbox" id="guides" name="guides" checked> Incluir guias com a posição dos furos</label>
         <div class="row">
           <button class="btn" id="btn-reset" type="button">Tirar todas as artes</button>
         </div>
-        <p class="note" id="reset-confirm" hidden>
-          Isso tira as três imagens e deixa as superfícies sem arte.
-          <button class="btn" id="btn-reset-yes" type="button">Tirar</button>
+        <div class="confirm" id="reset-confirm" role="group" aria-label="Confirmar" hidden>
+          <p class="note">Isso tira as três imagens e deixa as superfícies sem arte.</p>
+          <button class="btn danger" id="btn-reset-yes" type="button">Tirar as artes</button>
           <button class="btn" id="btn-reset-no" type="button">Cancelar</button>
-        </p>
+        </div>
       </div>
     </details>
   </aside>
@@ -557,7 +648,7 @@ const BLANK = (() => {
   x.fillRect(0, 0, 16, 16);
   return c.toDataURL('image/png');
 })();
-const SPECS = {"models":[{"id":"mini","name":"MINI","family":"tall","height":50,"store":"28 × 18 × 5 cm","layouts":[{"id":"mini-vewlix","name":"Japonês (Vewlix)","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"lk","x":126.82,"y":106.04,"r":12.0},{"id":"lp","x":132.82,"y":76.58,"r":12.0},{"id":"mk","x":157.09,"y":95.22,"r":12.0},{"id":"mp","x":163.09,"y":65.76,"r":12.0},{"id":"hp","x":193.12,"y":65.75,"r":12.0},{"id":"hk","x":187.12,"y":95.22,"r":12.0},{"id":"3k","x":216.76,"y":95.22,"r":12.0},{"id":"3p","x":222.76,"y":65.76,"r":12.0}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":{"x":66.13,"y":89.55},"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-sega","name":"Japonês (Sega)","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"lk","x":126.82,"y":106.04,"r":12.0},{"id":"lp","x":132.82,"y":76.58,"r":12.0},{"id":"mk","x":157.09,"y":95.22,"r":12.0},{"id":"mp","x":163.09,"y":65.76,"r":12.0},{"id":"hp","x":193.12,"y":65.75,"r":12.0},{"id":"hk","x":187.12,"y":95.22,"r":12.0},{"id":"3k","x":216.76,"y":106.04,"r":12.0},{"id":"3p","x":222.76,"y":76.58,"r":12.0}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":{"x":66.13,"y":89.55},"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-leverless","name":"Leverless","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"left","x":48.1,"y":56.36,"r":12.0},{"id":"down","x":79.55,"y":56.34,"r":12.0},{"id":"right","x":107.08,"y":70.38,"r":12.0},{"id":"lk","x":140.0,"y":85.3,"r":12.0},{"id":"lp","x":139.98,"y":52.35,"r":12.0},{"id":"mp","x":167.43,"y":38.3,"r":12.0},{"id":"mk","x":167.43,"y":71.31,"r":12.0},{"id":"hp","x":198.98,"y":38.31,"r":12.0},{"id":"hk","x":198.99,"y":71.34,"r":12.0},{"id":"3k","x":228.99,"y":74.34,"r":12.0},{"id":"3p","x":228.98,"y":43.31,"r":12.0},{"id":"up","x":130.58,"y":125.88,"r":15.0}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-wasd-leverless","name":"Leverless WASD","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"up","x":70.25,"y":46.87,"r":12.0},{"id":"left","x":40.25,"y":76.87,"r":12.0},{"id":"down","x":70.25,"y":76.87,"r":12.0},{"id":"right","x":100.25,"y":76.87,"r":12.0},{"id":"lk","x":132.91,"y":93.04,"r":12.0},{"id":"lp","x":138.91,"y":63.58,"r":12.0},{"id":"mk","x":163.18,"y":82.22,"r":12.0},{"id":"mp","x":169.18,"y":52.76,"r":12.0},{"id":"hp","x":199.22,"y":52.75,"r":12.0},{"id":"hk","x":193.22,"y":82.22,"r":12.0},{"id":"3k","x":222.85,"y":82.22,"r":12.0},{"id":"3p","x":228.85,"y":52.76,"r":12.0}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-keyboard","name":"Leverless com teclas","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"lk","x":132.91,"y":93.04,"r":12.0},{"id":"lp","x":138.91,"y":63.58,"r":12.0},{"id":"mk","x":163.18,"y":82.22,"r":12.0},{"id":"mp","x":169.18,"y":52.76,"r":12.0},{"id":"hp","x":199.22,"y":52.75,"r":12.0},{"id":"hk","x":193.22,"y":82.22,"r":12.0},{"id":"3k","x":222.85,"y":82.22,"r":12.0},{"id":"3p","x":228.85,"y":52.76,"r":12.0},{"id":"left","x":52.47,"y":78.23,"w":13.7,"h":13.7,"key":1},{"id":"down","x":71.57,"y":78.23,"w":13.7,"h":13.7,"key":1},{"id":"right","x":90.67,"y":78.23,"w":13.7,"h":13.7,"key":1},{"id":"up","x":71.57,"y":59.12,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-fullkeyboard","name":"Leverless só teclas","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"lk","x":170.64,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"mk","x":189.74,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"hk","x":208.84,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"mp","x":189.74,"y":52.26,"w":13.7,"h":13.7,"key":1},{"id":"lp","x":170.64,"y":52.26,"w":13.7,"h":13.7,"key":1},{"id":"hp","x":208.84,"y":52.26,"w":13.7,"h":13.7,"key":1},{"id":"3k","x":227.94,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"3p","x":227.94,"y":52.26,"w":13.7,"h":13.7,"key":1},{"id":"left","x":48.92,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"down","x":68.02,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"right","x":87.12,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"up","x":68.02,"y":52.26,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]}]},{"id":"basic","name":"BASIC","family":"tall","height":50,"store":"38 × 22 × 5 cm","layouts":[{"id":"basic-japanese-vewlix","name":"Japonês (Vewlix)","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"lp","x":181.16,"y":82.49,"r":15.0},{"id":"lk","x":175.16,"y":121.98,"r":15.0},{"id":"mp","x":216.16,"y":67.64,"r":15.0},{"id":"mk","x":210.16,"y":107.13,"r":15.0},{"id":"hp","x":251.16,"y":67.63,"r":15.0},{"id":"hk","x":245.16,"y":107.13,"r":15.0},{"id":"3p","x":286.16,"y":67.64,"r":15.0},{"id":"3k","x":280.16,"y":107.13,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":{"x":104.01,"y":102.04},"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-japanese-sega","name":"Japonês (Sega)","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"lp","x":181.16,"y":82.49,"r":15.0},{"id":"lk","x":175.16,"y":121.98,"r":15.0},{"id":"mp","x":216.16,"y":67.64,"r":15.0},{"id":"mk","x":210.16,"y":107.13,"r":15.0},{"id":"hp","x":251.16,"y":71.39,"r":15.0},{"id":"hk","x":245.16,"y":110.81,"r":15.0},{"id":"3p","x":286.16,"y":86.53,"r":15.0},{"id":"3k","x":280.16,"y":125.15,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":{"x":104.01,"y":102.04},"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-dual","name":"Dual (botões + stick)","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"lp","x":177.96,"y":95.25,"r":15.0},{"id":"lk","x":175.41,"y":129.04,"r":15.0},{"id":"mp","x":210.91,"y":85.93,"r":15.0},{"id":"mk","x":207.6,"y":119.38,"r":15.0},{"id":"hp","x":244.85,"y":85.25,"r":15.0},{"id":"hk","x":241.34,"y":118.99,"r":15.0},{"id":"3p","x":278.21,"y":90.32,"r":15.0},{"id":"3k","x":275.18,"y":123.48,"r":15.0},{"id":"left","x":186.05,"y":62.58,"r":15.0},{"id":"down","x":218.34,"y":52.83,"r":15.0},{"id":"right","x":251.98,"y":52.34,"r":15.0},{"id":"up","x":177.85,"y":162.39,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":{"x":108.28,"y":101.4},"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-leverless","name":"Leverless","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"left","x":98.1,"y":68.07,"r":12.0},{"id":"down","x":129.55,"y":68.04,"r":12.0},{"id":"right","x":157.08,"y":82.08,"r":12.0},{"id":"lk","x":190.0,"y":97.0,"r":12.0},{"id":"lp","x":189.98,"y":64.05,"r":12.0},{"id":"mp","x":217.43,"y":50.0,"r":12.0},{"id":"mk","x":217.43,"y":83.02,"r":12.0},{"id":"hp","x":248.98,"y":50.02,"r":12.0},{"id":"hk","x":248.99,"y":83.04,"r":12.0},{"id":"3k","x":278.99,"y":86.04,"r":12.0},{"id":"3p","x":278.98,"y":55.02,"r":12.0},{"id":"up","x":180.58,"y":137.58,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-shiokenstar","name":"Leverless Shiokenstar","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"left","x":98.1,"y":68.07,"r":12.0},{"id":"down","x":129.55,"y":68.04,"r":12.0},{"id":"right","x":157.08,"y":82.08,"r":12.0},{"id":"up","x":180.58,"y":137.58,"r":15.0},{"id":"lp","x":190.89,"y":62.56,"r":15.0},{"id":"mp","x":224.58,"y":42.6,"r":15.0},{"id":"hp","x":259.58,"y":42.6,"r":15.0},{"id":"3p","x":294.58,"y":51.31,"r":15.0},{"id":"lk","x":190.89,"y":96.95,"r":15.0},{"id":"mk","x":224.58,"y":82.1,"r":15.0},{"id":"hk","x":259.58,"y":82.1,"r":15.0},{"id":"3k","x":294.58,"y":88.22,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-wasd-leverless","name":"Leverless WASD","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"lp","x":207.26,"y":79.88,"r":15.0},{"id":"lk","x":201.26,"y":119.37,"r":15.0},{"id":"mp","x":242.26,"y":65.03,"r":15.0},{"id":"mk","x":236.26,"y":104.52,"r":15.0},{"id":"hp","x":277.26,"y":65.02,"r":15.0},{"id":"hk","x":271.26,"y":104.52,"r":15.0},{"id":"3p","x":312.26,"y":65.03,"r":15.0},{"id":"3k","x":306.26,"y":104.52,"r":15.0},{"id":"up","x":99.26,"y":69.51,"r":12.0},{"id":"left","x":69.26,"y":99.51,"r":12.0},{"id":"down","x":99.26,"y":99.51,"r":12.0},{"id":"right","x":129.26,"y":99.51,"r":12.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-keyboard","name":"Leverless com teclas","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"left","x":72.8,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"down","x":91.9,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"right","x":111.0,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"up","x":91.9,"y":63.37,"w":13.7,"h":13.7,"key":1},{"id":"lk","x":200.0,"y":117.49,"r":15.0},{"id":"lp","x":206.0,"y":78.0,"r":15.0},{"id":"mk","x":235.0,"y":102.64,"r":15.0},{"id":"mp","x":241.0,"y":63.15,"r":15.0},{"id":"hp","x":276.0,"y":63.14,"r":15.0},{"id":"hk","x":270.0,"y":102.64,"r":15.0},{"id":"3k","x":305.0,"y":102.64,"r":15.0},{"id":"3p","x":311.0,"y":63.15,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-fullkeyboard","name":"Leverless só teclas","w":380.01,"h":220.01,"radius":20.0,"buttons":[],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]}]},{"id":"slim","name":"SLIM","family":"tall","height":50,"store":"40 × 18 × 5 cm","layouts":[{"id":"slim-vewlix","name":"Japonês (Vewlix)","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"lp","x":188.39,"y":57.91,"r":15.0},{"id":"lk","x":182.39,"y":97.4,"r":15.0},{"id":"mp","x":223.39,"y":43.06,"r":15.0},{"id":"mk","x":217.39,"y":82.55,"r":15.0},{"id":"hp","x":258.39,"y":43.05,"r":15.0},{"id":"hk","x":252.39,"y":82.55,"r":15.0},{"id":"3p","x":293.39,"y":43.06,"r":15.0},{"id":"3k","x":287.39,"y":82.55,"r":15.0}],"side":[{"id":"A1","end":"R","y":-2.5,"r":2.5},{"id":"A2","end":"R","y":-2.5,"r":2.5},{"id":"A3","end":"R","y":-2.5,"r":2.5},{"id":"A4","end":"R","y":-2.5,"r":2.5},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":{"x":111.24,"y":77.46},"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-sega","name":"Japonês (Sega)","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"lp","x":188.39,"y":57.91,"r":15.0},{"id":"lk","x":182.39,"y":97.4,"r":15.0},{"id":"mp","x":223.39,"y":43.06,"r":15.0},{"id":"mk","x":217.39,"y":82.55,"r":15.0},{"id":"hp","x":258.39,"y":43.05,"r":15.0},{"id":"hk","x":252.39,"y":82.55,"r":15.0},{"id":"3p","x":293.39,"y":57.91,"r":15.0},{"id":"3k","x":287.39,"y":97.4,"r":15.0}],"side":[{"id":"A1","end":"R","y":-2.5,"r":2.5},{"id":"A2","end":"R","y":-2.5,"r":2.5},{"id":"A3","end":"R","y":-2.5,"r":2.5},{"id":"A4","end":"R","y":-2.5,"r":2.5},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":{"x":111.24,"y":77.46},"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-leverless","name":"Leverless","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"left","x":108.1,"y":57.7,"r":12.0},{"id":"down","x":139.55,"y":57.68,"r":12.0},{"id":"right","x":167.08,"y":71.71,"r":12.0},{"id":"lk","x":200.0,"y":86.64,"r":13.0},{"id":"lp","x":199.98,"y":53.69,"r":13.0},{"id":"mp","x":227.43,"y":39.64,"r":13.0},{"id":"mk","x":227.43,"y":72.65,"r":13.0},{"id":"hp","x":258.98,"y":39.65,"r":13.0},{"id":"hk","x":258.99,"y":72.68,"r":13.0},{"id":"3k","x":288.99,"y":75.68,"r":13.0},{"id":"3p","x":288.98,"y":44.65,"r":13.0},{"id":"up","x":190.58,"y":127.21,"r":15.0}],"side":[{"id":"A1","end":"R","y":-2.5,"r":2.5},{"id":"A2","end":"R","y":-2.5,"r":2.5},{"id":"A3","end":"R","y":-2.5,"r":2.5},{"id":"A4","end":"R","y":-2.5,"r":2.5},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-shiokenstar","name":"Leverless Shiokenstar","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"left","x":100.34,"y":64.61,"r":12.0},{"id":"down","x":131.79,"y":64.58,"r":12.0},{"id":"right","x":159.32,"y":78.62,"r":12.0},{"id":"lp","x":193.13,"y":59.1,"r":15.0},{"id":"mp","x":226.82,"y":39.15,"r":15.0},{"id":"hp","x":261.82,"y":39.15,"r":15.0},{"id":"3p","x":296.82,"y":47.85,"r":15.0},{"id":"lk","x":193.13,"y":93.5,"r":15.0},{"id":"mk","x":226.82,"y":78.65,"r":15.0},{"id":"hk","x":261.82,"y":78.65,"r":15.0},{"id":"3k","x":296.82,"y":84.76,"r":15.0},{"id":"up","x":182.69,"y":133.84,"r":15.0}],"side":[{"id":"A1","end":"R","y":-2.5,"r":2.5},{"id":"A2","end":"R","y":-2.5,"r":2.5},{"id":"A3","end":"R","y":-2.5,"r":2.5},{"id":"A4","end":"R","y":-2.5,"r":2.5},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-wasd-leverless","name":"Leverless WASD","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"up","x":107.73,"y":52.43,"r":12.0},{"id":"left","x":77.73,"y":82.43,"r":12.0},{"id":"down","x":107.73,"y":82.43,"r":12.0},{"id":"right","x":137.73,"y":82.43,"r":12.0},{"id":"lp","x":215.74,"y":62.8,"r":15.0},{"id":"lk","x":209.74,"y":102.28,"r":15.0},{"id":"mp","x":250.74,"y":47.95,"r":15.0},{"id":"mk","x":244.74,"y":87.43,"r":15.0},{"id":"hp","x":285.74,"y":47.93,"r":15.0},{"id":"hk","x":279.74,"y":87.43,"r":15.0},{"id":"3k","x":314.74,"y":87.43,"r":15.0},{"id":"3p","x":320.74,"y":47.95,"r":15.0}],"side":[{"id":"A1","end":"R","y":-2.5,"r":2.5},{"id":"A2","end":"R","y":-2.5,"r":2.5},{"id":"A3","end":"R","y":-2.5,"r":2.5},{"id":"A4","end":"R","y":-2.5,"r":2.5},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-keyboard","name":"Leverless com teclas","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"left","x":76.94,"y":68.1,"w":13.7,"h":13.7,"key":1},{"id":"down","x":96.04,"y":68.1,"w":13.7,"h":13.7,"key":1},{"id":"right","x":115.14,"y":68.1,"w":13.7,"h":13.7,"key":1},{"id":"up","x":96.04,"y":49.0,"w":13.7,"h":13.7,"key":1},{"id":"lk","x":204.15,"y":103.12,"r":15.0},{"id":"lp","x":210.15,"y":63.63,"r":15.0},{"id":"mk","x":239.15,"y":88.27,"r":15.0},{"id":"mp","x":245.15,"y":48.78,"r":15.0},{"id":"hp","x":280.15,"y":48.77,"r":15.0},{"id":"hk","x":274.15,"y":88.27,"r":15.0},{"id":"3k","x":309.15,"y":88.27,"r":15.0},{"id":"3p","x":315.15,"y":48.78,"r":15.0}],"side":[{"id":"A1","end":"R","y":-2.5,"r":2.5},{"id":"A2","end":"R","y":-2.5,"r":2.5},{"id":"A3","end":"R","y":-2.5,"r":2.5},{"id":"A4","end":"R","y":-2.5,"r":2.5},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-fullkeyboard","name":"Leverless só teclas","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"lk","x":249.29,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"mk","x":268.39,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"hk","x":287.49,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"mp","x":268.39,"y":44.34,"w":13.7,"h":13.7,"key":1},{"id":"lp","x":249.29,"y":44.34,"w":13.7,"h":13.7,"key":1},{"id":"hp","x":287.49,"y":44.34,"w":13.7,"h":13.7,"key":1},{"id":"3k","x":306.59,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"3p","x":306.59,"y":44.34,"w":13.7,"h":13.7,"key":1},{"id":"left","x":89.37,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"down","x":108.47,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"right","x":127.57,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"up","x":108.47,"y":44.34,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"R","y":-2.5,"r":2.5},{"id":"A2","end":"R","y":-2.5,"r":2.5},{"id":"A3","end":"R","y":-2.5,"r":2.5},{"id":"A4","end":"R","y":-2.5,"r":2.5},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]}]},{"id":"proxl","name":"PRO XL","family":"tall","height":50,"store":"43 × 23 × 5 cm","layouts":[{"id":"proxl-vewlix","name":"Japonês (Vewlix)","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"lp","x":205.82,"y":82.63,"r":15.0},{"id":"lk","x":199.82,"y":122.11,"r":15.0},{"id":"mp","x":240.82,"y":67.78,"r":15.0},{"id":"mk","x":234.82,"y":107.26,"r":15.0},{"id":"hp","x":275.82,"y":67.76,"r":15.0},{"id":"hk","x":269.82,"y":107.26,"r":15.0},{"id":"3p","x":310.82,"y":67.78,"r":15.0},{"id":"3k","x":304.82,"y":107.26,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":{"x":128.67,"y":102.18},"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-sega","name":"Japonês (Sega)","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"lp","x":205.82,"y":82.63,"r":15.0},{"id":"lk","x":199.82,"y":122.11,"r":15.0},{"id":"mp","x":240.82,"y":67.78,"r":15.0},{"id":"mk","x":234.82,"y":107.26,"r":15.0},{"id":"hp","x":275.82,"y":67.76,"r":15.0},{"id":"hk","x":269.82,"y":107.26,"r":15.0},{"id":"3k","x":304.82,"y":121.53,"r":15.0},{"id":"3p","x":310.82,"y":82.9,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":{"x":128.67,"y":102.18},"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-dual","name":"Dual (botões + stick)","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"lp","x":201.16,"y":101.9,"r":15.0},{"id":"left","x":209.26,"y":69.23,"r":15.0},{"id":"down","x":241.54,"y":59.48,"r":15.0},{"id":"right","x":275.18,"y":58.99,"r":15.0},{"id":"mp","x":234.12,"y":92.58,"r":15.0},{"id":"hp","x":268.06,"y":91.89,"r":15.0},{"id":"3p","x":301.41,"y":96.97,"r":15.0},{"id":"lk","x":198.62,"y":135.68,"r":15.0},{"id":"mk","x":230.8,"y":126.03,"r":15.0},{"id":"hk","x":264.55,"y":125.64,"r":15.0},{"id":"3k","x":298.39,"y":130.12,"r":15.0},{"id":"up","x":201.05,"y":169.04,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":{"x":131.48,"y":108.04},"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-leverless","name":"Leverless","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"left","x":123.1,"y":77.92,"r":12.0},{"id":"down","x":154.55,"y":77.89,"r":12.0},{"id":"right","x":182.07,"y":91.93,"r":12.0},{"id":"lk","x":215.0,"y":106.86,"r":12.0},{"id":"lp","x":214.98,"y":73.91,"r":12.0},{"id":"mp","x":242.42,"y":59.86,"r":12.0},{"id":"mk","x":242.42,"y":92.87,"r":12.0},{"id":"hp","x":273.97,"y":59.87,"r":12.0},{"id":"hk","x":273.99,"y":92.89,"r":12.0},{"id":"3k","x":303.99,"y":95.89,"r":12.0},{"id":"3p","x":303.97,"y":64.87,"r":12.0},{"id":"up","x":205.58,"y":147.43,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-wasd-leverless","name":"Leverless WASD","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"up","x":120.8,"y":62.53,"r":12.0},{"id":"left","x":90.8,"y":92.53,"r":12.0},{"id":"down","x":120.8,"y":92.53,"r":12.0},{"id":"right","x":150.8,"y":92.53,"r":12.0},{"id":"lp","x":228.81,"y":72.9,"r":15.0},{"id":"lk","x":222.81,"y":112.39,"r":15.0},{"id":"mp","x":263.81,"y":58.05,"r":15.0},{"id":"mk","x":257.81,"y":97.54,"r":15.0},{"id":"hp","x":298.81,"y":58.04,"r":15.0},{"id":"hk","x":292.81,"y":97.54,"r":15.0},{"id":"3k","x":327.81,"y":97.54,"r":15.0},{"id":"3p","x":333.81,"y":58.05,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-shiokenstar","name":"Leverless Shiokenstar","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"left","x":123.1,"y":77.92,"r":12.0},{"id":"down","x":154.55,"y":77.89,"r":12.0},{"id":"right","x":182.07,"y":91.93,"r":12.0},{"id":"lp","x":215.89,"y":72.41,"r":15.0},{"id":"mp","x":249.58,"y":52.46,"r":15.0},{"id":"hp","x":284.58,"y":52.46,"r":15.0},{"id":"3p","x":319.58,"y":61.17,"r":15.0},{"id":"lk","x":215.89,"y":106.81,"r":15.0},{"id":"mk","x":249.57,"y":91.96,"r":15.0},{"id":"hk","x":284.57,"y":91.96,"r":15.0},{"id":"3k","x":319.57,"y":98.08,"r":15.0},{"id":"up","x":205.45,"y":147.16,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-keyboard","name":"Leverless com teclas","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"3p","x":310.82,"y":67.78,"r":15.0},{"id":"left","x":88.61,"y":91.2,"w":14.0,"h":14.0,"key":1},{"id":"down","x":107.71,"y":91.2,"w":14.0,"h":14.0,"key":1},{"id":"right","x":126.81,"y":91.2,"w":14.0,"h":14.0,"key":1},{"id":"up","x":107.71,"y":72.1,"w":14.0,"h":14.0,"key":1},{"id":"lk","x":199.82,"y":122.11,"r":15.0},{"id":"lp","x":205.82,"y":82.63,"r":15.0},{"id":"mk","x":234.82,"y":107.26,"r":15.0},{"id":"mp","x":240.82,"y":67.78,"r":15.0},{"id":"hp","x":275.82,"y":67.76,"r":15.0},{"id":"hk","x":269.82,"y":107.26,"r":15.0},{"id":"3k","x":304.82,"y":107.26,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-fullkeyboard","name":"Leverless só teclas","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"left","x":105.52,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"lk","x":265.44,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"mk","x":284.54,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"hk","x":303.64,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"mp","x":284.54,"y":73.55,"w":13.7,"h":13.7,"key":1},{"id":"lp","x":265.44,"y":73.55,"w":13.7,"h":13.7,"key":1},{"id":"hp","x":303.64,"y":73.55,"w":13.7,"h":13.7,"key":1},{"id":"3k","x":322.74,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"3p","x":322.74,"y":73.55,"w":13.7,"h":13.7,"key":1},{"id":"down","x":124.62,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"right","x":143.72,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"up","x":124.62,"y":73.55,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]}]},{"id":"flat-wmx","name":"FLAT WMX","family":"flat","height":17,"store":"20 × 12 × 1,7 cm","layouts":[{"id":"flat-wmx","name":"Padrão","w":200.0,"h":120.0,"radius":4.45,"buttons":[{"id":"left","x":26.72,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"down","x":45.82,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"right","x":64.92,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"up","x":45.82,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"lp","x":116.82,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"mp","x":135.92,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"hp","x":155.02,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"3p","x":174.12,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"3k","x":174.12,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"hk","x":155.02,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"mk","x":135.92,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"lk","x":116.82,"y":77.56,"w":18.0,"h":18.0,"key":1}],"side":[],"extras":[{"x":55.47,"y":41.57,"r":3.1},{"x":45.47,"y":41.57,"r":3.1},{"x":35.47,"y":41.57,"r":3.1},{"x":154.67,"y":41.57,"r":3.1},{"x":144.67,"y":41.57,"r":3.1},{"x":164.67,"y":41.57,"r":3.1}],"joystick":null,"screws":[{"x":194.0,"y":6.0},{"x":6.0,"y":6.0},{"x":100.0,"y":107.77},{"x":189.0,"y":39.77},{"x":11.0,"y":107.77},{"x":189.0,"y":107.77},{"x":124.0,"y":7.77},{"x":76.0,"y":7.77},{"x":11.0,"y":39.77}],"cutouts":[{"x":8.25,"y":10.27,"w":50.0,"h":20.0},{"x":141.75,"y":10.27,"w":50.0,"h":20.0}]}]},{"id":"flat-default","name":"FLAT","family":"flat","height":14,"store":"22 × 13 × 1,4 cm","layouts":[{"id":"flat-default","name":"Padrão","w":218.0,"h":127.0,"radius":7.0,"buttons":[{"id":"mp","x":139.42,"y":26.58,"r":10.95},{"id":"down","x":51.32,"y":38.17,"r":10.95},{"id":"lk","x":107.25,"y":69.15,"r":10.95},{"id":"3k","x":191.92,"y":58.04,"r":10.95},{"id":"lp","x":112.86,"y":38.11,"r":10.95},{"id":"3p","x":197.36,"y":26.7,"r":10.95},{"id":"mk","x":133.86,"y":58.04,"r":10.95},{"id":"left","x":22.23,"y":38.05,"r":10.95},{"id":"hk","x":162.71,"y":58.04,"r":10.95},{"id":"right","x":77.92,"y":49.52,"r":10.95},{"id":"up","x":95.42,"y":102.62,"r":13.57},{"id":"hp","x":168.39,"y":26.46,"r":10.95}],"side":[],"extras":[{"x":31.75,"y":12.85,"r":1.85},{"x":41.75,"y":12.85,"r":1.85},{"x":54.75,"y":12.85,"r":1.85},{"x":64.75,"y":12.85,"r":1.85},{"x":74.75,"y":12.85,"r":1.85},{"x":21.75,"y":12.85,"r":1.85}],"joystick":null,"screws":[{"x":207.0,"y":116.0},{"x":207.0,"y":10.0},{"x":114.0,"y":10.0},{"x":114.0,"y":116.0},{"x":11.0,"y":116.0},{"x":11.0,"y":10.0}],"cutouts":[]},{"id":"flat-wasd","name":"WASD","w":218.0,"h":127.0,"radius":7.0,"buttons":[{"id":"hp","x":168.39,"y":35.96,"r":10.95},{"id":"mp","x":139.42,"y":36.08,"r":10.95},{"id":"lk","x":107.25,"y":78.65,"r":10.95},{"id":"3k","x":191.92,"y":67.54,"r":10.95},{"id":"lp","x":112.86,"y":47.61,"r":10.95},{"id":"3p","x":197.36,"y":36.2,"r":10.95},{"id":"mk","x":133.86,"y":67.54,"r":10.95},{"id":"hk","x":162.71,"y":67.54,"r":10.95},{"id":"left","x":22.2,"y":64.35,"r":10.95},{"id":"down","x":48.31,"y":64.49,"r":10.95},{"id":"right","x":74.5,"y":64.6,"r":10.95},{"id":"up","x":48.3,"y":37.9,"r":10.95}],"side":[],"extras":[{"x":21.75,"y":12.85,"r":1.85},{"x":31.75,"y":12.85,"r":1.85},{"x":41.75,"y":12.85,"r":1.85},{"x":54.75,"y":12.85,"r":1.85},{"x":64.75,"y":12.85,"r":1.85},{"x":74.75,"y":12.85,"r":1.85}],"joystick":null,"screws":[{"x":207.0,"y":116.0},{"x":207.0,"y":10.0},{"x":114.0,"y":10.0},{"x":114.0,"y":116.0},{"x":11.0,"y":116.0},{"x":11.0,"y":10.0}],"cutouts":[]}]},{"id":"flatxl-default","name":"FLAT XL","family":"flat","height":14,"store":"32 × 16 × 1,4 cm","layouts":[{"id":"flatxl-default","name":"Padrão","w":320.0,"h":156.88,"radius":10.28,"buttons":[{"id":"mp","x":190.42,"y":26.56,"r":10.95},{"id":"down","x":102.32,"y":38.15,"r":10.95},{"id":"lk","x":158.25,"y":69.13,"r":10.95},{"id":"3k","x":242.92,"y":58.02,"r":10.95},{"id":"lp","x":163.86,"y":38.09,"r":10.95},{"id":"3p","x":248.36,"y":26.68,"r":10.95},{"id":"mk","x":184.86,"y":58.02,"r":10.95},{"id":"left","x":73.23,"y":38.03,"r":10.95},{"id":"hk","x":213.71,"y":58.02,"r":10.95},{"id":"right","x":128.92,"y":49.5,"r":10.95},{"id":"up","x":146.42,"y":102.6,"r":13.57},{"id":"hp","x":219.39,"y":26.44,"r":10.95}],"side":[],"extras":[{"x":82.75,"y":12.83,"r":1.85},{"x":92.75,"y":12.83,"r":1.85},{"x":105.75,"y":12.83,"r":1.85},{"x":115.75,"y":12.83,"r":1.85},{"x":125.75,"y":12.83,"r":1.85},{"x":72.75,"y":12.83,"r":1.85}],"joystick":null,"screws":[{"x":165.0,"y":146.91},{"x":310.03,"y":146.91},{"x":10.03,"y":146.91},{"x":310.03,"y":9.98},{"x":10.03,"y":9.98},{"x":258.0,"y":115.98},{"x":258.0,"y":9.98},{"x":62.0,"y":115.98},{"x":62.0,"y":9.98},{"x":165.0,"y":9.98},{"x":165.0,"y":115.98}],"cutouts":[]},{"id":"flatxl-wasd","name":"WASD","w":320.0,"h":156.88,"radius":10.28,"buttons":[{"id":"hp","x":219.39,"y":35.94,"r":10.95},{"id":"mp","x":190.42,"y":36.06,"r":10.95},{"id":"lk","x":158.25,"y":78.63,"r":10.95},{"id":"3k","x":242.92,"y":67.52,"r":10.95},{"id":"lp","x":163.86,"y":47.59,"r":10.95},{"id":"3p","x":248.36,"y":36.18,"r":10.95},{"id":"mk","x":184.86,"y":67.52,"r":10.95},{"id":"hk","x":213.71,"y":67.52,"r":10.95},{"id":"left","x":73.2,"y":64.33,"r":10.95},{"id":"down","x":99.31,"y":64.47,"r":10.95},{"id":"right","x":125.5,"y":64.58,"r":10.95},{"id":"up","x":99.3,"y":37.88,"r":10.95}],"side":[],"extras":[{"x":72.75,"y":12.83,"r":1.85},{"x":82.75,"y":12.83,"r":1.85},{"x":92.75,"y":12.83,"r":1.85},{"x":105.75,"y":12.83,"r":1.85},{"x":115.75,"y":12.83,"r":1.85},{"x":125.75,"y":12.83,"r":1.85}],"joystick":null,"screws":[{"x":165.0,"y":146.91},{"x":310.03,"y":146.91},{"x":10.03,"y":146.91},{"x":310.03,"y":9.98},{"x":10.03,"y":9.98},{"x":258.0,"y":115.98},{"x":258.0,"y":9.98},{"x":62.0,"y":115.98},{"x":62.0,"y":9.98},{"x":165.0,"y":9.98},{"x":165.0,"y":115.98}],"cutouts":[]}]},{"id":"flatxxl","name":"FLAT XXL","family":"flat","height":14,"store":"30 × 21 × 1,4 cm","layouts":[{"id":"flatxxl-14","name":"14 botões","w":300.0,"h":210.0,"radius":10.0,"buttons":[{"id":"hp","x":221.89,"y":26.46,"r":10.95},{"id":"up","x":148.92,"y":102.62,"r":13.58},{"id":"right","x":131.42,"y":49.52,"r":10.95},{"id":"hk","x":216.21,"y":58.04,"r":10.95},{"id":"left","x":75.73,"y":38.05,"r":10.95},{"id":"mk","x":187.36,"y":58.04,"r":10.95},{"id":"3p","x":250.86,"y":26.7,"r":10.95},{"id":"lp","x":166.36,"y":38.11,"r":10.95},{"id":"3k","x":245.42,"y":58.04,"r":10.95},{"id":"lk","x":160.75,"y":69.15,"r":10.95},{"id":"down","x":104.82,"y":38.17,"r":10.95},{"id":"mp","x":192.92,"y":26.58,"r":10.95},{"id":"A2","x":185.22,"y":89.4,"r":13.57},{"id":"A1","x":49.1,"y":49.7,"r":10.95}],"side":[],"extras":[{"x":75.25,"y":12.85,"r":1.85},{"x":85.25,"y":12.85,"r":1.85},{"x":95.25,"y":12.85,"r":1.85},{"x":108.25,"y":12.85,"r":1.85}],"joystick":null,"screws":[{"x":40.5,"y":10.0},{"x":167.5,"y":10.0},{"x":260.5,"y":10.0},{"x":40.5,"y":116.0},{"x":167.5,"y":116.0},{"x":260.5,"y":116.0},{"x":150.0,"y":200.0},{"x":10.0,"y":200.0},{"x":290.0,"y":200.0},{"x":10.0,"y":10.0},{"x":290.0,"y":10.0}],"cutouts":[]},{"id":"flatxxl-17","name":"17 botões","w":300.0,"h":210.0,"radius":10.0,"buttons":[{"id":"mp","x":192.85,"y":52.56,"r":10.95},{"id":"down","x":105.99,"y":64.74,"r":10.95},{"id":"lk","x":162.49,"y":94.75,"r":10.95},{"id":"3k","x":249.64,"y":85.81,"r":10.95},{"id":"lp","x":165.55,"y":64.9,"r":10.95},{"id":"3p","x":252.71,"y":55.66,"r":10.95},{"id":"mk","x":189.91,"y":82.4,"r":10.95},{"id":"left","x":75.99,"y":64.02,"r":10.95},{"id":"hk","x":219.88,"y":82.9,"r":10.95},{"id":"right","x":132.79,"y":78.19,"r":10.95},{"id":"up","x":150.69,"y":131.39,"r":13.58},{"id":"hp","x":222.89,"y":52.38,"r":10.95},{"id":"A1","x":46.91,"y":71.31,"r":10.95},{"id":"A2","x":112.53,"y":35.42,"r":10.95},{"id":"A5","x":168.54,"y":35.02,"r":10.95},{"id":"A4","x":186.79,"y":112.28,"r":10.95},{"id":"A3","x":128.12,"y":107.84,"r":10.95}],"side":[],"extras":[{"x":217.87,"y":13.33,"r":1.85},{"x":227.87,"y":13.33,"r":1.85},{"x":237.87,"y":13.33,"r":1.85},{"x":247.87,"y":13.33,"r":1.85}],"joystick":null,"screws":[{"x":40.5,"y":10.0},{"x":167.5,"y":10.0},{"x":260.5,"y":10.0},{"x":40.5,"y":116.0},{"x":167.5,"y":116.0},{"x":260.5,"y":116.0},{"x":150.0,"y":200.0},{"x":10.0,"y":200.0},{"x":290.0,"y":200.0},{"x":10.0,"y":10.0},{"x":290.0,"y":10.0}],"cutouts":[]}]}]};          // every model and layout of the store builder (mm, origin = outline top-left)
+const SPECS = {"models":[{"id":"mini","name":"MINI","family":"tall","height":50,"store":"28 × 18 × 5 cm","layouts":[{"id":"mini-vewlix","name":"Japonês (Vewlix)","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"lk","x":126.82,"y":106.04,"r":12.0},{"id":"lp","x":132.82,"y":76.58,"r":12.0},{"id":"mk","x":157.09,"y":95.22,"r":12.0},{"id":"mp","x":163.09,"y":65.76,"r":12.0},{"id":"hp","x":193.12,"y":65.75,"r":12.0},{"id":"hk","x":187.12,"y":95.22,"r":12.0},{"id":"3k","x":216.76,"y":95.22,"r":12.0},{"id":"3p","x":222.76,"y":65.76,"r":12.0}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":{"x":66.13,"y":89.55},"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-sega","name":"Japonês (Sega)","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"lk","x":126.82,"y":106.04,"r":12.0},{"id":"lp","x":132.82,"y":76.58,"r":12.0},{"id":"mk","x":157.09,"y":95.22,"r":12.0},{"id":"mp","x":163.09,"y":65.76,"r":12.0},{"id":"hp","x":193.12,"y":65.75,"r":12.0},{"id":"hk","x":187.12,"y":95.22,"r":12.0},{"id":"3k","x":216.76,"y":106.04,"r":12.0},{"id":"3p","x":222.76,"y":76.58,"r":12.0}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":{"x":66.13,"y":89.55},"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-leverless","name":"Leverless","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"left","x":48.1,"y":56.36,"r":12.0},{"id":"down","x":79.55,"y":56.34,"r":12.0},{"id":"right","x":107.08,"y":70.38,"r":12.0},{"id":"lk","x":140.0,"y":85.3,"r":12.0},{"id":"lp","x":139.98,"y":52.35,"r":12.0},{"id":"mp","x":167.43,"y":38.3,"r":12.0},{"id":"mk","x":167.43,"y":71.31,"r":12.0},{"id":"hp","x":198.98,"y":38.31,"r":12.0},{"id":"hk","x":198.99,"y":71.34,"r":12.0},{"id":"3k","x":228.99,"y":74.34,"r":12.0},{"id":"3p","x":228.98,"y":43.31,"r":12.0},{"id":"up","x":130.58,"y":125.88,"r":15.0}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-wasd-leverless","name":"Leverless WASD","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"up","x":70.25,"y":46.87,"r":12.0},{"id":"left","x":40.25,"y":76.87,"r":12.0},{"id":"down","x":70.25,"y":76.87,"r":12.0},{"id":"right","x":100.25,"y":76.87,"r":12.0},{"id":"lk","x":132.91,"y":93.04,"r":12.0},{"id":"lp","x":138.91,"y":63.58,"r":12.0},{"id":"mk","x":163.18,"y":82.22,"r":12.0},{"id":"mp","x":169.18,"y":52.76,"r":12.0},{"id":"hp","x":199.22,"y":52.75,"r":12.0},{"id":"hk","x":193.22,"y":82.22,"r":12.0},{"id":"3k","x":222.85,"y":82.22,"r":12.0},{"id":"3p","x":228.85,"y":52.76,"r":12.0}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-keyboard","name":"Leverless com teclas","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"lk","x":132.91,"y":93.04,"r":12.0},{"id":"lp","x":138.91,"y":63.58,"r":12.0},{"id":"mk","x":163.18,"y":82.22,"r":12.0},{"id":"mp","x":169.18,"y":52.76,"r":12.0},{"id":"hp","x":199.22,"y":52.75,"r":12.0},{"id":"hk","x":193.22,"y":82.22,"r":12.0},{"id":"3k","x":222.85,"y":82.22,"r":12.0},{"id":"3p","x":228.85,"y":52.76,"r":12.0},{"id":"left","x":52.47,"y":78.23,"w":13.7,"h":13.7,"key":1},{"id":"down","x":71.57,"y":78.23,"w":13.7,"h":13.7,"key":1},{"id":"right","x":90.67,"y":78.23,"w":13.7,"h":13.7,"key":1},{"id":"up","x":71.57,"y":59.12,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]},{"id":"mini-fullkeyboard","name":"Leverless só teclas","w":280.01,"h":180.01,"radius":20.0,"buttons":[{"id":"lk","x":170.64,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"mk","x":189.74,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"hk","x":208.84,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"mp","x":189.74,"y":52.26,"w":13.7,"h":13.7,"key":1},{"id":"lp","x":170.64,"y":52.26,"w":13.7,"h":13.7,"key":1},{"id":"hp","x":208.84,"y":52.26,"w":13.7,"h":13.7,"key":1},{"id":"3k","x":227.94,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"3p","x":227.94,"y":52.26,"w":13.7,"h":13.7,"key":1},{"id":"left","x":48.92,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"down","x":68.02,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"right","x":87.12,"y":71.36,"w":13.7,"h":13.7,"key":1},{"id":"up","x":68.02,"y":52.26,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"R","y":135.0,"r":15.0},{"id":"A2","end":"R","y":90.0,"r":15.0},{"id":"A3","end":"R","y":45.0,"r":15.0},{"id":"A4","end":"L","y":135.0,"r":15.0},{"id":"A5","end":"L","y":90.0,"r":15.0},{"id":"A6","end":"L","y":45.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":256.5,"y":152.5},{"x":140.0,"y":152.5},{"x":23.5,"y":152.5},{"x":23.5,"y":27.5},{"x":256.5,"y":27.5},{"x":140.0,"y":27.5}],"cutouts":[]}]},{"id":"basic","name":"BASIC","family":"tall","height":50,"store":"38 × 22 × 5 cm","layouts":[{"id":"basic-japanese-vewlix","name":"Japonês (Vewlix)","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"lp","x":181.16,"y":82.49,"r":15.0},{"id":"lk","x":175.16,"y":121.98,"r":15.0},{"id":"mp","x":216.16,"y":67.64,"r":15.0},{"id":"mk","x":210.16,"y":107.13,"r":15.0},{"id":"hp","x":251.16,"y":67.63,"r":15.0},{"id":"hk","x":245.16,"y":107.13,"r":15.0},{"id":"3p","x":286.16,"y":67.64,"r":15.0},{"id":"3k","x":280.16,"y":107.13,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":{"x":104.01,"y":102.04},"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-japanese-sega","name":"Japonês (Sega)","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"lp","x":181.16,"y":82.49,"r":15.0},{"id":"lk","x":175.16,"y":121.98,"r":15.0},{"id":"mp","x":216.16,"y":67.64,"r":15.0},{"id":"mk","x":210.16,"y":107.13,"r":15.0},{"id":"hp","x":251.16,"y":71.39,"r":15.0},{"id":"hk","x":245.16,"y":110.81,"r":15.0},{"id":"3p","x":286.16,"y":86.53,"r":15.0},{"id":"3k","x":280.16,"y":125.15,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":{"x":104.01,"y":102.04},"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-dual","name":"Dual (botões + stick)","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"lp","x":177.96,"y":95.25,"r":15.0},{"id":"lk","x":175.41,"y":129.04,"r":15.0},{"id":"mp","x":210.91,"y":85.93,"r":15.0},{"id":"mk","x":207.6,"y":119.38,"r":15.0},{"id":"hp","x":244.85,"y":85.25,"r":15.0},{"id":"hk","x":241.34,"y":118.99,"r":15.0},{"id":"3p","x":278.21,"y":90.32,"r":15.0},{"id":"3k","x":275.18,"y":123.48,"r":15.0},{"id":"left","x":186.05,"y":62.58,"r":15.0},{"id":"down","x":218.34,"y":52.83,"r":15.0},{"id":"right","x":251.98,"y":52.34,"r":15.0},{"id":"up","x":177.85,"y":162.39,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":{"x":108.28,"y":101.4},"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-leverless","name":"Leverless","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"left","x":98.1,"y":68.07,"r":12.0},{"id":"down","x":129.55,"y":68.04,"r":12.0},{"id":"right","x":157.08,"y":82.08,"r":12.0},{"id":"lk","x":190.0,"y":97.0,"r":12.0},{"id":"lp","x":189.98,"y":64.05,"r":12.0},{"id":"mp","x":217.43,"y":50.0,"r":12.0},{"id":"mk","x":217.43,"y":83.02,"r":12.0},{"id":"hp","x":248.98,"y":50.02,"r":12.0},{"id":"hk","x":248.99,"y":83.04,"r":12.0},{"id":"3k","x":278.99,"y":86.04,"r":12.0},{"id":"3p","x":278.98,"y":55.02,"r":12.0},{"id":"up","x":180.58,"y":137.58,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-shiokenstar","name":"Leverless Shiokenstar","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"left","x":98.1,"y":68.07,"r":12.0},{"id":"down","x":129.55,"y":68.04,"r":12.0},{"id":"right","x":157.08,"y":82.08,"r":12.0},{"id":"up","x":180.58,"y":137.58,"r":15.0},{"id":"lp","x":190.89,"y":62.56,"r":15.0},{"id":"mp","x":224.58,"y":42.6,"r":15.0},{"id":"hp","x":259.58,"y":42.6,"r":15.0},{"id":"3p","x":294.58,"y":51.31,"r":15.0},{"id":"lk","x":190.89,"y":96.95,"r":15.0},{"id":"mk","x":224.58,"y":82.1,"r":15.0},{"id":"hk","x":259.58,"y":82.1,"r":15.0},{"id":"3k","x":294.58,"y":88.22,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-wasd-leverless","name":"Leverless WASD","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"lp","x":207.26,"y":79.88,"r":15.0},{"id":"lk","x":201.26,"y":119.37,"r":15.0},{"id":"mp","x":242.26,"y":65.03,"r":15.0},{"id":"mk","x":236.26,"y":104.52,"r":15.0},{"id":"hp","x":277.26,"y":65.02,"r":15.0},{"id":"hk","x":271.26,"y":104.52,"r":15.0},{"id":"3p","x":312.26,"y":65.03,"r":15.0},{"id":"3k","x":306.26,"y":104.52,"r":15.0},{"id":"up","x":99.26,"y":69.51,"r":12.0},{"id":"left","x":69.26,"y":99.51,"r":12.0},{"id":"down","x":99.26,"y":99.51,"r":12.0},{"id":"right","x":129.26,"y":99.51,"r":12.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-keyboard","name":"Leverless com teclas","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"left","x":72.8,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"down","x":91.9,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"right","x":111.0,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"up","x":91.9,"y":63.37,"w":13.7,"h":13.7,"key":1},{"id":"lk","x":200.0,"y":117.49,"r":15.0},{"id":"lp","x":206.0,"y":78.0,"r":15.0},{"id":"mk","x":235.0,"y":102.64,"r":15.0},{"id":"mp","x":241.0,"y":63.15,"r":15.0},{"id":"hp","x":276.0,"y":63.14,"r":15.0},{"id":"hk","x":270.0,"y":102.64,"r":15.0},{"id":"3k","x":305.0,"y":102.64,"r":15.0},{"id":"3p","x":311.0,"y":63.15,"r":15.0}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]},{"id":"basic-fullkeyboard","name":"Leverless só teclas","w":380.01,"h":220.01,"radius":20.0,"buttons":[{"id":"left","x":72.8,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"down","x":91.9,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"right","x":111.0,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"up","x":91.9,"y":63.37,"w":13.7,"h":13.7,"key":1},{"id":"lk","x":232.72,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"lp","x":232.72,"y":63.37,"w":13.7,"h":13.7,"key":1},{"id":"mk","x":251.82,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"mp","x":251.82,"y":63.37,"w":13.7,"h":13.7,"key":1},{"id":"hp","x":270.92,"y":63.37,"w":13.7,"h":13.7,"key":1},{"id":"hk","x":270.92,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"3k","x":290.02,"y":82.47,"w":13.7,"h":13.7,"key":1},{"id":"3p","x":290.02,"y":63.37,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"R","y":170.0,"r":15.0},{"id":"A2","end":"R","y":110.0,"r":15.0},{"id":"A3","end":"R","y":50.0,"r":15.0},{"id":"A4","end":"L","y":170.0,"r":15.0},{"id":"A5","end":"L","y":110.0,"r":15.0},{"id":"A6","end":"L","y":50.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":356.5,"y":192.5},{"x":190.0,"y":192.5},{"x":23.5,"y":192.5},{"x":23.5,"y":27.5},{"x":356.5,"y":27.5},{"x":190.0,"y":27.5}],"cutouts":[]}]},{"id":"slim","name":"SLIM","family":"tall","height":50,"store":"40 × 18 × 5 cm","layouts":[{"id":"slim-vewlix","name":"Japonês (Vewlix)","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"lp","x":188.39,"y":57.91,"r":15.0},{"id":"lk","x":182.39,"y":97.4,"r":15.0},{"id":"mp","x":223.39,"y":43.06,"r":15.0},{"id":"mk","x":217.39,"y":82.55,"r":15.0},{"id":"hp","x":258.39,"y":43.05,"r":15.0},{"id":"hk","x":252.39,"y":82.55,"r":15.0},{"id":"3p","x":293.39,"y":43.06,"r":15.0},{"id":"3k","x":287.39,"y":82.55,"r":15.0}],"side":[{"id":"A1","end":"B","x":352.33,"r":15.0},{"id":"A2","end":"B","x":307.33,"r":15.0},{"id":"A3","end":"B","x":262.33,"r":15.0},{"id":"A4","end":"B","x":217.33,"r":15.0},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":{"x":111.24,"y":77.46},"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-sega","name":"Japonês (Sega)","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"lp","x":188.39,"y":57.91,"r":15.0},{"id":"lk","x":182.39,"y":97.4,"r":15.0},{"id":"mp","x":223.39,"y":43.06,"r":15.0},{"id":"mk","x":217.39,"y":82.55,"r":15.0},{"id":"hp","x":258.39,"y":43.05,"r":15.0},{"id":"hk","x":252.39,"y":82.55,"r":15.0},{"id":"3p","x":293.39,"y":57.91,"r":15.0},{"id":"3k","x":287.39,"y":97.4,"r":15.0}],"side":[{"id":"A1","end":"B","x":352.33,"r":15.0},{"id":"A2","end":"B","x":307.33,"r":15.0},{"id":"A3","end":"B","x":262.33,"r":15.0},{"id":"A4","end":"B","x":217.33,"r":15.0},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":{"x":111.24,"y":77.46},"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-leverless","name":"Leverless","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"left","x":108.1,"y":57.7,"r":12.0},{"id":"down","x":139.55,"y":57.68,"r":12.0},{"id":"right","x":167.08,"y":71.71,"r":12.0},{"id":"lk","x":200.0,"y":86.64,"r":13.0},{"id":"lp","x":199.98,"y":53.69,"r":13.0},{"id":"mp","x":227.43,"y":39.64,"r":13.0},{"id":"mk","x":227.43,"y":72.65,"r":13.0},{"id":"hp","x":258.98,"y":39.65,"r":13.0},{"id":"hk","x":258.99,"y":72.68,"r":13.0},{"id":"3k","x":288.99,"y":75.68,"r":13.0},{"id":"3p","x":288.98,"y":44.65,"r":13.0},{"id":"up","x":190.58,"y":127.21,"r":15.0}],"side":[{"id":"A1","end":"B","x":352.33,"r":15.0},{"id":"A2","end":"B","x":307.33,"r":15.0},{"id":"A3","end":"B","x":262.33,"r":15.0},{"id":"A4","end":"B","x":217.33,"r":15.0},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-shiokenstar","name":"Leverless Shiokenstar","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"left","x":100.34,"y":64.61,"r":12.0},{"id":"down","x":131.79,"y":64.58,"r":12.0},{"id":"right","x":159.32,"y":78.62,"r":12.0},{"id":"lp","x":193.13,"y":59.1,"r":15.0},{"id":"mp","x":226.82,"y":39.15,"r":15.0},{"id":"hp","x":261.82,"y":39.15,"r":15.0},{"id":"3p","x":296.82,"y":47.85,"r":15.0},{"id":"lk","x":193.13,"y":93.5,"r":15.0},{"id":"mk","x":226.82,"y":78.65,"r":15.0},{"id":"hk","x":261.82,"y":78.65,"r":15.0},{"id":"3k","x":296.82,"y":84.76,"r":15.0},{"id":"up","x":182.69,"y":133.84,"r":15.0}],"side":[{"id":"A1","end":"B","x":352.33,"r":15.0},{"id":"A2","end":"B","x":307.33,"r":15.0},{"id":"A3","end":"B","x":262.33,"r":15.0},{"id":"A4","end":"B","x":217.33,"r":15.0},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-wasd-leverless","name":"Leverless WASD","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"up","x":107.73,"y":52.43,"r":12.0},{"id":"left","x":77.73,"y":82.43,"r":12.0},{"id":"down","x":107.73,"y":82.43,"r":12.0},{"id":"right","x":137.73,"y":82.43,"r":12.0},{"id":"lp","x":215.74,"y":62.8,"r":15.0},{"id":"lk","x":209.74,"y":102.28,"r":15.0},{"id":"mp","x":250.74,"y":47.95,"r":15.0},{"id":"mk","x":244.74,"y":87.43,"r":15.0},{"id":"hp","x":285.74,"y":47.93,"r":15.0},{"id":"hk","x":279.74,"y":87.43,"r":15.0},{"id":"3k","x":314.74,"y":87.43,"r":15.0},{"id":"3p","x":320.74,"y":47.95,"r":15.0}],"side":[{"id":"A1","end":"B","x":352.33,"r":15.0},{"id":"A2","end":"B","x":307.33,"r":15.0},{"id":"A3","end":"B","x":262.33,"r":15.0},{"id":"A4","end":"B","x":217.33,"r":15.0},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-keyboard","name":"Leverless com teclas","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"left","x":76.94,"y":68.1,"w":13.7,"h":13.7,"key":1},{"id":"down","x":96.04,"y":68.1,"w":13.7,"h":13.7,"key":1},{"id":"right","x":115.14,"y":68.1,"w":13.7,"h":13.7,"key":1},{"id":"up","x":96.04,"y":49.0,"w":13.7,"h":13.7,"key":1},{"id":"lk","x":204.15,"y":103.12,"r":15.0},{"id":"lp","x":210.15,"y":63.63,"r":15.0},{"id":"mk","x":239.15,"y":88.27,"r":15.0},{"id":"mp","x":245.15,"y":48.78,"r":15.0},{"id":"hp","x":280.15,"y":48.77,"r":15.0},{"id":"hk","x":274.15,"y":88.27,"r":15.0},{"id":"3k","x":309.15,"y":88.27,"r":15.0},{"id":"3p","x":315.15,"y":48.78,"r":15.0}],"side":[{"id":"A1","end":"B","x":352.33,"r":15.0},{"id":"A2","end":"B","x":307.33,"r":15.0},{"id":"A3","end":"B","x":262.33,"r":15.0},{"id":"A4","end":"B","x":217.33,"r":15.0},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]},{"id":"slim-fullkeyboard","name":"Leverless só teclas","w":400.0,"h":180.0,"radius":5.0,"buttons":[{"id":"lk","x":249.29,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"mk","x":268.39,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"hk","x":287.49,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"mp","x":268.39,"y":44.34,"w":13.7,"h":13.7,"key":1},{"id":"lp","x":249.29,"y":44.34,"w":13.7,"h":13.7,"key":1},{"id":"hp","x":287.49,"y":44.34,"w":13.7,"h":13.7,"key":1},{"id":"3k","x":306.59,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"3p","x":306.59,"y":44.34,"w":13.7,"h":13.7,"key":1},{"id":"left","x":89.37,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"down","x":108.47,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"right","x":127.57,"y":63.44,"w":13.7,"h":13.7,"key":1},{"id":"up","x":108.47,"y":44.34,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"B","x":352.33,"r":15.0},{"id":"A2","end":"B","x":307.33,"r":15.0},{"id":"A3","end":"B","x":262.33,"r":15.0},{"id":"A4","end":"B","x":217.33,"r":15.0},{"id":"A5","end":"R","y":67.63,"r":15.0},{"id":"A6","end":"R","y":112.63,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":29.5,"y":23.5},{"x":29.5,"y":156.5},{"x":200.0,"y":156.5},{"x":200.0,"y":23.5},{"x":370.5,"y":156.5},{"x":370.5,"y":23.5}],"cutouts":[]}]},{"id":"proxl","name":"PRO XL","family":"tall","height":50,"store":"43 × 23 × 5 cm","layouts":[{"id":"proxl-vewlix","name":"Japonês (Vewlix)","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"lp","x":205.82,"y":82.63,"r":15.0},{"id":"lk","x":199.82,"y":122.11,"r":15.0},{"id":"mp","x":240.82,"y":67.78,"r":15.0},{"id":"mk","x":234.82,"y":107.26,"r":15.0},{"id":"hp","x":275.82,"y":67.76,"r":15.0},{"id":"hk","x":269.82,"y":107.26,"r":15.0},{"id":"3p","x":310.82,"y":67.78,"r":15.0},{"id":"3k","x":304.82,"y":107.26,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":{"x":128.67,"y":102.18},"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-sega","name":"Japonês (Sega)","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"lp","x":205.82,"y":82.63,"r":15.0},{"id":"lk","x":199.82,"y":122.11,"r":15.0},{"id":"mp","x":240.82,"y":67.78,"r":15.0},{"id":"mk","x":234.82,"y":107.26,"r":15.0},{"id":"hp","x":275.82,"y":67.76,"r":15.0},{"id":"hk","x":269.82,"y":107.26,"r":15.0},{"id":"3k","x":304.82,"y":121.53,"r":15.0},{"id":"3p","x":310.82,"y":82.9,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":{"x":128.67,"y":102.18},"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-dual","name":"Dual (botões + stick)","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"lp","x":201.16,"y":101.9,"r":15.0},{"id":"left","x":209.26,"y":69.23,"r":15.0},{"id":"down","x":241.54,"y":59.48,"r":15.0},{"id":"right","x":275.18,"y":58.99,"r":15.0},{"id":"mp","x":234.12,"y":92.58,"r":15.0},{"id":"hp","x":268.06,"y":91.89,"r":15.0},{"id":"3p","x":301.41,"y":96.97,"r":15.0},{"id":"lk","x":198.62,"y":135.68,"r":15.0},{"id":"mk","x":230.8,"y":126.03,"r":15.0},{"id":"hk","x":264.55,"y":125.64,"r":15.0},{"id":"3k","x":298.39,"y":130.12,"r":15.0},{"id":"up","x":201.05,"y":169.04,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":{"x":131.48,"y":108.04},"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-leverless","name":"Leverless","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"left","x":123.1,"y":77.92,"r":12.0},{"id":"down","x":154.55,"y":77.89,"r":12.0},{"id":"right","x":182.07,"y":91.93,"r":12.0},{"id":"lk","x":215.0,"y":106.86,"r":12.0},{"id":"lp","x":214.98,"y":73.91,"r":12.0},{"id":"mp","x":242.42,"y":59.86,"r":12.0},{"id":"mk","x":242.42,"y":92.87,"r":12.0},{"id":"hp","x":273.97,"y":59.87,"r":12.0},{"id":"hk","x":273.99,"y":92.89,"r":12.0},{"id":"3k","x":303.99,"y":95.89,"r":12.0},{"id":"3p","x":303.97,"y":64.87,"r":12.0},{"id":"up","x":205.58,"y":147.43,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-wasd-leverless","name":"Leverless WASD","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"up","x":120.8,"y":62.53,"r":12.0},{"id":"left","x":90.8,"y":92.53,"r":12.0},{"id":"down","x":120.8,"y":92.53,"r":12.0},{"id":"right","x":150.8,"y":92.53,"r":12.0},{"id":"lp","x":228.81,"y":72.9,"r":15.0},{"id":"lk","x":222.81,"y":112.39,"r":15.0},{"id":"mp","x":263.81,"y":58.05,"r":15.0},{"id":"mk","x":257.81,"y":97.54,"r":15.0},{"id":"hp","x":298.81,"y":58.04,"r":15.0},{"id":"hk","x":292.81,"y":97.54,"r":15.0},{"id":"3k","x":327.81,"y":97.54,"r":15.0},{"id":"3p","x":333.81,"y":58.05,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-shiokenstar","name":"Leverless Shiokenstar","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"left","x":123.1,"y":77.92,"r":12.0},{"id":"down","x":154.55,"y":77.89,"r":12.0},{"id":"right","x":182.07,"y":91.93,"r":12.0},{"id":"lp","x":215.89,"y":72.41,"r":15.0},{"id":"mp","x":249.58,"y":52.46,"r":15.0},{"id":"hp","x":284.58,"y":52.46,"r":15.0},{"id":"3p","x":319.58,"y":61.17,"r":15.0},{"id":"lk","x":215.89,"y":106.81,"r":15.0},{"id":"mk","x":249.57,"y":91.96,"r":15.0},{"id":"hk","x":284.57,"y":91.96,"r":15.0},{"id":"3k","x":319.57,"y":98.08,"r":15.0},{"id":"up","x":205.45,"y":147.16,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-keyboard","name":"Leverless com teclas","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"3p","x":310.82,"y":67.78,"r":15.0},{"id":"left","x":88.61,"y":91.2,"w":14.0,"h":14.0,"key":1},{"id":"down","x":107.71,"y":91.2,"w":14.0,"h":14.0,"key":1},{"id":"right","x":126.81,"y":91.2,"w":14.0,"h":14.0,"key":1},{"id":"up","x":107.71,"y":72.1,"w":14.0,"h":14.0,"key":1},{"id":"lk","x":199.82,"y":122.11,"r":15.0},{"id":"lp","x":205.82,"y":82.63,"r":15.0},{"id":"mk","x":234.82,"y":107.26,"r":15.0},{"id":"mp","x":240.82,"y":67.78,"r":15.0},{"id":"hp","x":275.82,"y":67.76,"r":15.0},{"id":"hk","x":269.82,"y":107.26,"r":15.0},{"id":"3k","x":304.82,"y":107.26,"r":15.0}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]},{"id":"proxl-fullkeyboard","name":"Leverless só teclas","w":430.0,"h":230.0,"radius":3.23,"buttons":[{"id":"left","x":105.52,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"lk","x":265.44,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"mk","x":284.54,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"hk","x":303.64,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"mp","x":284.54,"y":73.55,"w":13.7,"h":13.7,"key":1},{"id":"lp","x":265.44,"y":73.55,"w":13.7,"h":13.7,"key":1},{"id":"hp","x":303.64,"y":73.55,"w":13.7,"h":13.7,"key":1},{"id":"3k","x":322.74,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"3p","x":322.74,"y":73.55,"w":13.7,"h":13.7,"key":1},{"id":"down","x":124.62,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"right","x":143.72,"y":92.65,"w":13.7,"h":13.7,"key":1},{"id":"up","x":124.62,"y":73.55,"w":13.7,"h":13.7,"key":1}],"side":[{"id":"A1","end":"R","y":175.0,"r":15.0},{"id":"A2","end":"R","y":115.0,"r":15.0},{"id":"A3","end":"R","y":55.0,"r":15.0},{"id":"A4","end":"L","y":175.0,"r":15.0},{"id":"A5","end":"L","y":115.0,"r":15.0},{"id":"A6","end":"L","y":55.0,"r":15.0}],"extras":[],"joystick":null,"screws":[{"x":215.0,"y":29.0},{"x":215.0,"y":201.0},{"x":29.01,"y":201.0},{"x":400.99,"y":201.0},{"x":400.99,"y":29.0},{"x":29.01,"y":29.0}],"cutouts":[]}]},{"id":"flat-wmx","name":"FLAT WMX","family":"flat","height":17,"store":"20 × 12 × 1,7 cm","layouts":[{"id":"flat-wmx","name":"Padrão","w":200.0,"h":120.0,"radius":4.45,"buttons":[{"id":"left","x":26.72,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"down","x":45.82,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"right","x":64.92,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"up","x":45.82,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"lp","x":116.82,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"mp","x":135.92,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"hp","x":155.02,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"3p","x":174.12,"y":58.45,"w":18.0,"h":18.0,"key":1},{"id":"3k","x":174.12,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"hk","x":155.02,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"mk","x":135.92,"y":77.56,"w":18.0,"h":18.0,"key":1},{"id":"lk","x":116.82,"y":77.56,"w":18.0,"h":18.0,"key":1}],"side":[],"extras":[{"x":55.47,"y":41.57,"r":3.1},{"x":45.47,"y":41.57,"r":3.1},{"x":35.47,"y":41.57,"r":3.1},{"x":154.67,"y":41.57,"r":3.1},{"x":144.67,"y":41.57,"r":3.1},{"x":164.67,"y":41.57,"r":3.1}],"joystick":null,"screws":[{"x":194.0,"y":6.0},{"x":6.0,"y":6.0},{"x":100.0,"y":107.77},{"x":189.0,"y":39.77},{"x":11.0,"y":107.77},{"x":189.0,"y":107.77},{"x":124.0,"y":7.77},{"x":76.0,"y":7.77},{"x":11.0,"y":39.77}],"cutouts":[{"x":8.25,"y":10.27,"w":50.0,"h":20.0},{"x":141.75,"y":10.27,"w":50.0,"h":20.0}]}]},{"id":"flat-default","name":"FLAT","family":"flat","height":14,"store":"22 × 13 × 1,4 cm","layouts":[{"id":"flat-default","name":"Padrão","w":218.0,"h":127.0,"radius":7.0,"buttons":[{"id":"mp","x":139.42,"y":26.58,"r":10.95},{"id":"down","x":51.32,"y":38.17,"r":10.95},{"id":"lk","x":107.25,"y":69.15,"r":10.95},{"id":"3k","x":191.92,"y":58.04,"r":10.95},{"id":"lp","x":112.86,"y":38.11,"r":10.95},{"id":"3p","x":197.36,"y":26.7,"r":10.95},{"id":"mk","x":133.86,"y":58.04,"r":10.95},{"id":"left","x":22.23,"y":38.05,"r":10.95},{"id":"hk","x":162.71,"y":58.04,"r":10.95},{"id":"right","x":77.92,"y":49.52,"r":10.95},{"id":"up","x":95.42,"y":102.62,"r":13.57},{"id":"hp","x":168.39,"y":26.46,"r":10.95}],"side":[],"extras":[{"x":31.75,"y":12.85,"r":1.85},{"x":41.75,"y":12.85,"r":1.85},{"x":54.75,"y":12.85,"r":1.85},{"x":64.75,"y":12.85,"r":1.85},{"x":74.75,"y":12.85,"r":1.85},{"x":21.75,"y":12.85,"r":1.85}],"joystick":null,"screws":[{"x":207.0,"y":116.0},{"x":207.0,"y":10.0},{"x":114.0,"y":10.0},{"x":114.0,"y":116.0},{"x":11.0,"y":116.0},{"x":11.0,"y":10.0}],"cutouts":[]},{"id":"flat-wasd","name":"WASD","w":218.0,"h":127.0,"radius":7.0,"buttons":[{"id":"hp","x":168.39,"y":35.96,"r":10.95},{"id":"mp","x":139.42,"y":36.08,"r":10.95},{"id":"lk","x":107.25,"y":78.65,"r":10.95},{"id":"3k","x":191.92,"y":67.54,"r":10.95},{"id":"lp","x":112.86,"y":47.61,"r":10.95},{"id":"3p","x":197.36,"y":36.2,"r":10.95},{"id":"mk","x":133.86,"y":67.54,"r":10.95},{"id":"hk","x":162.71,"y":67.54,"r":10.95},{"id":"left","x":22.2,"y":64.35,"r":10.95},{"id":"down","x":48.31,"y":64.49,"r":10.95},{"id":"right","x":74.5,"y":64.6,"r":10.95},{"id":"up","x":48.3,"y":37.9,"r":10.95}],"side":[],"extras":[{"x":21.75,"y":12.85,"r":1.85},{"x":31.75,"y":12.85,"r":1.85},{"x":41.75,"y":12.85,"r":1.85},{"x":54.75,"y":12.85,"r":1.85},{"x":64.75,"y":12.85,"r":1.85},{"x":74.75,"y":12.85,"r":1.85}],"joystick":null,"screws":[{"x":207.0,"y":116.0},{"x":207.0,"y":10.0},{"x":114.0,"y":10.0},{"x":114.0,"y":116.0},{"x":11.0,"y":116.0},{"x":11.0,"y":10.0}],"cutouts":[]}]},{"id":"flatxl-default","name":"FLAT XL","family":"flat","height":14,"store":"32 × 16 × 1,4 cm","layouts":[{"id":"flatxl-default","name":"Padrão","w":320.0,"h":156.88,"radius":10.28,"buttons":[{"id":"mp","x":190.42,"y":26.56,"r":10.95},{"id":"down","x":102.32,"y":38.15,"r":10.95},{"id":"lk","x":158.25,"y":69.13,"r":10.95},{"id":"3k","x":242.92,"y":58.02,"r":10.95},{"id":"lp","x":163.86,"y":38.09,"r":10.95},{"id":"3p","x":248.36,"y":26.68,"r":10.95},{"id":"mk","x":184.86,"y":58.02,"r":10.95},{"id":"left","x":73.23,"y":38.03,"r":10.95},{"id":"hk","x":213.71,"y":58.02,"r":10.95},{"id":"right","x":128.92,"y":49.5,"r":10.95},{"id":"up","x":146.42,"y":102.6,"r":13.57},{"id":"hp","x":219.39,"y":26.44,"r":10.95}],"side":[],"extras":[{"x":82.75,"y":12.83,"r":1.85},{"x":92.75,"y":12.83,"r":1.85},{"x":105.75,"y":12.83,"r":1.85},{"x":115.75,"y":12.83,"r":1.85},{"x":125.75,"y":12.83,"r":1.85},{"x":72.75,"y":12.83,"r":1.85}],"joystick":null,"screws":[{"x":165.0,"y":146.91},{"x":310.03,"y":146.91},{"x":10.03,"y":146.91},{"x":310.03,"y":9.98},{"x":10.03,"y":9.98},{"x":258.0,"y":115.98},{"x":258.0,"y":9.98},{"x":62.0,"y":115.98},{"x":62.0,"y":9.98},{"x":165.0,"y":9.98},{"x":165.0,"y":115.98}],"cutouts":[]},{"id":"flatxl-wasd","name":"WASD","w":320.0,"h":156.88,"radius":10.28,"buttons":[{"id":"hp","x":219.39,"y":35.94,"r":10.95},{"id":"mp","x":190.42,"y":36.06,"r":10.95},{"id":"lk","x":158.25,"y":78.63,"r":10.95},{"id":"3k","x":242.92,"y":67.52,"r":10.95},{"id":"lp","x":163.86,"y":47.59,"r":10.95},{"id":"3p","x":248.36,"y":36.18,"r":10.95},{"id":"mk","x":184.86,"y":67.52,"r":10.95},{"id":"hk","x":213.71,"y":67.52,"r":10.95},{"id":"left","x":73.2,"y":64.33,"r":10.95},{"id":"down","x":99.31,"y":64.47,"r":10.95},{"id":"right","x":125.5,"y":64.58,"r":10.95},{"id":"up","x":99.3,"y":37.88,"r":10.95}],"side":[],"extras":[{"x":72.75,"y":12.83,"r":1.85},{"x":82.75,"y":12.83,"r":1.85},{"x":92.75,"y":12.83,"r":1.85},{"x":105.75,"y":12.83,"r":1.85},{"x":115.75,"y":12.83,"r":1.85},{"x":125.75,"y":12.83,"r":1.85}],"joystick":null,"screws":[{"x":165.0,"y":146.91},{"x":310.03,"y":146.91},{"x":10.03,"y":146.91},{"x":310.03,"y":9.98},{"x":10.03,"y":9.98},{"x":258.0,"y":115.98},{"x":258.0,"y":9.98},{"x":62.0,"y":115.98},{"x":62.0,"y":9.98},{"x":165.0,"y":9.98},{"x":165.0,"y":115.98}],"cutouts":[]}]},{"id":"flatxxl","name":"FLAT XXL","family":"flat","height":14,"store":"30 × 21 × 1,4 cm","layouts":[{"id":"flatxxl-14","name":"14 botões","w":300.0,"h":210.0,"radius":10.0,"buttons":[{"id":"hp","x":221.89,"y":26.46,"r":10.95},{"id":"up","x":148.92,"y":102.62,"r":13.58},{"id":"right","x":131.42,"y":49.52,"r":10.95},{"id":"hk","x":216.21,"y":58.04,"r":10.95},{"id":"left","x":75.73,"y":38.05,"r":10.95},{"id":"mk","x":187.36,"y":58.04,"r":10.95},{"id":"3p","x":250.86,"y":26.7,"r":10.95},{"id":"lp","x":166.36,"y":38.11,"r":10.95},{"id":"3k","x":245.42,"y":58.04,"r":10.95},{"id":"lk","x":160.75,"y":69.15,"r":10.95},{"id":"down","x":104.82,"y":38.17,"r":10.95},{"id":"mp","x":192.92,"y":26.58,"r":10.95},{"id":"A2","x":185.22,"y":89.4,"r":13.57},{"id":"A1","x":49.1,"y":49.7,"r":10.95}],"side":[],"extras":[{"x":75.25,"y":12.85,"r":1.85},{"x":85.25,"y":12.85,"r":1.85},{"x":95.25,"y":12.85,"r":1.85},{"x":108.25,"y":12.85,"r":1.85}],"joystick":null,"screws":[{"x":40.5,"y":10.0},{"x":167.5,"y":10.0},{"x":260.5,"y":10.0},{"x":40.5,"y":116.0},{"x":167.5,"y":116.0},{"x":260.5,"y":116.0},{"x":150.0,"y":200.0},{"x":10.0,"y":200.0},{"x":290.0,"y":200.0},{"x":10.0,"y":10.0},{"x":290.0,"y":10.0}],"cutouts":[]},{"id":"flatxxl-17","name":"17 botões","w":300.0,"h":210.0,"radius":10.0,"buttons":[{"id":"mp","x":192.85,"y":52.56,"r":10.95},{"id":"down","x":105.99,"y":64.74,"r":10.95},{"id":"lk","x":162.49,"y":94.75,"r":10.95},{"id":"3k","x":249.64,"y":85.81,"r":10.95},{"id":"lp","x":165.55,"y":64.9,"r":10.95},{"id":"3p","x":252.71,"y":55.66,"r":10.95},{"id":"mk","x":189.91,"y":82.4,"r":10.95},{"id":"left","x":75.99,"y":64.02,"r":10.95},{"id":"hk","x":219.88,"y":82.9,"r":10.95},{"id":"right","x":132.79,"y":78.19,"r":10.95},{"id":"up","x":150.69,"y":131.39,"r":13.58},{"id":"hp","x":222.89,"y":52.38,"r":10.95},{"id":"A1","x":46.91,"y":71.31,"r":10.95},{"id":"A2","x":112.53,"y":35.42,"r":10.95},{"id":"A5","x":168.54,"y":35.02,"r":10.95},{"id":"A4","x":186.79,"y":112.28,"r":10.95},{"id":"A3","x":128.12,"y":107.84,"r":10.95}],"side":[],"extras":[{"x":217.87,"y":13.33,"r":1.85},{"x":227.87,"y":13.33,"r":1.85},{"x":237.87,"y":13.33,"r":1.85},{"x":247.87,"y":13.33,"r":1.85}],"joystick":null,"screws":[{"x":40.5,"y":10.0},{"x":167.5,"y":10.0},{"x":260.5,"y":10.0},{"x":40.5,"y":116.0},{"x":167.5,"y":116.0},{"x":260.5,"y":116.0},{"x":150.0,"y":200.0},{"x":10.0,"y":200.0},{"x":290.0,"y":200.0},{"x":10.0,"y":10.0},{"x":290.0,"y":10.0}],"cutouts":[]}]}]};          // every model and layout of the store builder (mm, origin = outline top-left)
 
 // ---------- case construction (mm) ----------
 const INSET = 6, T_BOT = 4, T_MID = 3, T_TOP = 3;   // 5 cm acrylic sandwich; walls sit 6 mm inside the plates
@@ -593,9 +684,17 @@ function noteFor(key) {
       ? `Os círculos mostram onde ficam os botões${spec.joystick ? ', o stick' : ''} e os parafusos. A arte embaixo deles fica coberta.`
       : 'Os círculos mostram onde ficam as teclas e os parafusos. Na linha FLAT só o topo leva arte.';
   }
-  return key === 'ends'
-    ? 'A mesma arte vai nas duas pontas. Os círculos mostram os botões laterais das duas pontas, que caem no mesmo lugar da impressão.'
-    : 'A mesma arte vai na frente e no fundo do controle.';
+  const where = new Set(spec.side.map((s) => s.end));
+  if (key === 'ends') {
+    if (where.has('R') && where.has('L')) return 'A mesma arte vai nas duas pontas. Os círculos mostram os botões laterais das duas pontas, que caem no mesmo lugar da impressão.';
+    if (where.has('R') || where.has('L')) return `A mesma arte vai nas duas pontas. Os círculos mostram os botões da ponta ${where.has('R') ? 'direita' : 'esquerda'}; a outra ponta fica sem furos.`;
+    return 'A mesma arte vai nas duas pontas do controle.';
+  }
+  if (where.has('B') || where.has('F')) {
+    const wall = where.has('B') && where.has('F') ? 'da frente e do fundo' : where.has('B') ? 'do fundo, vistos de trás' : 'da frente';
+    return `A mesma arte vai na frente e no fundo. Os círculos mostram os botões ${wall}.`;
+  }
+  return 'A mesma arte vai na frente e no fundo do controle.';
 }
 // empty surfaces show the neutral stand-in (cx, cy: image centre in mm on the surface)
 const SAMPLES = {
@@ -695,7 +794,14 @@ const $ = (s) => document.querySelector(s);
 
 // ---------- small helpers ----------
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-const cssVar = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+// theme tokens read once per theme: drawEditor runs on every drag frame and used to restyle per grid line
+const tokenCache = new Map();
+const cssVar = (n) => {
+  if (!tokenCache.has(n)) tokenCache.set(n, getComputedStyle(document.documentElement).getPropertyValue(n).trim());
+  return tokenCache.get(n);
+};
+const nf1 = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const nf0 = new Intl.NumberFormat('pt-BR');
 const toBlob = (c, type = 'image/png', q) => new Promise((res, rej) => c.toBlob((b) => (b ? res(b) : rej(new Error('blob'))), type, q));
 const mmLabel = (v) => Math.round(v).toString();
 function loadImage(src) {
@@ -742,21 +848,35 @@ function drawArt(ctx, key, k, ox, oy) {
   ctx.drawImage(sf.img, -iw * s * k / 2, -ih * s * k / 2, iw * s * k, ih * s * k);
   ctx.restore();
 }
-function endHoles() {   // side buttons as they fall on the end print: right end from the front, left end from the back
-  const holes = [];
+// wall buttons: end 'R'/'L' sit on the ends (position y along the depth), 'B'/'F' on the back and front walls
+// (position x along the width; the SLIM line has four on the back)
+const ON_ENDS = new Set(['R', 'L']);
+const WALL_VIEW = { R: 'endsR', L: 'ends', B: 'back', F: 'front' };   // camera preset that shows each wall
+function viewFor(key) {           // camera for a surface tab: the wall that actually carries buttons, when there is one
+  const where = new Set(isTall() ? spec.side.map((s) => s.end) : []);
+  if (key === 'ends') return where.has('L') || !where.has('R') ? 'ends' : 'endsR';
+  if (key === 'sides') return where.has('B') ? 'back' : 'front';
+  return 'left';
+}
+function printHoles(key) {   // wall buttons as they fall on the shared print of that surface, each wall seen from outside
+  const holes = [], ends = key === 'ends';
   for (const s of spec.side) {
-    const x = s.end === 'R' ? spec.h - INSET - s.y : s.y - INSET;
+    if (ON_ENDS.has(s.end) !== ends) continue;
+    const x = ends
+      ? (s.end === 'R' ? spec.h - INSET - s.y : s.y - INSET)     // right end seen from the right, left end from the left
+      : (s.end === 'B' ? spec.w - INSET - s.x : s.x - INSET);    // back seen from behind, front from the player
     const near = holes.find((h) => Math.abs(h.x - x) < 1);
     if (near) near.ids.push(s.id); else holes.push({ x, r: s.r, ids: [s.id] });
   }
-  for (const h of holes) h.ids.sort((a, b) => (spec.side.find((s) => s.id === a).end === 'R' ? -1 : 1));
+  const first = ends ? 'R' : 'F';
+  for (const h of holes) h.ids.sort((a) => (spec.side.find((s) => s.id === a).end === first ? -1 : 1));
   return holes;
 }
 function drawOverlay(ctx, key, k, ox, oy) {
   const stroke = () => { ctx.lineWidth = Math.max(1, 0.35 * k); ctx.strokeStyle = 'rgba(20, 20, 22, 0.55)'; ctx.stroke(); };
   const ring = (x, y, r, c) => { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fillStyle = fillFor(c); ctx.fill(); stroke(); };
   const label = (x, y, txt, mm, ink, halo) => {
-    ctx.font = `700 ${Math.max(8, mm * k)}px ${cssVar('--body') || 'sans-serif'}`;
+    ctx.font = `700 ${Math.max(8, mm * k)}px ${cssVar('--sans') || 'sans-serif'}`;
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     if (halo) { ctx.lineWidth = Math.max(2, 0.9 * k); ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)'; ctx.strokeText(txt, x, y + 0.4); }
     ctx.fillStyle = ink;
@@ -793,9 +913,13 @@ function drawOverlay(ctx, key, k, ox, oy) {
       ctx.setLineDash([4, 3]); ctx.lineWidth = Math.max(1, 0.4 * k); ctx.strokeStyle = 'rgba(250, 250, 247, 0.95)'; ctx.stroke();
       ctx.setLineDash([]);
       ctx.beginPath(); ctx.arc(sx, sy, 13.5 * k, 0, Math.PI * 2); ctx.fillStyle = hexA(st.hex, st.opacity || 0.95); ctx.fill(); stroke();
-      ctx.font = `700 ${Math.max(8, 5.5 * k)}px ${cssVar('--body') || 'sans-serif'}`;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillStyle = 'rgba(250, 250, 247, 0.95)';
-      ctx.fillText('STICK', sx, sy + 21.5 * k);
+      ctx.font = `700 ${Math.max(8, 5.5 * k)}px ${cssVar('--sans') || 'sans-serif'}`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      const stickTxt = 'STICK', ty = sy + 21.5 * k;
+      ctx.lineJoin = 'round'; ctx.lineWidth = Math.max(2.5, 0.9 * k); ctx.strokeStyle = 'rgba(17, 17, 19, 0.75)';
+      ctx.strokeText(stickTxt, sx, ty);            // dark halo: the label stays readable on light and dark art
+      ctx.fillStyle = 'rgba(250, 250, 247, 0.95)';
+      ctx.fillText(stickTxt, sx, ty);
     }
     for (const e of spec.extras) {
       ctx.beginPath(); ctx.arc(ox + e.x * k, oy + e.y * k, Math.max(1.5, e.r * k), 0, Math.PI * 2);
@@ -806,9 +930,9 @@ function drawOverlay(ctx, key, k, ox, oy) {
       ctx.beginPath(); ctx.arc(ox + s.x * k, oy + s.y * k, sr * k, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(30, 30, 33, 0.75)'; ctx.fill();
     }
-  } else if (key === 'ends') {
-    const { h } = SURF.ends.dims();
-    for (const hole of endHoles()) {
+  } else {
+    const { h } = SURF[key].dims();
+    for (const hole of printHoles(key)) {
       const x = ox + hole.x * k, y = oy + h / 2 * k, r = (hole.r + BEZEL) * k;
       const cs = hole.ids.map(colorOf);
       if (cs.length > 1) {
@@ -873,7 +997,7 @@ function drawEditor() {
   ctx.lineWidth = 1.5;
   ctx.strokeStyle = cssVar('--frame');
   ctx.strokeRect(g.ox, g.oy, g.w * g.k, g.h * g.k);
-  ctx.font = `600 11px ${cssVar('--mono') || 'monospace'}`;
+  ctx.font = `600 12px ${cssVar('--sans') || 'sans-serif'}`;
   ctx.fillStyle = cssVar('--muted');
   ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
   ctx.fillText(`${mmLabel(g.w)} mm`, g.ox + g.w * g.k / 2, g.oy - 5);
@@ -1044,9 +1168,29 @@ function specChanged(old) {
   renderGroups();
   renderColors();
   rebuild3D();
-  goView(active === 'top' ? 'left' : active === 'ends' ? 'ends' : 'front');
+  goView(viewFor(active));
+  syncHash();
   schedulePersist();
 }
+// the address carries the layout (#proxl-dual, #flat-leverless…): layout ids are unique across models,
+// so a shared link opens the same model and layout
+function layoutFromHash() {
+  let id = '';
+  try { id = decodeURIComponent(location.hash.slice(1)); } catch (err) { return null; }
+  const m = id && SPECS.models.find((x) => x.layouts.some((l) => l.id === id));
+  return m ? { model: m.id, layout: id } : null;
+}
+function syncHash() {
+  try { if (location.hash.slice(1) !== spec.id) history.replaceState(history.state, '', `#${spec.id}`); } catch (err) { /* address bar not writable here */ }
+}
+window.addEventListener('hashchange', () => {
+  const h = layoutFromHash();
+  if (!h || h.layout === spec.id) return;
+  const old = dimsSnapshot();
+  settings.model = h.model;
+  settings.layout = h.layout;
+  specChanged(old);
+});
 function renderTabs() {
   for (const k of ['ends', 'sides']) $(`#tab-${k}`).hidden = !isTall();
   $('.tabs').style.gridTemplateColumns = isTall() ? '' : 'minmax(0, 1fr)';
@@ -1087,7 +1231,7 @@ function syncControls() {
   }
   const { w, h } = SURF[active].dims();
   const px = (mm) => Math.round(mm * settings.dpi / 25.4);
-  $('#print-size').textContent = `arquivo final ${px(w)} × ${px(h)} px (${settings.dpi} DPI)`;
+  $('#print-size').textContent = `Arquivo final: ${nf0.format(px(w))} × ${nf0.format(px(h))} px em ${settings.dpi} DPI`;
 }
 
 function setActive(key, moveCamera = true) {
@@ -1096,12 +1240,14 @@ function setActive(key, moveCamera = true) {
   $('#editor-area').setAttribute('aria-labelledby', `tab-${key}`);
   syncControls();
   drawEditor();
-  if (moveCamera) goView(key === 'top' ? 'left' : key === 'ends' ? 'ends' : 'front');
+  if (moveCamera) goView(viewFor(key));
 }
 for (const b of document.querySelectorAll('.tab')) b.addEventListener('click', () => setActive(b.dataset.key));
 $('.tabs').addEventListener('keydown', (e) => {
-  if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-  const keys = activeKeys(), i = keys.indexOf(active), n = keys[(i + (e.key === 'ArrowRight' ? 1 : keys.length - 1)) % keys.length];
+  const keys = activeKeys(), i = keys.indexOf(active);
+  const n = { ArrowRight: keys[(i + 1) % keys.length], ArrowLeft: keys[(i + keys.length - 1) % keys.length], Home: keys[0], End: keys[keys.length - 1] }[e.key];
+  if (!n) return;
+  e.preventDefault();
   setActive(n);
   $(`#tab-${n}`).focus();
 });
@@ -1198,15 +1344,14 @@ window.addEventListener('paste', (e) => {
 // ---------- button and stick colours ----------
 // target: 'g:all' | 'g:<group>' | 'b:<button>' | 'stick'
 let colorTarget = 'g:all';
-function swatchBg(hex, alpha, metal) {
+// swatches are flat colour; a translucent one sits on the usual transparency checkerboard so it reads as clear
+function swatchBg(hex, alpha) {
   if (alpha && alpha < 1) {
-    return `linear-gradient(${hexA(hex, alpha)}, ${hexA(hex, alpha)}), conic-gradient(#cdcac3 25%, #f5f3ef 0 50%, #cdcac3 0 75%, #f5f3ef 0) 0 0 / 10px 10px`;
+    return `linear-gradient(${hexA(hex, alpha)}, ${hexA(hex, alpha)}), conic-gradient(#c9ccd2 25%, #f3f4f6 0 50%, #c9ccd2 0 75%, #f3f4f6 0) 0 0 / 10px 10px`; // taste-skill-ignore: a checkerboard pattern, not a colour fade
   }
-  return metal
-    ? `linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, 0.18)), ${hex}`
-    : `radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 52%), ${hex}`;
+  return hex;
 }
-const btnSwatch = (c) => swatchBg(c.hex, c.clear, c.metal);
+const btnSwatch = (c) => swatchBg(c.hex, c.clear);
 const stickSwatch = (sid) => { const c = stickById(sid); return swatchBg(c.hex, c.opacity); };
 function targetButtons() {
   if (colorTarget === 'stick') return [];
@@ -1279,8 +1424,9 @@ function renderGroups() {
 function buildMap() {
   const svg = $('#btn-map'), NS = 'http://www.w3.org/2000/svg';
   svg.textContent = '';
-  const tall = isTall(), pad = tall ? 26 : 4;
-  svg.setAttribute('viewBox', `${-pad} -4 ${spec.w + 2 * pad} ${spec.h + 8}`);
+  const tall = isTall(), walls = new Set(tall ? spec.side.map((s) => s.end) : []);
+  const pad = (end) => (walls.has(end) ? 26 : 4);      // room for the wall buttons drawn just outside the panel
+  svg.setAttribute('viewBox', `${-pad('L')} ${-pad('B')} ${spec.w + pad('L') + pad('R')} ${spec.h + pad('B') + pad('F')}`);
   const el = (tag, attrs, parent) => {
     const n = document.createElementNS(NS, tag);
     for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
@@ -1302,7 +1448,8 @@ function buildMap() {
   };
   for (const b of spec.buttons) item(b.id, b.x, b.y, b.key ? { w: b.w, h: b.h } : { r: b.r }, labelOf(b.id));
   if (spec.joystick) item('stick', spec.joystick.x, spec.joystick.y, { r: 13.5 }, 'Stick');
-  if (tall) for (const s of spec.side) item(s.id, s.end === 'R' ? spec.w + 13 : -13, s.y, { r: 10 }, s.id);
+  const wallPos = (s) => ({ R: [spec.w + 13, s.y], L: [-13, s.y], B: [s.x, -13], F: [s.x, spec.h + 13] })[s.end];
+  if (tall) for (const s of spec.side) item(s.id, ...wallPos(s), { r: 10 }, s.id);
 }
 function shoppingLines() {
   const byPart = new Map();
@@ -1334,7 +1481,7 @@ function renderColors() {
       sub.textContent = `${members.length} · ${cs[0].pt}`;
     } else {
       const step = 100 / cs.length;
-      dot.style.background = `conic-gradient(${cs.map((c, i) => `${c.hex} ${i * step}% ${(i + 1) * step}%`).join(', ')})`;
+      dot.style.background = `conic-gradient(${cs.map((c, i) => `${c.hex} ${i * step}% ${(i + 1) * step}%`).join(', ')})`; // taste-skill-ignore: a pie of the group's colours, hard stops
       sub.textContent = `${members.length} · cores misturadas`;
     }
   }
@@ -1396,9 +1543,9 @@ function selectTarget(t, fromView, focus) {
   if (focus) document.querySelector(`.group[data-target="${t}"]`).focus();
   if (fromView) return;               // picked in the 3D view: it is already in sight
   const side = t.startsWith('b:') && spec.side.find((s) => s.id === t.slice(2));
-  if (side && isTall()) goView(side.end === 'R' ? 'endsR' : 'ends');
-  else if (t === 'g:lateral') goView('ends');
-  else if (lastView === 'ends' || lastView === 'endsR') goView('left');
+  if (side && isTall()) goView(WALL_VIEW[side.end]);
+  else if (t === 'g:lateral') goView(viewFor('ends'));
+  else if (['ends', 'endsR', 'back'].includes(lastView)) goView('left');
 }
 $('#groups').addEventListener('keydown', (e) => {
   const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
@@ -1427,7 +1574,7 @@ async function loadUserImage(key, file) {
   try {
     img = await loadImage(URL.createObjectURL(file));
   } catch (err) {
-    toast('Não consegui abrir essa imagem. Tente salvar como JPG ou PNG.');
+    toast('Essa imagem não abriu. Salve como JPG ou PNG e tente de novo.');
     return;
   }
   const { w, h } = SURF[key].dims();
@@ -1544,7 +1691,7 @@ const texCanvas = {}, tex = {}, mats = {}, geo = {}, geoCache = {}, matCache = {
 const view = { az: -58 * D, el: 27 * D, zoom: 1, target: null, fitR: 250 };
 const PRESETS = {
   left: { az: -58, el: 27 }, right: { az: 58, el: 27 }, front: { az: -14, el: 17 },
-  top: { az: 0, el: 86 }, ends: { az: -74, el: 17 }, endsR: { az: 74, el: 17 },
+  top: { az: 0, el: 86 }, ends: { az: -74, el: 17 }, endsR: { az: 74, el: 17 }, back: { az: 148, el: 20 },
 };
 let lastView = 'left';
 let stageAspect = 1, exportAspect = null, renderQueued = false, anim = null;
@@ -1847,10 +1994,15 @@ function buildModel() {
     wall(WW, mats.sides, 0, -WD / 2, Math.PI);       // back
     wall(WD, mats.ends, WW / 2, 0, Math.PI / 2);     // right end
     wall(WD, mats.ends, -WW / 2, 0, -Math.PI / 2);   // left end
-    for (const s of spec.side) {
+    for (const s of spec.side) {        // the button is built pointing up (+y) and turned to face out of its wall
       const b = makeButton({ id: s.id, r: s.r });
-      b.rotation.z = s.end === 'R' ? -Math.PI / 2 : Math.PI / 2;
-      b.position.set(s.end === 'R' ? WW / 2 : -WW / 2, T_BOT + HW / 2, s.y - Dp / 2);
+      if (ON_ENDS.has(s.end)) {
+        b.rotation.z = s.end === 'R' ? -Math.PI / 2 : Math.PI / 2;
+        b.position.set(s.end === 'R' ? WW / 2 : -WW / 2, T_BOT + HW / 2, s.y - Dp / 2);
+      } else {
+        b.rotation.x = s.end === 'B' ? -Math.PI / 2 : Math.PI / 2;
+        b.position.set(s.x - W / 2, T_BOT + HW / 2, s.end === 'B' ? -WD / 2 : WD / 2);
+      }
       model3D.add(b);
     }
     view.target.set(0, T_BOT + HW * 0.55 + 14, 0);
@@ -1934,7 +2086,7 @@ function resizeStage() {
   requestRender();
 }
 function goView(name) {
-  if (!isTall() && (name === 'ends' || name === 'endsR')) name = 'left';
+  if (!isTall() && (name === 'ends' || name === 'endsR' || name === 'back')) name = 'left';
   lastView = name;
   const shown = name === 'ends' ? 'left' : name === 'endsR' ? 'right' : name;
   for (const b of document.querySelectorAll('.views button')) b.setAttribute('aria-pressed', String(b.dataset.view === shown));
@@ -1956,6 +2108,14 @@ function goView(name) {
   anim = requestAnimationFrame(step);
 }
 for (const b of document.querySelectorAll('.views button')) b.addEventListener('click', () => goView(b.dataset.view));
+// zoom without a wheel or a pinch (keyboard, single pointer)
+for (const b of document.querySelectorAll('.zoom3d button')) {
+  b.addEventListener('click', () => {
+    cancelAnimationFrame(anim);
+    view.zoom = clamp(view.zoom * (b.dataset.zoom === 'in' ? 1 / 1.15 : 1.15), 0.45, 2.2);
+    requestRender();
+  });
+}
 
 function bindOrbit(canvas) {
   const pts = new Map(), ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
@@ -2072,7 +2232,7 @@ async function renderGuide(key) {
   ctx.strokeRect(m, m, w * k, h * k);
   ctx.setLineDash([]);
   ctx.fillStyle = '#333'; ctx.font = '600 16px sans-serif'; ctx.textBaseline = 'top';
-  ctx.fillText(`${model.name} · ${SURF[key].name}: ${w.toFixed(1)} × ${h.toFixed(1)} mm${SURF[key].copies > 1 ? ' · imprimir 2 cópias' : ''} · guia, não imprimir`, m, m + h * k + 12);
+  ctx.fillText(`${model.name} · ${SURF[key].name}: ${nf1.format(w)} × ${nf1.format(h)} mm${SURF[key].copies > 1 ? ' · imprimir 2 cópias' : ''} · guia, não imprimir`, m, m + h * k + 12);
   return toBlob(c);
 }
 async function render3DBlob() {
@@ -2103,7 +2263,7 @@ $('#btn-one').addEventListener('click', async (e) => {
   try {
     const blob = await renderPrint(active);
     await saveFile(`${fileBase(active)}_${settings.dpi}dpi.png`, blob);
-  } catch (err) { toast('Não consegui gerar o arquivo. Tente com uma resolução menor.'); }
+  } catch (err) { toast('O arquivo não foi gerado. Baixe a resolução em Medidas e exportação e tente de novo.'); }
   busy(btn, false);
 });
 $('#btn-3d').addEventListener('click', async (e) => {
@@ -2111,7 +2271,7 @@ $('#btn-3d').addEventListener('click', async (e) => {
   const btn = e.currentTarget;
   busy(btn, true, 'Gerando…');
   try { await saveFile(`previa-3d-${modelSlug()}.png`, await render3DBlob()); }
-  catch (err) { toast('Não consegui gerar a prévia 3D.'); }
+  catch (err) { toast('A prévia 3D não foi gerada. Recarregue a página e tente de novo.'); }
   busy(btn, false);
 });
 $('#btn-zip').addEventListener('click', async (e) => {
@@ -2131,7 +2291,7 @@ $('#btn-zip').addEventListener('click', async (e) => {
       '',
       ...keys.map((k) => {
         const { w, h } = SURF[k].dims();
-        return `- ${SURF[k].name}: ${w.toFixed(1)} × ${h.toFixed(1)} mm, ${SURF[k].copies} ${SURF[k].copies > 1 ? 'cópias' : 'cópia'}${k === 'ends' ? ' (ponta esquerda e ponta direita)' : k === 'sides' ? ' (frente e fundo)' : ''}`;
+        return `- ${SURF[k].name}: ${nf1.format(w)} × ${nf1.format(h)} mm, ${SURF[k].copies} ${SURF[k].copies > 1 ? 'cópias' : 'cópia'}${k === 'ends' ? ' (ponta esquerda e ponta direita)' : k === 'sides' ? ' (frente e fundo)' : ''}`;
       }),
       '',
       isTall() ? 'Botões e stick:' : 'Teclas:',
@@ -2140,8 +2300,8 @@ $('#btn-zip').addEventListener('click', async (e) => {
       `Resolução: ${settings.dpi} DPI.`,
       'As guias mostram onde ficam os botões e furos. Elas servem só para conferir e não vão para a gráfica.',
       isTall()
-        ? `Medidas usadas: painel ${spec.w.toFixed(1)} × ${spec.h.toFixed(1)} mm (do montador da loja) e lateral com ${settings.wallH} mm de altura, recuada ${INSET} mm. Confirme a lateral com a loja antes de imprimir.`
-        : `Medidas usadas: painel ${spec.w.toFixed(1)} × ${spec.h.toFixed(1)} mm (do montador da loja).`,
+        ? `Medidas usadas: painel ${nf1.format(spec.w)} × ${nf1.format(spec.h)} mm (do montador da loja) e lateral com ${settings.wallH} mm de altura, recuada ${INSET} mm. Confirme a lateral com a loja antes de imprimir.`
+        : `Medidas usadas: painel ${nf1.format(spec.w)} × ${nf1.format(spec.h)} mm (do montador da loja).`,
       ...keys.filter((k) => S[k].sample).map((k) => `Atenção: ${SURF[k].name.toLowerCase()} ainda está sem arte.`),
     ];
     files.push(['LEIA-ME.txt', new Blob([lines.join('\n')], { type: 'text/plain' })]);
@@ -2154,19 +2314,35 @@ $('#btn-zip').addEventListener('click', async (e) => {
       for (const [name, blob] of files) if (!name.startsWith('guias/') && name.endsWith('.png')) await saveFile(name, blob);
     }
   } catch (err) {
-    toast('Não consegui gerar os arquivos. Tente com uma resolução menor.');
+    toast('Os arquivos não foram gerados. Baixe a resolução em Medidas e exportação e tente de novo.');
   }
   busy(btn, false);
 });
 
 // ---------- theme changes repaint the mat ----------
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => drawEditor());
-new MutationObserver(() => drawEditor()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+const themeChanged = () => { tokenCache.clear(); drawEditor(); };
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', themeChanged);
+new MutationObserver(themeChanged).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
 // ---------- boot ----------
 async function boot() {
   new ResizeObserver(resizeEditor).observe(ed);
   await restore();
+  const linked = layoutFromHash();
+  if (linked && linked.layout !== spec.id) {    // keep the same part of each saved picture in view on the linked size
+    const old = dimsSnapshot();
+    settings.model = linked.model;
+    settings.layout = linked.layout;
+    pickSpec();
+    for (const k of KEYS) {
+      const sf = S[k], n = SURF[k].dims();
+      if (!sf) continue;
+      sf.cx *= n.w / old[k].w;
+      sf.cy *= n.h / old[k].h;
+      clampSurface(k);
+    }
+  }
+  syncHash();
   buildModelPicker();
   renderModelPicker();
   renderTabs();

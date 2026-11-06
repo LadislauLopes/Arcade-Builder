@@ -26,6 +26,10 @@ Fonts).
 As imagens e os ajustes ficam salvos só no seu navegador (IndexedDB). Nada é
 enviado para nenhum servidor.
 
+O endereço guarda o modelo e o layout escolhidos (por exemplo `#proxl-dual`
+ou `#slim-keyboard`), então dá para mandar o link de uma configuração
+específica. As artes não vão junto no link.
+
 ## Modelos 3D (Blender)
 
 | Pasta | O que tem |
