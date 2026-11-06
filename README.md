@@ -13,6 +13,9 @@ O editor está em [`index.html`](index.html). É um arquivo só, sem build.
 
 - Escolha o modelo (MINI, BASIC, SLIM, PRO XL e a linha FLAT) e um dos 36 layouts.
 - Suba a arte do topo, das pontas e da frente/fundo. Arraste para posicionar, use zoom, gire ou espelhe.
+- Ajuste brilho, contraste e saturação de cada arte, ou mostre a imagem inteira com um fundo de cor ou desfocado.
+- Escreva um texto (seis fontes, inclusive japonesa) ou ponha um logo por cima da arte e arraste para posicionar.
+- Use "Sugerir cores pela arte" para ver as cores Sanwa mais parecidas com a arte e três combinações prontas.
 - Veja o resultado em 3D, com os furos dos botões, do stick e dos parafusos no lugar certo.
 - Pinte cada botão com as cores Sanwa (ou as capas low-profile da linha FLAT) e escolha a cor do bat-top.
 - Baixe os PNGs em 300 DPI prontos para a gráfica, num `.zip` com um `LEIA-ME.txt` que traz as medidas e a lista de botões.
